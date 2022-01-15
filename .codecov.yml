@@ -1,5 +1,5 @@
 codecov:
-  token: fd154b60-5f50-425e-833a-a9a5871ec8ee # repository upload token
+  token: cecc1f8e-dc88-4a37-a928-5e378ab9ecbd # repository upload token
 comment:
   layout: "reach, diff, files"
   behavior: default
