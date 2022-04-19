@@ -1,4 +1,4 @@
-const Condition = require('../../../../../src/processDescription/phases/transitions/conditions/Condition')
+const Condition = require('../../src/conditions/Condition')
 
 describe('the Condition interface', () => {
 
