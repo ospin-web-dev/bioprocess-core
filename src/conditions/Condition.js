@@ -1,4 +1,25 @@
+const Joi = require('joi')
+
 class Condition {
+
+  static get SCHEMA() {
+    return Joi.object({
+      operator: Joi.string().allow(null).default(null),
+      left: Joi.alternatives().try([
+        Joi.number().strict(),
+        Joi.string(),
+        Joi.boolean(),
+        Joi.link('#condition')
+      ]).allow(null).default(null),
+      right: Joi.alternatives().try([
+        Joi.number().strict(),
+        Joi.string(),
+        Joi.boolean(),
+        Joi.link('#condition')
+      ]).allow(null).default(null),
+      options: Joi.object().default({}),
+    }).id('condition')
+  }
 
   static create(operator = null, left = null, right = null, options = {}) {
     return { operator, left, right, options }
