@@ -9,7 +9,7 @@ class EndEventDispatcher extends EventDispatcher {
 
   static get SCHEMA() {
     return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(EndEventDispatcher.TYPE).required(),
+      type: Joi.string().allow(EndEventDispatcher.TYPE).default(EndEventDispatcher.TYPE),
     }))
   }
 

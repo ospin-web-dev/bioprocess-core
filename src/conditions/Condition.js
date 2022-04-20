@@ -9,7 +9,7 @@ class Condition {
         Joi.number().strict(),
         Joi.string(),
         Joi.boolean(),
-        Joi.link('#condition'),
+        Joi.link('...'),
         Joi.object({
           dataSource: { type: 'dataStream' },
         }),
@@ -18,13 +18,13 @@ class Condition {
         Joi.number().strict(),
         Joi.string(),
         Joi.boolean(),
-        Joi.link('#condition'),
+        Joi.link('...'),
         Joi.object({
           dataSource: { type: 'dataStream' },
         }),
       ).allow(null).default(null),
       options: Joi.object().default({}),
-    }).id('condition')
+    })
   }
 
   static create(data = {}) {

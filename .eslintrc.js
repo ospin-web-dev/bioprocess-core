@@ -27,6 +27,7 @@ module.exports = {
     "no-underscore-dangle": "off",
 
     // jest rules (all are enabled by default via the extends section above)
+    "jest/lowercase-name": "off",
     "jest/no-hooks": "off",
     "jest/consistent-test-it": "warn",
     "jest/prefer-expect-assertions": "off",

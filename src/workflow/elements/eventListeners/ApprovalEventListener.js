@@ -9,7 +9,7 @@ class ApprovalEventListener extends EventListener {
 
   static get SCHEMA() {
     return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(ApprovalEventListener.TYPE).required(),
+      type: Joi.string().allow(ApprovalEventListener.TYPE).default(ApprovalEventListener.TYPE),
     }))
   }
 

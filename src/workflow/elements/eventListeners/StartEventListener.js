@@ -9,7 +9,7 @@ class StartEventListener extends EventListener {
 
   static get SCHEMA() {
     return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(StartEventListener.TYPE).required(),
+      type: Joi.string().allow(StartEventListener.TYPE).default(StartEventListener.TYPE),
       interrupting: Joi.boolean().allow(true),
       phaseBound: Joi.boolean().allow(false),
     }))

@@ -9,9 +9,9 @@ class AndMergeGateway extends Gateway {
 
   static get SCHEMA() {
     return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(AndMergeGateway.TYPE).required(),
-      outgoing: super.SCHEMA.extract('id').allow(null).default(null),
-      incoming: Joi.array().items(super.SCHEMA.extract('id')).default([]),
+      type: Joi.string().allow(AndMergeGateway.TYPE).default(AndMergeGateway.TYPE),
+      outgoing: super.SCHEMA.extract('id').optional().allow(null).default(null),
+      incoming: Joi.array().items(super.SCHEMA.extract('id').optional()).default([]),
     }))
   }
 
