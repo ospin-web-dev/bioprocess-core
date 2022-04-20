@@ -5,24 +5,30 @@ class Condition {
   static get SCHEMA() {
     return Joi.object({
       operator: Joi.string().allow(null).default(null),
-      left: Joi.alternatives().try([
+      left: Joi.alternatives().try(
         Joi.number().strict(),
         Joi.string(),
         Joi.boolean(),
-        Joi.link('#condition')
-      ]).allow(null).default(null),
-      right: Joi.alternatives().try([
+        Joi.link('#condition'),
+        Joi.object({
+          dataSource: { type: 'dataStream' },
+        }),
+      ).allow(null).default(null),
+      right: Joi.alternatives().try(
         Joi.number().strict(),
         Joi.string(),
         Joi.boolean(),
-        Joi.link('#condition')
-      ]).allow(null).default(null),
+        Joi.link('#condition'),
+        Joi.object({
+          dataSource: { type: 'dataStream' },
+        }),
+      ).allow(null).default(null),
       options: Joi.object().default({}),
     }).id('condition')
   }
 
-  static create(operator = null, left = null, right = null, options = {}) {
-    return { operator, left, right, options }
+  static create(data = {}) {
+    return Joi.attempt(data, Condition.SCHEMA)
   }
 
   static setLeft(condition, newLeft) {
@@ -42,11 +48,11 @@ class Condition {
   }
 
   static wrapInAnd(condition, rightSide = Condition.create()) {
-    return Condition.create('and', condition, rightSide)
+    return Condition.create({ operator: 'and', left: condition, right: rightSide })
   }
 
   static wrapInOr(condition, rightSide = Condition.create()) {
-    return Condition.create('or', condition, rightSide)
+    return Condition.create({ operator: 'or', left: condition, right: rightSide })
   }
 
 }

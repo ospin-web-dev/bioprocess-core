@@ -11,9 +11,9 @@ class LoopGateway extends Gateway {
     return super.SCHEMA.concat(Joi.object({
       type: Joi.string().allow(LoopGateway.TYPE).required(),
       maxIterations: Joi.number().integer().strict().default(1),
-      incoming: super.SCHEMA.extract('id').allow(null),
-      outgoing: super.SCHEMA.extract('id').allow(null),
-      loopback: super.SCHEMA.extract('id').allow(null),
+      incoming: super.SCHEMA.extract('id').allow(null).default(null),
+      outgoing: super.SCHEMA.extract('id').allow(null).default(null),
+      loopback: super.SCHEMA.extract('id').allow(null).default(null),
     }))
   }
 

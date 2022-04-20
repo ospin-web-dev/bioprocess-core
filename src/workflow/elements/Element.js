@@ -8,6 +8,9 @@ class Element {
     })
   }
 
+  static create(data) {
+    return Joi.attempt(data, this.SCHEMA)
+  }
 
 }
 
