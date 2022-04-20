@@ -12,7 +12,7 @@ class Element {
     return Joi.attempt(data, this.SCHEMA)
   }
 
-  static validateData(data) {
+  static validateSchema(data) {
     Joi.assert(data, this.SCHEMA)
   }
 

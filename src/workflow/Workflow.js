@@ -22,6 +22,10 @@ class Workflow {
     Joi.assert(data, Workflow.SCHEMA)
   }
 
+  static create(data) {
+    return Joi.attempt(data, Workflow.SCHEMA)
+  }
+
   static get SCHEMA() {
     return Joi.object({
       id: Joi.string().required(),
@@ -42,7 +46,7 @@ class Workflow {
           OrSplitGateway.SCHEMA,
         )).default([]),
         phases: Joi.array().items(Phase.SCHEMA).default([]),
-      }),
+      }).default(),
     })
   }
 
@@ -80,7 +84,7 @@ class Workflow {
     }
   }
 
-  static generateUniqueId(workflow, prefix = 'element') {
+  static generateUniqueId(workflow, prefix) {
     const existingIds = Workflow.getExistingIds(workflow)
     let counter = 0
     let newId = `${prefix}_${counter}`
@@ -94,7 +98,7 @@ class Workflow {
   }
 
   static getElementById(elements, id) {
-    return elements.find(el => e.id === id)
+    return elements.find(el => el.id === id)
   }
 
   static addElement(elements, newElement) {
@@ -115,12 +119,6 @@ class Workflow {
   }
 
   /* EVENT DISPATCHERS */
-
-  static get EVENT_DISPATCHER_TYPE_TO_API_MAP() {
-    return {
-      [EndEventDispatcher.TYPE]: EndEventDispatcher,
-    }
-  }
 
   static addEventDispatcher(workflow, api, data = {}) {
     const eventDispatcher = api.create({
@@ -151,20 +149,8 @@ class Workflow {
     return Workflow.updateEventDispatchers(workflow, eventDispatchers)
   }
 
-  static addEndEventDispatcher(workflow) {
-    return Workflow.addEventDispatcher(workflow, EndEventDispatcher)
-  }
-
-  static updateEventDispatcher(workflow, id, data) {
-    const eventDispatcher = Workflow.getElementById(workflow.elements.eventDispatchers, id)
-    const updatedEventDispatcher = { ...eventDispatcher, ...data }
-
-    const api = Workflow.EVENT_DISPATCHER_TYPE_TO_API_MAP[updatedEventDispatcher.type]
-    api.validateData(updatedEventDispatcher)
-
-    const eventDispatchers = Workflow.updateElement(workflow.elements.eventDispatchers, updatedEventDispatcher)
-
-    return Workflow.updateEventDispatchers(workflow, eventDispatchers)
+  static addEndEventDispatcher(workflow, data) {
+    return Workflow.addEventDispatcher(workflow, EndEventDispatcher, data)
   }
 
   /* EVENT LISTENERS */
@@ -214,7 +200,7 @@ class Workflow {
     return Workflow.addEventListener(workflow, ConditionEventListener, data)
   }
 
-  static addStartEventListner(workflow, data) {
+  static addStartEventListener(workflow, data) {
     return Workflow.addEventListener(workflow, StartEventListener, data)
   }
 
@@ -227,7 +213,7 @@ class Workflow {
     const updatedEventListener = { ...eventListener, ...data }
 
     const api = Workflow.EVENT_LISTENER_TYPE_TO_API_MAP[updatedEventListener.type]
-    api.validateData(updatedEventListener)
+    api.validateSchema(updatedEventListener)
 
     const eventListeners = Workflow.updateElement(workflow.elements.eventListeners, updatedEventListener)
 
@@ -236,7 +222,7 @@ class Workflow {
 
   /* FLOWS */
 
-  static addFlow(workflow, data = {}) {
+  static addFlow(workflow, data) {
     const flow = Flow.create({
       ...data,
       id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.FLOW),
@@ -257,20 +243,20 @@ class Workflow {
     }
   }
 
-  static removeFLow(workflow, flowId) {
+  static removeFlow(workflow, flowId) {
     const flows = Workflow.removeElement(workflow.elements.flows, flowId)
     return Workflow.updateFlows(workflow, flows)
   }
 
-  static updateEventFlow(workflow, id, data) {
+  static updateFlow(workflow, id, data) {
     const flow = Workflow.getElementById(workflow.elements.flows, id)
     const updatedFlow = { ...flow, ...data }
 
-    Flow.validateData(updatedFlow)
+    Flow.validateSchema(updatedFlow)
 
     const flows = Workflow.updateElement(workflow.elements.flows, updatedFlow)
 
-    return Workflow.updateEventListeners(workflow, flows)
+    return Workflow.updateFlows(workflow, flows)
   }
 
   /* GATEWAYS */
@@ -331,11 +317,11 @@ class Workflow {
     const updatedGateway = { ...gateway, ...data }
 
     const api = Workflow.GATEWAY_TYPE_TO_API_MAP[updatedGateway.type]
-    api.validateData(updatedGateway)
+    api.validateSchema(updatedGateway)
 
     const gateways = Workflow.updateElement(workflow.elements.gateways, updatedGateway)
 
-    return Workflow.updateEventListeners(workflow, gateways)
+    return Workflow.updateGateways(workflow, gateways)
   }
 
   /* PHASES */
@@ -370,11 +356,11 @@ class Workflow {
     const phase = Workflow.getElementById(workflow.elements.phases, id)
     const updatedPhase = { ...phase, ...data }
 
-    Phase.validateData(updatedPhase)
+    Phase.validateSchema(updatedPhase)
 
     const phases = Workflow.updateElement(workflow.elements.phases, updatedPhase)
 
-    return Workflow.updateEventListeners(workflow, phases)
+    return Workflow.updatePhases(workflow, phases)
   }
 
 }
