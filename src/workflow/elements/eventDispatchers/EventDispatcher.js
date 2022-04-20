@@ -1,9 +1,8 @@
-const Joi = require('joi')
 const Element = require('../Element')
 
 class EventDispatcher extends Element {
 
-  // any commong behviour will land here
+  // any common behaviour will land here
 
 }
 

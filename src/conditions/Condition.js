@@ -11,7 +11,7 @@ class Condition {
         Joi.boolean(),
         Joi.link('...'),
         Joi.object({
-          dataSource: { type: 'dataStream' },
+          dataSource: { type: 'dataStream' }, // placeholder - data sources still top be defined
         }),
       ).allow(null).default(null),
       right: Joi.alternatives().try(
