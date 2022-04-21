@@ -1,4 +1,4 @@
-const Condition = require('../../../../../src/processDescription/phases/transitions/conditions/Condition')
+const Condition = require('../../src/conditions/Condition')
 
 describe('the Condition interface', () => {
 
@@ -11,7 +11,7 @@ describe('the Condition interface', () => {
     const left = 10
     const right = { dataSource: { type: 'dataStream' } }
     const options = { consecutiveTimeMS: 1000, allowedDeviation: 0.5 }
-    return Condition.create(operator, left, right, options)
+    return Condition.create({ operator, left, right, options })
   }
 
   describe('create', () => {
@@ -25,7 +25,7 @@ describe('the Condition interface', () => {
       const left = 10
       const right = { dataSource: { type: 'dataStream' } }
       const options = { consecutiveTimeMS: Math.random(), allowedDeviation: Math.random() }
-      const res = Condition.create(operator, left, right, options)
+      const res = Condition.create({ operator, left, right, options })
       expect(res).toStrictEqual({ operator, left, right, options })
     })
   })
