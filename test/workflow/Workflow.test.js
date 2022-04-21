@@ -78,6 +78,7 @@ describe('Workflow', () => {
 
             expect(eventDispatchers).toHaveLength(1)
             expect(eventDispatchers[0].type).toBe(EndEventDispatcher.TYPE)
+            expect(eventDispatchers[0].id).toBe('eventDispatcher_0')
           })
         })
 
@@ -130,6 +131,7 @@ describe('Workflow', () => {
 
               expect(eventListeners).toHaveLength(1)
               expect(eventListeners[0].type).toBe(api.TYPE)
+              expect(eventListeners[0].id).toBe('eventListener_0')
             })
           })
 
@@ -212,6 +214,16 @@ describe('Workflow', () => {
           expect(flows).toHaveLength(1)
           expect(flows[0].srcId).toBe(srcId)
           expect(flows[0].destId).toBe(destId)
+          expect(flows[0].id).toBe('flow_0')
+        })
+
+        describe('when the data is invalid', () => {
+          it('throws an error', () => {
+            const workflow = WorkflowGenerator.generate()
+
+            expect(() => Workflow.addFlow(workflow, { acceptMe: 'senpai' }))
+              .toThrow(/"srcId" is required/)
+          })
         })
       })
 
@@ -296,6 +308,7 @@ describe('Workflow', () => {
 
               expect(gateways).toHaveLength(1)
               expect(gateways[0].type).toBe(api.TYPE)
+              expect(gateways[0].id).toBe('gateway_0')
             })
           })
 
@@ -373,6 +386,7 @@ describe('Workflow', () => {
             const { elements: { phases } } = Workflow.addPhase(workflow)
 
             expect(phases).toHaveLength(1)
+            expect(phases[0].id).toBe('phase_0')
           })
         })
 

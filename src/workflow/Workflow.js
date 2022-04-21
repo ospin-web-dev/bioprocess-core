@@ -329,7 +329,7 @@ class Workflow {
   static addPhase(workflow, data = {}) {
     const phase = Phase.create({
       ...data,
-      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.GATEWAY),
+      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.PHASE),
     })
 
     const phases = Workflow.addElement(workflow.elements.phases, phase)
