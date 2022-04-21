@@ -12,7 +12,7 @@ const Flow = require('./elements/flows/Flow')
 const AndMergeGateway = require('./elements/gateways/AndMergeGateway')
 const AndSplitGateway = require('./elements/gateways/AndSplitGateway')
 const LoopGateway = require('./elements/gateways/LoopGateway')
-const OrSplitGateway = require('./elements/gateways/OrSplitGateway')
+const OrMergeGateway = require('./elements/gateways/OrMergeGateway')
 
 const Phase = require('./elements/phases/Phase')
 
@@ -43,7 +43,7 @@ class Workflow {
           AndMergeGateway.SCHEMA,
           AndSplitGateway.SCHEMA,
           LoopGateway.SCHEMA,
-          OrSplitGateway.SCHEMA,
+          OrMergeGateway.SCHEMA,
         )).default([]),
         phases: Joi.array().items(Phase.SCHEMA).default([]),
       }).default(),
@@ -266,7 +266,7 @@ class Workflow {
       [AndMergeGateway.TYPE]: AndMergeGateway,
       [AndSplitGateway.TYPE]: AndSplitGateway,
       [LoopGateway.TYPE]: LoopGateway,
-      [OrSplitGateway.TYPE]: OrSplitGateway,
+      [OrMergeGateway.TYPE]: OrMergeGateway,
     }
   }
 
@@ -308,8 +308,8 @@ class Workflow {
     return Workflow.addGateway(workflow, LoopGateway, data)
   }
 
-  static addOrSplitGateway(workflow, data) {
-    return Workflow.addGateway(workflow, OrSplitGateway, data)
+  static addOrMergeGateway(workflow, data) {
+    return Workflow.addGateway(workflow, OrMergeGateway, data)
   }
 
   static updateGateway(workflow, id, data) {

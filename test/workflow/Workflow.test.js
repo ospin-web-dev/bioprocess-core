@@ -12,7 +12,7 @@ const Flow = require('../../src/workflow/elements/flows/Flow')
 const AndMergeGateway = require('../../src/workflow/elements/gateways/AndMergeGateway')
 const AndSplitGateway = require('../../src/workflow/elements/gateways/AndSplitGateway')
 const LoopGateway = require('../../src/workflow/elements/gateways/LoopGateway')
-const OrSplitGateway = require('../../src/workflow/elements/gateways/OrSplitGateway')
+const OrMergeGateway = require('../../src/workflow/elements/gateways/OrMergeGateway')
 
 const Phase = require('../../src/workflow/elements/phases/Phase')
 
@@ -44,7 +44,7 @@ describe('Workflow', () => {
               AndMergeGateway.create({ id: 'gateway_1' }),
               AndSplitGateway.create({ id: 'gateway_2' }),
               LoopGateway.create({ id: 'gateway_3' }),
-              OrSplitGateway.create({ id: 'gateway_4' }),
+              OrMergeGateway.create({ id: 'gateway_4' }),
             ],
 
             phases: [
@@ -294,7 +294,7 @@ describe('Workflow', () => {
         { api: AndMergeGateway, method: 'addAndMergeGateway' },
         { api: AndSplitGateway, method: 'addAndSplitGateway' },
         { api: LoopGateway, method: 'addLoopGateway' },
-        { api: OrSplitGateway, method: 'addOrSplitGateway' },
+        { api: OrMergeGateway, method: 'addOrMergeGateway' },
       ]
 
       /* eslint-disable-next-line jest/require-hook */
