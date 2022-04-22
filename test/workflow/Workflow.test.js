@@ -456,7 +456,7 @@ describe('Workflow', () => {
     })
   })
 
-  describe('updateElement', () => {
+  describe('updateElementCollection', () => {
     it('updates only the passed element', () => {
       const workflow = WorkflowGenerator.generate({
         elements: {
@@ -468,7 +468,7 @@ describe('Workflow', () => {
       })
 
       const updatedElements = Workflow
-        .updateElement(workflow.elements.phases, { id: 'phase_0', newKey: 'test' })
+        .updateElementCollection(workflow.elements.phases, { id: 'phase_0', newKey: 'test' })
 
       expect(updatedElements[0].newKey).toBe('test')
       expect(updatedElements[1].newKey).toBeUndefined()

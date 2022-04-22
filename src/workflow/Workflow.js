@@ -74,14 +74,16 @@ class Workflow {
     ]
   }
 
-  static get ID_PREFIXES() {
-    return {
-      EVENT_DISPATCHER: 'eventDispatcher',
-      EVENT_LISTENER: 'eventListener',
-      FLOW: 'flow',
-      GATEWAY: 'gateway',
-      PHASE: 'phase',
+  static getIdPrefixFromCollection(collection) {
+    const COLLECTION_TO_ID_PREFIX = {
+      eventDispatchers: 'eventDispatcher',
+      eventListeners: 'eventListener',
+      flows: 'flow',
+      gateways: 'gateway',
+      phases: 'phase',
     }
+
+    return COLLECTION_TO_ID_PREFIX[collection]
   }
 
   static generateUniqueId(workflow, prefix) {
@@ -97,27 +99,6 @@ class Workflow {
     return newId
   }
 
-  static getElementById(elements, id) {
-    return elements.find(el => el.id === id)
-  }
-
-  static addElement(elements, newElement) {
-    return [ ...elements, newElement ]
-  }
-
-  static removeElement(elements, elementId) {
-    return elements.filter(el => el.id !== elementId)
-  }
-
-  static updateElement(elements, updatedElement) {
-    return elements.map(el => {
-      if (el.id === updatedElement.id) {
-        return updatedElement
-      }
-      return el
-    })
-  }
-
   static updateElements(workflow, elementCollection, updatedElements) {
     return {
       ...workflow,
@@ -128,29 +109,50 @@ class Workflow {
     }
   }
 
-  /* EVENT DISPATCHERS */
+  static getElementById(elements, id) {
+    return elements.find(el => el.id === id)
+  }
 
-  static addEventDispatcher(workflow, api, data = {}) {
-    const eventDispatcher = api.create({
+  static addToElementCollection(elements, newElement) {
+    return [ ...elements, newElement ]
+  }
+
+  static removeFromElementCollection(elements, elementId) {
+    return elements.filter(el => el.id !== elementId)
+  }
+
+  static updateElementCollection(elements, updatedElement) {
+    return elements.map(el => {
+      if (el.id === updatedElement.id) {
+        return updatedElement
+      }
+      return el
+    })
+  }
+
+  static addElement(workflow, collection, api, data) {
+    const element = api.create({
       ...data,
-      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.EVENT_DISPATCHER),
+      id: Workflow.generateUniqueId(workflow, Workflow.getIdPrefixFromCollection(collection)),
     })
 
-    const eventDispatchers = Workflow
-      .addElement(workflow.elements.eventDispatchers, eventDispatcher)
+    const elements = Workflow
+      .addToElementCollection(workflow.elements[collection], element)
 
-    return Workflow.updateElements(workflow, 'eventDispatchers', eventDispatchers)
+    return Workflow.updateElements(workflow, collection, elements)
   }
+
+  /* EVENT DISPATCHERS */
 
   static removeEventDispatcher(workflow, eventDispatcherId) {
     const eventDispatchers = Workflow
-      .removeElement(workflow.elements.eventDispatchers, eventDispatcherId)
+      .removeFromElementCollection(workflow.elements.eventDispatchers, eventDispatcherId)
 
     return Workflow.updateElements(workflow, 'eventDispatchers', eventDispatchers)
   }
 
   static addEndEventDispatcher(workflow, data) {
-    return Workflow.addEventDispatcher(workflow, EndEventDispatcher, data)
+    return Workflow.addElement(workflow, 'eventDispatchers', EndEventDispatcher, data)
   }
 
   /* EVENT LISTENERS */
@@ -164,38 +166,27 @@ class Workflow {
     }
   }
 
-  static addEventListener(workflow, api, data = {}) {
-    const eventListener = api.create({
-      ...data,
-      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.EVENT_LISTENER),
-    })
-
-    const eventListeners = Workflow.addElement(workflow.elements.eventListeners, eventListener)
-
-    return Workflow.updateElements(workflow, 'eventListeners', eventListeners)
-  }
-
   static removeEventListener(workflow, eventListenerId) {
     const eventListeners = Workflow
-      .removeElement(workflow.elements.eventListeners, eventListenerId)
+      .removeFromElementCollection(workflow.elements.eventListeners, eventListenerId)
 
     return Workflow.updateElements(workflow, 'eventListeners', eventListeners)
   }
 
   static addApprovalEventListener(workflow, data) {
-    return Workflow.addEventListener(workflow, ApprovalEventListener, data)
+    return Workflow.addElement(workflow, 'eventListeners', ApprovalEventListener, data)
   }
 
   static addConditionEventListener(workflow, data) {
-    return Workflow.addEventListener(workflow, ConditionEventListener, data)
+    return Workflow.addElement(workflow, 'eventListeners', ConditionEventListener, data)
   }
 
   static addStartEventListener(workflow, data) {
-    return Workflow.addEventListener(workflow, StartEventListener, data)
+    return Workflow.addElement(workflow, 'eventListeners', StartEventListener, data)
   }
 
   static addTimerEventListener(workflow, data) {
-    return Workflow.addEventListener(workflow, TimerEventListener, data)
+    return Workflow.addElement(workflow, 'eventListeners', TimerEventListener, data)
   }
 
   static updateEventListener(workflow, id, data) {
@@ -206,7 +197,7 @@ class Workflow {
     api.validateSchema(updatedEventListener)
 
     const eventListeners = Workflow
-      .updateElement(workflow.elements.eventListeners, updatedEventListener)
+      .updateElementCollection(workflow.elements.eventListeners, updatedEventListener)
 
     return Workflow.updateElements(workflow, 'eventListeners', eventListeners)
   }
@@ -214,18 +205,12 @@ class Workflow {
   /* FLOWS */
 
   static addFlow(workflow, data) {
-    const flow = Flow.create({
-      ...data,
-      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.FLOW),
-    })
-
-    const flows = Workflow.addElement(workflow.elements.flows, flow)
-
-    return Workflow.updateElements(workflow, 'flows', flows)
+    return Workflow.addElement(workflow, 'flows', Flow, data)
   }
 
   static removeFlow(workflow, flowId) {
-    const flows = Workflow.removeElement(workflow.elements.flows, flowId)
+    const flows = Workflow
+      .removeFromElementCollection(workflow.elements.flows, flowId)
     return Workflow.updateElements(workflow, 'flows', flows)
   }
 
@@ -235,7 +220,7 @@ class Workflow {
 
     Flow.validateSchema(updatedFlow)
 
-    const flows = Workflow.updateElement(workflow.elements.flows, updatedFlow)
+    const flows = Workflow.updateElementCollection(workflow.elements.flows, updatedFlow)
 
     return Workflow.updateElements(workflow, 'flows', flows)
   }
@@ -251,36 +236,26 @@ class Workflow {
     }
   }
 
-  static addGateway(workflow, api, data = {}) {
-    const gateway = api.create({
-      ...data,
-      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.GATEWAY),
-    })
-
-    const gateways = Workflow.addElement(workflow.elements.gateways, gateway)
-
-    return Workflow.updateElements(workflow, 'gateways', gateways)
-  }
-
   static removeGateway(workflow, gatewayId) {
-    const gateways = Workflow.removeElement(workflow.elements.gateways, gatewayId)
+    const gateways = Workflow
+      .removeFromElementCollection(workflow.elements.gateways, gatewayId)
     return Workflow.updateElements(workflow, 'gateways', gateways)
   }
 
   static addAndMergeGateway(workflow, data) {
-    return Workflow.addGateway(workflow, AndMergeGateway, data)
+    return Workflow.addElement(workflow, 'gateways', AndMergeGateway, data)
   }
 
   static addAndSplitGateway(workflow, data) {
-    return Workflow.addGateway(workflow, AndSplitGateway, data)
+    return Workflow.addElement(workflow, 'gateways', AndSplitGateway, data)
   }
 
   static addLoopGateway(workflow, data) {
-    return Workflow.addGateway(workflow, LoopGateway, data)
+    return Workflow.addElement(workflow, 'gateways', LoopGateway, data)
   }
 
   static addOrMergeGateway(workflow, data) {
-    return Workflow.addGateway(workflow, OrMergeGateway, data)
+    return Workflow.addElement(workflow, 'gateways', OrMergeGateway, data)
   }
 
   static updateGateway(workflow, id, data) {
@@ -290,7 +265,7 @@ class Workflow {
     const api = Workflow.GATEWAY_TYPE_TO_API_MAP[updatedGateway.type]
     api.validateSchema(updatedGateway)
 
-    const gateways = Workflow.updateElement(workflow.elements.gateways, updatedGateway)
+    const gateways = Workflow.updateElementCollection(workflow.elements.gateways, updatedGateway)
 
     return Workflow.updateElements(workflow, 'gateways', gateways)
   }
@@ -298,18 +273,12 @@ class Workflow {
   /* PHASES */
 
   static addPhase(workflow, data = {}) {
-    const phase = Phase.create({
-      ...data,
-      id: Workflow.generateUniqueId(workflow, Workflow.ID_PREFIXES.PHASE),
-    })
-
-    const phases = Workflow.addElement(workflow.elements.phases, phase)
-
-    return Workflow.updateElements(workflow, 'phases', phases)
+    return Workflow.addElement(workflow, 'phases', Phase, data)
   }
 
   static removePhase(workflow, phaseId) {
-    const phases = Workflow.removeElement(workflow.elements.phases, phaseId)
+    const phases = Workflow
+      .removeFromElementCollection(workflow.elements.phases, phaseId)
     return Workflow.updateElements(workflow, 'phases', phases)
   }
 
@@ -319,7 +288,7 @@ class Workflow {
 
     Phase.validateSchema(updatedPhase)
 
-    const phases = Workflow.updateElement(workflow.elements.phases, updatedPhase)
+    const phases = Workflow.updateElementCollection(workflow.elements.phases, updatedPhase)
 
     return Workflow.updateElements(workflow, 'phases', phases)
   }
