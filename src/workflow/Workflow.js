@@ -118,6 +118,16 @@ class Workflow {
     })
   }
 
+  static updateElements(workflow, elementCollection, updatedElements) {
+    return {
+      ...workflow,
+      elements: {
+        ...workflow.elements,
+        [elementCollection]: updatedElements,
+      },
+    }
+  }
+
   /* EVENT DISPATCHERS */
 
   static addEventDispatcher(workflow, api, data = {}) {
@@ -129,24 +139,14 @@ class Workflow {
     const eventDispatchers = Workflow
       .addElement(workflow.elements.eventDispatchers, eventDispatcher)
 
-    return Workflow.updateEventDispatchers(workflow, eventDispatchers)
-  }
-
-  static updateEventDispatchers(workflow, eventDispatchers) {
-    return {
-      ...workflow,
-      elements: {
-        ...workflow.elements,
-        eventDispatchers,
-      },
-    }
+    return Workflow.updateElements(workflow, 'eventDispatchers', eventDispatchers)
   }
 
   static removeEventDispatcher(workflow, eventDispatcherId) {
     const eventDispatchers = Workflow
       .removeElement(workflow.elements.eventDispatchers, eventDispatcherId)
 
-    return Workflow.updateEventDispatchers(workflow, eventDispatchers)
+    return Workflow.updateElements(workflow, 'eventDispatchers', eventDispatchers)
   }
 
   static addEndEventDispatcher(workflow, data) {
@@ -172,24 +172,14 @@ class Workflow {
 
     const eventListeners = Workflow.addElement(workflow.elements.eventListeners, eventListener)
 
-    return Workflow.updateEventListeners(workflow, eventListeners)
-  }
-
-  static updateEventListeners(workflow, eventListeners) {
-    return {
-      ...workflow,
-      elements: {
-        ...workflow.elements,
-        eventListeners,
-      },
-    }
+    return Workflow.updateElements(workflow, 'eventListeners', eventListeners)
   }
 
   static removeEventListener(workflow, eventListenerId) {
     const eventListeners = Workflow
       .removeElement(workflow.elements.eventListeners, eventListenerId)
 
-    return Workflow.updateEventListeners(workflow, eventListeners)
+    return Workflow.updateElements(workflow, 'eventListeners', eventListeners)
   }
 
   static addApprovalEventListener(workflow, data) {
@@ -215,9 +205,10 @@ class Workflow {
     const api = Workflow.EVENT_LISTENER_TYPE_TO_API_MAP[updatedEventListener.type]
     api.validateSchema(updatedEventListener)
 
-    const eventListeners = Workflow.updateElement(workflow.elements.eventListeners, updatedEventListener)
+    const eventListeners = Workflow
+      .updateElement(workflow.elements.eventListeners, updatedEventListener)
 
-    return Workflow.updateEventListeners(workflow, eventListeners)
+    return Workflow.updateElements(workflow, 'eventListeners', eventListeners)
   }
 
   /* FLOWS */
@@ -230,22 +221,12 @@ class Workflow {
 
     const flows = Workflow.addElement(workflow.elements.flows, flow)
 
-    return Workflow.updateFlows(workflow, flows)
-  }
-
-  static updateFlows(workflow, flows) {
-    return {
-      ...workflow,
-      elements: {
-        ...workflow.elements,
-        flows,
-      },
-    }
+    return Workflow.updateElements(workflow, 'flows', flows)
   }
 
   static removeFlow(workflow, flowId) {
     const flows = Workflow.removeElement(workflow.elements.flows, flowId)
-    return Workflow.updateFlows(workflow, flows)
+    return Workflow.updateElements(workflow, 'flows', flows)
   }
 
   static updateFlow(workflow, id, data) {
@@ -256,7 +237,7 @@ class Workflow {
 
     const flows = Workflow.updateElement(workflow.elements.flows, updatedFlow)
 
-    return Workflow.updateFlows(workflow, flows)
+    return Workflow.updateElements(workflow, 'flows', flows)
   }
 
   /* GATEWAYS */
@@ -278,22 +259,12 @@ class Workflow {
 
     const gateways = Workflow.addElement(workflow.elements.gateways, gateway)
 
-    return Workflow.updateGateways(workflow, gateways)
-  }
-
-  static updateGateways(workflow, gateways) {
-    return {
-      ...workflow,
-      elements: {
-        ...workflow.elements,
-        gateways,
-      },
-    }
+    return Workflow.updateElements(workflow, 'gateways', gateways)
   }
 
   static removeGateway(workflow, gatewayId) {
     const gateways = Workflow.removeElement(workflow.elements.gateways, gatewayId)
-    return Workflow.updateGateways(workflow, gateways)
+    return Workflow.updateElements(workflow, 'gateways', gateways)
   }
 
   static addAndMergeGateway(workflow, data) {
@@ -321,7 +292,7 @@ class Workflow {
 
     const gateways = Workflow.updateElement(workflow.elements.gateways, updatedGateway)
 
-    return Workflow.updateGateways(workflow, gateways)
+    return Workflow.updateElements(workflow, 'gateways', gateways)
   }
 
   /* PHASES */
@@ -334,22 +305,12 @@ class Workflow {
 
     const phases = Workflow.addElement(workflow.elements.phases, phase)
 
-    return Workflow.updatePhases(workflow, phases)
-  }
-
-  static updatePhases(workflow, phases) {
-    return {
-      ...workflow,
-      elements: {
-        ...workflow.elements,
-        phases,
-      },
-    }
+    return Workflow.updateElements(workflow, 'phases', phases)
   }
 
   static removePhase(workflow, phaseId) {
     const phases = Workflow.removeElement(workflow.elements.phases, phaseId)
-    return Workflow.updatePhases(workflow, phases)
+    return Workflow.updateElements(workflow, 'phases', phases)
   }
 
   static updatePhase(workflow, id, data) {
@@ -360,7 +321,7 @@ class Workflow {
 
     const phases = Workflow.updateElement(workflow.elements.phases, updatedPhase)
 
-    return Workflow.updatePhases(workflow, phases)
+    return Workflow.updateElements(workflow, 'phases', phases)
   }
 
 }
