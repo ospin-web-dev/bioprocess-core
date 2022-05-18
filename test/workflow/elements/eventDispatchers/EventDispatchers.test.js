@@ -45,4 +45,14 @@ describe('EventDispatchers', () => {
     })
   })
 
+  describe('getInterface', () => {
+    it('returns the correct interface', () => {
+      const data = { type: EndEventDispatcher.TYPE }
+
+      const res = EventDispatchers.getInterface(data)
+
+      expect(res instanceof EndEventDispatcher.constructor).toBe(true)
+    })
+  })
+
 })
