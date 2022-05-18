@@ -1,4 +1,5 @@
 const Phase = require('../../../../src/workflow/elements/phases/Phase')
+const Command = require('../../../../src/workflow/elements/phases/commands/Command')
 const Phases = require('../../../../src/workflow/elements/phases/Phases')
 
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
@@ -47,7 +48,16 @@ describe('Phases', () => {
     describe('when the data is valid', () => {
       it('updates a phase on the workflow', () => {
         const id = 'phase_0'
-        const update = { commands: [ 'START' ] }
+        const update = {
+          commands: [
+            {
+              type: Command.TYPES.SET_TARGETS,
+              data: [
+                { fctId: '1', slotName: 'value', target: 1 },
+              ],
+            },
+          ],
+        }
         const workflow = WorkflowGenerator.generate({
           elements: {
             phases: [

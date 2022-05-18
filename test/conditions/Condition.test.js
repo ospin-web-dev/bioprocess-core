@@ -1,4 +1,5 @@
 const Condition = require('../../src/conditions/Condition')
+const DataSource = require('../../src/conditions/dataSources/DataSource')
 
 describe('the Condition interface', () => {
 
@@ -9,7 +10,12 @@ describe('the Condition interface', () => {
   const createSimpleCondition = () => {
     const operator = '<'
     const left = 10
-    const right = { dataSource: { type: 'dataStream' } }
+    const right = {
+      dataSource: {
+        type: DataSource.TYPES.SENSOR_DATA,
+        data: { fctId: '1', slotName: 'value' },
+      },
+    }
     const options = { consecutiveTimeMS: 1000, allowedDeviation: 0.5 }
     return Condition.create({ operator, left, right, options })
   }
@@ -23,7 +29,12 @@ describe('the Condition interface', () => {
     it('creates a condition with the set values when arguments are passed', () => {
       const operator = '<'
       const left = 10
-      const right = { dataSource: { type: 'dataStream' } }
+      const right = {
+        dataSource: {
+          type: DataSource.TYPES.SENSOR_DATA,
+          data: { fctId: '1', slotName: 'value' },
+        },
+      }
       const options = { consecutiveTimeMS: Math.random(), allowedDeviation: Math.random() }
       const res = Condition.create({ operator, left, right, options })
       expect(res).toStrictEqual({ operator, left, right, options })

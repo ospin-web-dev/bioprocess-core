@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const DataSource = require('./dataSources/DataSource')
 
 class Condition {
 
@@ -11,7 +12,7 @@ class Condition {
         Joi.boolean(),
         Joi.link('...'),
         Joi.object({
-          dataSource: { type: 'dataStream' }, // placeholder - data sources still top be defined
+          dataSource: DataSource.SCHEMA,
         }),
       ).allow(null).default(null),
       right: Joi.alternatives().try(
@@ -20,7 +21,7 @@ class Condition {
         Joi.boolean(),
         Joi.link('...'),
         Joi.object({
-          dataSource: { type: 'dataStream' },
+          dataSource: DataSource.SCHEMA, // placeholder - data sources still top be defined
         }),
       ).allow(null).default(null),
       options: Joi.object().default({}),
