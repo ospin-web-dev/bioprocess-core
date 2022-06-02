@@ -1,5 +1,9 @@
 class ElementsHandler {
 
+  static getAll(workflow) {
+    return workflow.elements[this.COLLECTION_NAME]
+  }
+
   static getManyBy(workflow, query) {
     return workflow.elements[this.COLLECTION_NAME].filter(el => {
       const keys = Object.keys(query)

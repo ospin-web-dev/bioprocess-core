@@ -18,6 +18,7 @@ const OrMergeGateway = require('./elements/gateways/OrMergeGateway')
 const Phase = require('./elements/phases/Phase')
 
 const EventListeners = require('./elements/eventListeners/EventListeners')
+const Phases = require('./elements/phases/Phases')
 
 class Workflow {
 
@@ -63,7 +64,7 @@ class Workflow {
     const workflowWithStartEvent = EventListeners
       .addStartEventListener(workflow)
 
-    return workflowWithStartEvent
+    return Phases.addPhase(workflowWithStartEvent)
   }
 
 }

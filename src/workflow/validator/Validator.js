@@ -5,6 +5,7 @@ class Validator {
 
   static validateRules(workflow) {
     Rules.containsExactlyOneStartEventListener(workflow)
+    Rules.containsAtLeastOnePhase(workflow)
   }
 
   static validate(workflow) {

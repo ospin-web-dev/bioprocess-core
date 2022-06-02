@@ -68,13 +68,24 @@ describe('Workflow', () => {
   })
 
   describe('createTemplate', () => {
-    it('creats a workflow with a START event and assigns id and version', () => {
+    it('creats a workflow and assigns id and version', () => {
       const res = Workflow.createTemplate()
 
       expect(res.version).toBe(Workflow.DEFAULT_VERSION)
       expect(res.id).toStrictEqual(expect.any(String))
+    })
+
+    it('creats a workflow with a START event', () => {
+      const res = Workflow.createTemplate()
+
       expect(res.elements.eventListeners).toHaveLength(1)
       expect(res.elements.eventListeners[0].type).toBe(StartEventListener.TYPE)
+    })
+
+    it('creats a workflow with an initial phase event', () => {
+      const res = Workflow.createTemplate()
+
+      expect(res.elements.phases).toHaveLength(1)
     })
   })
 })

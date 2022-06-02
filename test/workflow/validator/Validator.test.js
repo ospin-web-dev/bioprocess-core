@@ -1,6 +1,7 @@
 const Validator = require('../../../src/workflow/validator/Validator')
 const Workflow = require('../../../src/workflow/Workflow')
 const EventListeners = require('../../../src/workflow/elements/eventListeners/EventListeners')
+const Phases = require('../../../src/workflow/elements/phases/Phases')
 const StartEventListener = require('../../../src/workflow/elements/eventListeners/StartEventListener')
 const WorkflowGenerator = require('../../helpers/generators/WorkflowGenerator')
 
@@ -28,8 +29,10 @@ describe('Validator', () => {
         describe('when the workflow does contains multiple START events', () => {
           it('throws an error', () => {
             const wf = WorkflowGenerator.generate()
+            const workflowWithPhase = Phases.addPhase(wf)
             const updatedWorkflow = EventListeners
-              .addStartEventListener(wf, { interrupting: true })
+              .addStartEventListener(workflowWithPhase)
+
             /* because the API forbids adding a second one, we bypass it */
             const secondListener = StartEventListener
               .create({ id: EventListeners.generateUniqueId(updatedWorkflow) })
@@ -40,6 +43,18 @@ describe('Validator', () => {
           })
         })
       })
+
+      describe('for the containsAtLeastOnePhase rule', () => {
+        describe('when the workflow does NOT contain any phases', () => {
+          it('throws an error', () => {
+            const wf = WorkflowGenerator.generate()
+            const workflowWithOneStartEvent = EventListeners
+              .addStartEventListener(wf)
+
+            expect(() => Validator.validate(workflowWithOneStartEvent)).toThrow(/at least one phase/)
+          })
+        })
+      })
     })
 
     describe('when the workflow is valid in format and semantics', () => {
@@ -47,8 +62,9 @@ describe('Validator', () => {
         const wf = WorkflowGenerator.generate()
         const workflowWithOneStartEvent = EventListeners
           .addStartEventListener(wf, { interrupting: true })
+        const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
 
-        expect(() => Validator.validate(workflowWithOneStartEvent)).not.toThrow()
+        expect(() => Validator.validate(workflowWithPhase)).not.toThrow()
       })
     })
   })
