@@ -75,7 +75,7 @@ describe('Workflow', () => {
       expect(res.id).toStrictEqual(expect.any(String))
     })
 
-    it('creats a workflow with a START event', () => {
+    it('creats a workflow with a START event listener', () => {
       const res = Workflow.createTemplate()
 
       expect(res.elements.eventListeners).toHaveLength(1)
@@ -86,6 +86,13 @@ describe('Workflow', () => {
       const res = Workflow.createTemplate()
 
       expect(res.elements.phases).toHaveLength(1)
+    })
+
+    it('creats a workflow with an END event dispatcher', () => {
+      const res = Workflow.createTemplate()
+
+      expect(res.elements.eventDispatchers).toHaveLength(1)
+      expect(res.elements.eventDispatchers[0].type).toBe(EndEventDispatcher.TYPE)
     })
   })
 })

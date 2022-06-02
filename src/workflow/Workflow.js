@@ -19,6 +19,7 @@ const Phase = require('./elements/phases/Phase')
 
 const EventListeners = require('./elements/eventListeners/EventListeners')
 const Phases = require('./elements/phases/Phases')
+const EventDispatchers = require('./elements/eventDispatchers/EventDispatchers')
 
 class Workflow {
 
@@ -30,7 +31,7 @@ class Workflow {
     Joi.assert(data, Workflow.SCHEMA)
   }
 
-  static create(data) {
+  static _create(data) {
     return Joi.attempt(data, Workflow.SCHEMA)
   }
 
@@ -60,11 +61,13 @@ class Workflow {
 
   static createTemplate() {
     const id = uuid.v4()
-    const workflow = Workflow.create({ version: Workflow.DEFAULT_VERSION, id })
+    const workflow = Workflow._create({ version: Workflow.DEFAULT_VERSION, id })
     const workflowWithStartEvent = EventListeners
       .addStartEventListener(workflow)
 
-    return Phases.addPhase(workflowWithStartEvent)
+    const workflowWithPhase = Phases.addPhase(workflowWithStartEvent)
+
+    return EventDispatchers.addEndEventDispatcher(workflowWithPhase)
   }
 
 }
