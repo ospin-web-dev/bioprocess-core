@@ -41,6 +41,16 @@ describe('EventListeners', () => {
     })
   })
 
+  describe('when trying to add a second start event listener', () => {
+    it('throws an error', () => {
+      const wf = WorkflowGenerator.generate()
+      const wfWithOneStartEventListener = EventListeners.addStartEventListener(wf)
+
+      expect(() => EventListeners.addStartEventListener(wfWithOneStartEventListener))
+        .toThrow(/cannot contain more than one START event listener/)
+    })
+  })
+
   describe('removeEventListener', () => {
     it('removes an event listener from a workflow', () => {
       const id = 'eventListener_1'

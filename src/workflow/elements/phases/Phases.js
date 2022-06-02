@@ -17,15 +17,15 @@ class Phases extends ElementsHandler {
   }
 
   static addPhase(workflow, data = {}) {
-    return this.addElement(workflow, Phase, data)
+    return this.add(workflow, Phase, data)
   }
 
   static removePhase(workflow, phaseId) {
-    return this.removeElement(workflow, phaseId)
+    return this.remove(workflow, phaseId)
   }
 
   static updatePhase(workflow, id, data) {
-    return this.updateElement(workflow, id, data)
+    return this.update(workflow, id, data)
   }
 
 }

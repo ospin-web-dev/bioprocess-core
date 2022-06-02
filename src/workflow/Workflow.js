@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const uuid = require('uuid')
 
 const EndEventDispatcher = require('./elements/eventDispatchers/EndEventDispatcher')
 
@@ -16,7 +17,13 @@ const OrMergeGateway = require('./elements/gateways/OrMergeGateway')
 
 const Phase = require('./elements/phases/Phase')
 
+const EventListeners = require('./elements/eventListeners/EventListeners')
+
 class Workflow {
+
+  static get DEFAULT_VERSION() {
+    return '1.0'
+  }
 
   static validateSchema(data) {
     Joi.assert(data, Workflow.SCHEMA)
@@ -50,32 +57,13 @@ class Workflow {
     })
   }
 
-  static getElementId(element) {
-    return element.id
-  }
+  static createTemplate() {
+    const id = uuid.v4()
+    const workflow = Workflow.create({ version: Workflow.DEFAULT_VERSION, id })
+    const workflowWithStartEvent = EventListeners
+      .addStartEventListener(workflow)
 
-  static getElementById(elements, id) {
-    return elements.find(el => el.id === id)
-  }
-
-  static getExistingIds(workflow) {
-    const {
-      elements: {
-        eventDispatchers,
-        eventListeners,
-        flows,
-        gateways,
-        phases,
-      },
-    } = workflow
-
-    return [
-      ...eventDispatchers.map(Workflow.getElementId),
-      ...eventListeners.map(Workflow.getElementId),
-      ...flows.map(Workflow.getElementId),
-      ...gateways.map(Workflow.getElementId),
-      ...phases.map(Workflow.getElementId),
-    ]
+    return workflowWithStartEvent
   }
 
 }

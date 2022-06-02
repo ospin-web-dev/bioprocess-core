@@ -13,7 +13,7 @@ describe('ElementsHandler', () => {
 
   }
 
-  describe('updateElementCollection', () => {
+  describe('replace', () => {
     it('updates only the passed element', () => {
       const workflow = WorkflowGenerator.generate({
         elements: {
@@ -25,7 +25,7 @@ describe('ElementsHandler', () => {
       })
 
       const updatedElements = TestClass
-        .updateElementCollection(workflow.elements.phases, { id: 'phase_0', newKey: 'test' })
+        .replace(workflow.elements.phases, { id: 'phase_0', newKey: 'test' })
 
       expect(updatedElements[0].newKey).toBe('test')
       expect(updatedElements[1].newKey).toBeUndefined()

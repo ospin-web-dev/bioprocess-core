@@ -22,11 +22,11 @@ class EventDispatchers extends ElementsHandler {
   }
 
   static removeEventDispatcher(workflow, eventDispatcherId) {
-    return this.removeElement(workflow, eventDispatcherId)
+    return this.remove(workflow, eventDispatcherId)
   }
 
   static addEndEventDispatcher(workflow, data) {
-    return this.addElement(workflow, EndEventDispatcher, data)
+    return this.add(workflow, EndEventDispatcher, data)
   }
 
 }

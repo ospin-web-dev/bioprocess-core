@@ -29,27 +29,27 @@ class Gateways extends ElementsHandler {
   }
 
   static removeGateway(workflow, gatewayId) {
-    return this.removeElement(workflow, gatewayId)
+    return this.remove(workflow, gatewayId)
   }
 
   static addAndMergeGateway(workflow, data) {
-    return this.addElement(workflow, AndMergeGateway, data)
+    return this.add(workflow, AndMergeGateway, data)
   }
 
   static addAndSplitGateway(workflow, data) {
-    return this.addElement(workflow, AndSplitGateway, data)
+    return this.add(workflow, AndSplitGateway, data)
   }
 
   static addLoopGateway(workflow, data) {
-    return this.addElement(workflow, LoopGateway, data)
+    return this.add(workflow, LoopGateway, data)
   }
 
   static addOrMergeGateway(workflow, data) {
-    return this.addElement(workflow, OrMergeGateway, data)
+    return this.add(workflow, OrMergeGateway, data)
   }
 
   static updateGateway(workflow, id, data) {
-    return this.updateElement(workflow, id, data)
+    return this.update(workflow, id, data)
   }
 
 }

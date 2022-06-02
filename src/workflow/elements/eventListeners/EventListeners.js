@@ -28,27 +28,29 @@ class EventListeners extends ElementsHandler {
   }
 
   static removeEventListener(workflow, eventListenerId) {
-    return this.removeElement(workflow, eventListenerId)
+    return this.remove(workflow, eventListenerId)
   }
 
   static addApprovalEventListener(workflow, data) {
-    return this.addElement(workflow, ApprovalEventListener, data)
+    return this.add(workflow, ApprovalEventListener, data)
   }
 
   static addConditionEventListener(workflow, data) {
-    return this.addElement(workflow, ConditionEventListener, data)
+    return this.add(workflow, ConditionEventListener, data)
   }
 
   static addStartEventListener(workflow, data) {
-    return this.addElement(workflow, StartEventListener, data)
+    const existingListeners = this.getManyBy(workflow, { type: StartEventListener.TYPE })
+    if (existingListeners.length > 0) throw new Error('Workflow cannot contain more than one START event listener')
+    return this.add(workflow, StartEventListener, data)
   }
 
   static addTimerEventListener(workflow, data) {
-    return this.addElement(workflow, TimerEventListener, data)
+    return this.add(workflow, TimerEventListener, data)
   }
 
   static updateEventListener(workflow, id, data) {
-    return this.updateElement(workflow, id, data)
+    return this.update(workflow, id, data)
   }
 
 }
