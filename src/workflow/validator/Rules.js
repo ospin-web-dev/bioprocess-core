@@ -3,6 +3,7 @@ const Phases = require('../elements/phases/Phases')
 const EventDispatchers = require('../elements/eventDispatchers/EventDispatchers')
 const StartEventListener = require('../elements/eventListeners/StartEventListener')
 const EndEventDispatcher = require('../elements/eventDispatchers/EndEventDispatcher')
+const WorkflowGraphTools = require('../WorkflowGraphTools')
 
 class Rules {
 
@@ -14,6 +15,15 @@ class Rules {
   static containsAtLeastOnePhase(workflow) {
     const phases = Phases.getAll(workflow)
     if (phases.length === 0) throw new Error('Workflow has to contain at least one phase')
+  }
+
+  static everyPhaseIsReachable(workflow) {
+    const phases = Phases.getAll(workflow)
+    phases.forEach(phase => {
+      if (!WorkflowGraphTools.elementIsReachable(workflow, phase.id)) {
+        throw new Error('Workflow contains unreachable phase')
+      }
+    })
   }
 
   static containsAtLeastOneEndEventDispatcher(workflow) {

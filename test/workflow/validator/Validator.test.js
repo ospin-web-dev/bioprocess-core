@@ -1,8 +1,8 @@
 const Validator = require('../../../src/workflow/validator/Validator')
-const Workflow = require('../../../src/workflow/Workflow')
 const EventListeners = require('../../../src/workflow/elements/eventListeners/EventListeners')
 const EventDispatchers = require('../../../src/workflow/elements/eventDispatchers/EventDispatchers')
 const Phases = require('../../../src/workflow/elements/phases/Phases')
+const Flows = require('../../../src/workflow/elements/flows/Flows')
 const StartEventListener = require('../../../src/workflow/elements/eventListeners/StartEventListener')
 const WorkflowGenerator = require('../../helpers/generators/WorkflowGenerator')
 
@@ -57,6 +57,19 @@ describe('Validator', () => {
         })
       })
 
+      describe('for the everyPhaseIsReachable rule', () => {
+        describe('when the workflow does contain unreachable phases', () => {
+          it('throws an error', () => {
+            const wf = WorkflowGenerator.generate()
+            const workflowWithOneStartEvent = EventListeners
+              .addStartEventListener(wf)
+            const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
+
+            expect(() => Validator.validate(workflowWithPhase)).toThrow(/contains unreachable phase/)
+          })
+        })
+      })
+
       describe('for the containsAtLeastOneEndEventDispatcher rule', () => {
         describe('when the workflow does NOT contain any end dispatchers', () => {
           it('throws an error', () => {
@@ -64,21 +77,30 @@ describe('Validator', () => {
             const workflowWithOneStartEvent = EventListeners
               .addStartEventListener(wf)
             const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
+            const withPhaseConnected = Flows.addFlow(workflowWithPhase, {
+              srcId: workflowWithPhase.elements.eventListeners[0].id,
+              destId: workflowWithPhase.elements.phases[0].id,
+            })
 
-            expect(() => Validator.validate(workflowWithPhase)).toThrow(/at least one END event dispatcher/)
+            expect(() => Validator.validate(withPhaseConnected)).toThrow(/at least one END event dispatcher/)
           })
         })
       })
+
     })
 
     describe('when the workflow is valid in format and semantics', () => {
-      it('does NOT throw and error', () => {
+      it('does NOT throw an error', () => {
         const wf = WorkflowGenerator.generate()
         const workflowWithOneStartEvent = EventListeners
           .addStartEventListener(wf, { interrupting: true })
         const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
+        const withPhaseConnected = Flows.addFlow(workflowWithPhase, {
+          srcId: workflowWithPhase.elements.eventListeners[0].id,
+          destId: workflowWithPhase.elements.phases[0].id,
+        })
         const workFlowWithEndEventDispatcher = EventDispatchers
-          .addEndEventDispatcher(workflowWithPhase)
+          .addEndEventDispatcher(withPhaseConnected)
 
         expect(() => Validator.validate(workFlowWithEndEventDispatcher)).not.toThrow()
       })

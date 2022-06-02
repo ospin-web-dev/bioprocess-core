@@ -20,6 +20,7 @@ const Phase = require('./elements/phases/Phase')
 const EventListeners = require('./elements/eventListeners/EventListeners')
 const Phases = require('./elements/phases/Phases')
 const EventDispatchers = require('./elements/eventDispatchers/EventDispatchers')
+const Flows = require('./elements/flows/Flows')
 
 class Workflow {
 
@@ -59,6 +60,10 @@ class Workflow {
     })
   }
 
+  static connect(workflow, srcId, destId) {
+    return Flows.addFlow(workflow, { srcId, destId })
+  }
+
   static createTemplate() {
     const id = uuid.v4()
     const workflow = Workflow._create({ version: Workflow.DEFAULT_VERSION, id })
@@ -67,7 +72,11 @@ class Workflow {
 
     const workflowWithPhase = Phases.addPhase(workflowWithStartEvent)
 
-    return EventDispatchers.addEndEventDispatcher(workflowWithPhase)
+    const startEvent = EventListeners.getAll(workflowWithPhase)[0]
+    const firstPhase = Phases.getAll(workflowWithPhase)[0]
+    const withPhaseConnected = Workflow.connect(workflowWithPhase, startEvent.id, firstPhase.id)
+
+    return EventDispatchers.addEndEventDispatcher(withPhaseConnected)
   }
 
 }

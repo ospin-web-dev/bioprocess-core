@@ -68,27 +68,37 @@ describe('Workflow', () => {
   })
 
   describe('createTemplate', () => {
-    it('creats a workflow and assigns id and version', () => {
+    it('creates a workflow and assigns id and version', () => {
       const res = Workflow.createTemplate()
 
       expect(res.version).toBe(Workflow.DEFAULT_VERSION)
       expect(res.id).toStrictEqual(expect.any(String))
     })
 
-    it('creats a workflow with a START event listener', () => {
+    it('creates a workflow with a START event listener', () => {
       const res = Workflow.createTemplate()
 
       expect(res.elements.eventListeners).toHaveLength(1)
       expect(res.elements.eventListeners[0].type).toBe(StartEventListener.TYPE)
     })
 
-    it('creats a workflow with an initial phase event', () => {
+    it('creates a workflow with an initial phase', () => {
       const res = Workflow.createTemplate()
 
       expect(res.elements.phases).toHaveLength(1)
     })
 
-    it('creats a workflow with an END event dispatcher', () => {
+    it('creates a connection from the start event and the initial phase', () => {
+      const res = Workflow.createTemplate()
+
+      expect(res.elements.flows).toHaveLength(1)
+      expect(res.elements.flows[0].srcId)
+        .toBe(res.elements.eventListeners[0].id)
+      expect(res.elements.flows[0].destId)
+        .toBe(res.elements.phases[0].id)
+    })
+
+    it('creates a workflow with an END event dispatcher', () => {
       const res = Workflow.createTemplate()
 
       expect(res.elements.eventDispatchers).toHaveLength(1)
