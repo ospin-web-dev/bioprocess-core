@@ -71,7 +71,7 @@ describe('Validator', () => {
       })
 
       describe('for the containsAtLeastOneEndEventDispatcher rule', () => {
-        describe('when the workflow does NOT contain any end dispatchers', () => {
+        describe('when the workflow does NOT contain any end event dispatchers', () => {
           it('throws an error', () => {
             const wf = WorkflowGenerator.generate()
             const workflowWithOneStartEvent = EventListeners
@@ -83,6 +83,25 @@ describe('Validator', () => {
             })
 
             expect(() => Validator.validate(withPhaseConnected)).toThrow(/at least one END event dispatcher/)
+          })
+        })
+      })
+
+      describe('for the everyEndEventDispatcherIsReachable rule', () => {
+        describe('when the workflow does contain unrachable end event dispatchers', () => {
+          it('throws an error', () => {
+            const wf = WorkflowGenerator.generate()
+            const workflowWithOneStartEvent = EventListeners
+              .addStartEventListener(wf)
+            const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
+            const withPhaseConnected = Flows.addFlow(workflowWithPhase, {
+              srcId: workflowWithPhase.elements.eventListeners[0].id,
+              destId: workflowWithPhase.elements.phases[0].id,
+            })
+            const withEndEventDispatcher = EventDispatchers
+              .addEndEventDispatcher(withPhaseConnected)
+
+            expect(() => Validator.validate(withEndEventDispatcher)).toThrow(/contains unreachable END event dispatcher/)
           })
         })
       })
@@ -101,8 +120,18 @@ describe('Validator', () => {
         })
         const workFlowWithEndEventDispatcher = EventDispatchers
           .addEndEventDispatcher(withPhaseConnected)
+        const workflowWithApprovalEvent = EventListeners
+          .addApprovalEventListener(
+            workFlowWithEndEventDispatcher,
+            { phaseId: workFlowWithEndEventDispatcher.elements.phases[0].id },
+          )
 
-        expect(() => Validator.validate(workFlowWithEndEventDispatcher)).not.toThrow()
+        const fullyConnected = Flows.addFlow(workflowWithApprovalEvent, {
+          srcId: workflowWithApprovalEvent.elements.eventListeners[1].id,
+          destId: workflowWithApprovalEvent.elements.eventDispatchers[0].id,
+        })
+
+        expect(() => Validator.validate(fullyConnected)).not.toThrow()
       })
     })
   })

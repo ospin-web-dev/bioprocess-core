@@ -26,6 +26,15 @@ class Rules {
     })
   }
 
+  static everyEndEventDispatcherIsReachable(workflow) {
+    const dispatchers = EventDispatchers.getManyBy(workflow, { type: EndEventDispatcher.TYPE })
+    dispatchers.forEach(dispatcher => {
+      if (!WorkflowGraphTools.elementIsReachable(workflow, dispatcher.id)) {
+        throw new Error('Workflow contains unreachable END event dispatcher')
+      }
+    })
+  }
+
   static containsAtLeastOneEndEventDispatcher(workflow) {
     const dispatchers = EventDispatchers.getManyBy(workflow, { type: EndEventDispatcher.TYPE })
     if (dispatchers.length === 0) throw new Error('Workflow has to contain at least one END event dispatcher')

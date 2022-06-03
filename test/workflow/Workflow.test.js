@@ -78,7 +78,6 @@ describe('Workflow', () => {
     it('creates a workflow with a START event listener', () => {
       const res = Workflow.createTemplate()
 
-      expect(res.elements.eventListeners).toHaveLength(1)
       expect(res.elements.eventListeners[0].type).toBe(StartEventListener.TYPE)
     })
 
@@ -91,10 +90,17 @@ describe('Workflow', () => {
     it('creates a connection from the start event and the initial phase', () => {
       const res = Workflow.createTemplate()
 
-      expect(res.elements.flows).toHaveLength(1)
       expect(res.elements.flows[0].srcId)
         .toBe(res.elements.eventListeners[0].id)
       expect(res.elements.flows[0].destId)
+        .toBe(res.elements.phases[0].id)
+    })
+
+    it('creates a workflow with an approval event for the first phase', () => {
+      const res = Workflow.createTemplate()
+
+      expect(res.elements.eventListeners[1].type).toBe(ApprovalEventListener.TYPE)
+      expect(res.elements.eventListeners[1].phaseId)
         .toBe(res.elements.phases[0].id)
     })
 
@@ -103,6 +109,15 @@ describe('Workflow', () => {
 
       expect(res.elements.eventDispatchers).toHaveLength(1)
       expect(res.elements.eventDispatchers[0].type).toBe(EndEventDispatcher.TYPE)
+    })
+
+    it('creates a connection from the approval event of the first phase and the END event dispatcher', () => {
+      const res = Workflow.createTemplate()
+
+      expect(res.elements.flows[1].srcId)
+        .toBe(res.elements.eventListeners[1].id)
+      expect(res.elements.flows[1].destId)
+        .toBe(res.elements.eventDispatchers[0].id)
     })
   })
 })

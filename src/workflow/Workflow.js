@@ -67,16 +67,20 @@ class Workflow {
   static createTemplate() {
     const id = uuid.v4()
     const workflow = Workflow._create({ version: Workflow.DEFAULT_VERSION, id })
-    const workflowWithStartEvent = EventListeners
-      .addStartEventListener(workflow)
+    const withStartEvent = EventListeners.addStartEventListener(workflow)
 
-    const workflowWithPhase = Phases.addPhase(workflowWithStartEvent)
+    const withPhase = Phases.addPhase(withStartEvent)
 
-    const startEvent = EventListeners.getAll(workflowWithPhase)[0]
-    const firstPhase = Phases.getAll(workflowWithPhase)[0]
-    const withPhaseConnected = Workflow.connect(workflowWithPhase, startEvent.id, firstPhase.id)
+    const startEvent = EventListeners.getAll(withPhase)[0]
+    const firstPhase = Phases.getAll(withPhase)[0]
+    const withPhaseConnected = Workflow.connect(withPhase, startEvent.id, firstPhase.id)
+    const withEndEventDispatcher = EventDispatchers.addEndEventDispatcher(withPhaseConnected)
 
-    return EventDispatchers.addEndEventDispatcher(withPhaseConnected)
+    const withPhaseApprovalEvent = EventListeners
+      .addApprovalEventListener(withEndEventDispatcher, { phaseId: firstPhase.id })
+    const approvalEvent = EventListeners.getAll(withPhaseApprovalEvent)[1]
+    const endDispatcherEvent = EventDispatchers.getAll(withPhaseApprovalEvent)[0]
+    return Workflow.connect(withPhaseApprovalEvent, approvalEvent.id, endDispatcherEvent.id)
   }
 
 }

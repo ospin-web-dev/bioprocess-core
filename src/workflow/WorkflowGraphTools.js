@@ -12,36 +12,37 @@ class WorkflowGraphTools {
 
     const adj = {}
 
+    const addToAdj = (src, dest) => {
+      if (!(src in adj)) {
+        adj[src] = []
+      }
+      adj[src].push(dest)
+    }
+
     const flows = Flows.getAll(workflow)
     flows.forEach(({ srcId, destId }) => {
-      if (!(srcId in adj)) {
-        adj[srcId] = []
-      }
-      adj[srcId].push(destId)
+      addToAdj(srcId, destId)
     })
 
     const eventListeners = EventListeners.getAll(workflow)
     eventListeners.forEach(listener => {
       const { id, phaseId } = listener
       if (phaseId === null) return
-      if (!(phaseId in adj)) {
-        adj[phaseId] = []
-      }
-      adj[phaseId].push(id)
+      addToAdj(phaseId, id)
     })
 
     return adj
   }
 
   static elementIsReachable(workflow, elementId) {
-    /* using BFS here; trying to start at every global event listener */
+    /* using BFS here; trying to start at every global event listener (phaseId: null) */
     const adjList = WorkflowGraphTools.buildGraph(workflow)
-    const startNodes = EventListeners
+    const startNodeIds = EventListeners
       .getManyBy(workflow, { phaseId: null })
       .map(listener => listener.id)
 
     /* eslint-disable-next-line */
-    for (const startNode of startNodes) {
+    for (const startNode of startNodeIds) {
       const queue = [ startNode ]
       const visited = new Set()
 

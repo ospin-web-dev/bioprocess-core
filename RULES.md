@@ -18,6 +18,6 @@ Unreachable phases indicate a flaw the execution of the workflow.
 
 To define an end of a process an `END` event has to be dispatched, so that the workflow engine knows that a process has ended.
 
-**4. Every END event dispatcher of the process has to be reachable**
+**5. Every END event dispatcher of the process has to be reachable**
 
 Unreachable `END` event dispatchers indicate a flaw the execution of the workflow.

@@ -3,4 +3,4 @@
 
 # Process Core
 
-This package contains core helper methods for the ospin workflow definition model. It follows the functional approach for updating: Every method returns a new workflow with the desired changes.
+This package contains core helper methods for the ospin workflow definition model. It follows the functional approach for updating: Every method that does change the workflow returns a new workflow with the desired changes.
