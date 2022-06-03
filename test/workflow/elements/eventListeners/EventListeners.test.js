@@ -66,6 +66,22 @@ describe('EventListeners', () => {
 
       expect(eventListeners).toHaveLength(0)
     })
+
+    describe('when trying to remove the START event listsner', () => {
+      it('throw an error', () => {
+        const id = 'eventListener_1'
+        const workflow = WorkflowGenerator.generate({
+          elements: {
+            eventListeners: [
+              StartEventListener.create({ id }),
+            ],
+          },
+        })
+
+        expect(() => EventListeners.removeEventListener(workflow, id))
+          .toThrow(/Cannot remove START event listener/)
+      })
+    })
   })
 
   describe('updateEventListener', () => {
