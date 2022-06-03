@@ -67,7 +67,7 @@ describe('EventListeners', () => {
       expect(eventListeners).toHaveLength(0)
     })
 
-    describe('when trying to remove the START event listsner', () => {
+    describe('when trying to remove the START event listener', () => {
       it('throw an error', () => {
         const id = 'eventListener_1'
         const workflow = WorkflowGenerator.generate({

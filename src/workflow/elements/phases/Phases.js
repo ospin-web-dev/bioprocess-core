@@ -20,7 +20,14 @@ class Phases extends ElementsHandler {
     return this.add(workflow, Phase, data)
   }
 
+  static isLastPhase(workflow) {
+    return this.getAll(workflow).length === 1
+  }
+
   static removePhase(workflow, phaseId) {
+    if (Phases.isLastPhase(workflow)) {
+      throw new Error('Cannot remove last phase')
+    }
     return this.remove(workflow, phaseId)
   }
 

@@ -21,7 +21,20 @@ class EventDispatchers extends ElementsHandler {
     return EventDispatchers.TYPE_TO_INTERFACE_MAP[eventDispatcher.type]
   }
 
+  static isLastEndEventDispatcher(workflow, eventDispatcherId) {
+    const dispatcher = this.getById(workflow, eventDispatcherId)
+    if (dispatcher.type === EndEventDispatcher.TYPE) {
+      const allEndEventDispatchers = EventDispatchers
+        .getManyBy(workflow, { type: EndEventDispatcher.TYPE })
+      return allEndEventDispatchers.length === 1
+    }
+    return false
+  }
+
   static removeEventDispatcher(workflow, eventDispatcherId) {
+    if (EventDispatchers.isLastEndEventDispatcher(workflow, eventDispatcherId)) {
+      throw new Error('Cannot remove last END event dispatcher')
+    }
     return this.remove(workflow, eventDispatcherId)
   }
 

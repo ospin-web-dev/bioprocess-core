@@ -29,18 +29,36 @@ describe('Phases', () => {
 
   describe('removePhase', () => {
     it('removes a phase from the workflow', () => {
-      const id = 'phase_0'
+      const id1 = 'phase_0'
+      const id2 = 'phase_1'
       const workflow = WorkflowGenerator.generate({
         elements: {
           phases: [
-            Phase.create({ id }),
+            Phase.create({ id: id1 }),
+            Phase.create({ id: id2 }),
           ],
         },
       })
 
-      const { elements: { phases } } = Phases.removePhase(workflow, id)
+      const { elements: { phases } } = Phases.removePhase(workflow, id1)
 
-      expect(phases).toHaveLength(0)
+      expect(phases).toHaveLength(1)
+    })
+
+    describe('when trying to remove the last phase', () => {
+      it('throws an error', () => {
+        const id = 'phase_0'
+        const workflow = WorkflowGenerator.generate({
+          elements: {
+            phases: [
+              Phase.create({ id }),
+            ],
+          },
+        })
+
+        expect(() => Phases.removePhase(workflow, id))
+          .toThrow(/Cannot remove last phase/)
+      })
     })
   })
 

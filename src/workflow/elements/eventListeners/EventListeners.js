@@ -27,9 +27,13 @@ class EventListeners extends ElementsHandler {
     return EventListeners.TYPE_TO_INTERFACE_MAP[eventListener.type]
   }
 
-  static removeEventListener(workflow, eventListenerId) {
+  static isStartEventListener(workflow, eventListenerId) {
     const listener = this.getById(workflow, eventListenerId)
-    if (listener.type === StartEventListener.TYPE) {
+    return listener.type === StartEventListener.TYPE
+  }
+
+  static removeEventListener(workflow, eventListenerId) {
+    if (EventListeners.isStartEventListener(workflow, eventListenerId)) {
       throw new Error('Cannot remove START event listener')
     }
     return this.remove(workflow, eventListenerId)
