@@ -41,29 +41,24 @@ class Phases extends ElementsHandler {
     return phase.commands.map(command => command.id)
   }
 
-  static generateManyUniqueCommandIds(workflow, id, count) {
+  static generateUniqueCommandId(workflow, id) {
     const existingIds = this.getExistingIds(workflow, id)
     let counter = 0
     const prefix = 'command'
-    const newIds = []
     let newId = `${prefix}_${counter}`
 
-    while (newIds.length < count) {
-      while ([ ...existingIds, ...newIds ].includes(newId)) {
-        counter += 1
-        newId = `${prefix}_${counter}`
-      }
-      newIds.push(newId)
+    while (existingIds.includes(newId)) {
+      counter += 1
+      newId = `${prefix}_${counter}`
     }
 
-    return newIds
+    return newId
   }
 
-  static addCommands(workflow, id, commands) {
+  static addCommand(workflow, id, command) {
     const phase = this.getById(workflow, id)
-    const uniqueIds = Phases.generateManyUniqueCommandIds(workflow, id, commands.length)
-    const commandsWithIds = commands.map((com, idx) => ({ ...com, id: uniqueIds[idx] }))
-    return this.updatePhase(workflow, id, { commands: [ ...phase.commands, ...commandsWithIds ] })
+    const commandWithId = { ...command, id: Phases.generateUniqueCommandId(workflow, id) }
+    return this.updatePhase(workflow, id, { commands: [ ...phase.commands, commandWithId ] })
   }
 
   static updateCommand(workflow, id, commandId, data) {
