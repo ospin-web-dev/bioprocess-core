@@ -1,7 +1,6 @@
 const ElementsHandler = require('../ElementsHandler')
 
 const Phase = require('./Phase')
-const Command = require('./commands/Command')
 
 class Phases extends ElementsHandler {
 
@@ -58,7 +57,7 @@ class Phases extends ElementsHandler {
   static addCommand(workflow, id, command) {
     const phase = this.getById(workflow, id)
     const commandWithId = { ...command, id: Phases.generateUniqueCommandId(workflow, id) }
-    return this.updatePhase(workflow, id, { commands: [ ...phase.commands, commandWithId ] })
+    return this.updatePhase(workflow, id, { commands: commandWithId })
   }
 
   static updateCommand(workflow, id, commandId, data) {
