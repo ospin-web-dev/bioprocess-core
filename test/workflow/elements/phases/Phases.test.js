@@ -69,6 +69,7 @@ describe('Phases', () => {
         const update = {
           commands: [
             {
+              id: 'command_0',
               type: Command.TYPES.SET_TARGETS,
               data: [
                 { fctId: '1', slotName: 'value', target: 1 },

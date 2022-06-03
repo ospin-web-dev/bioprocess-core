@@ -20,6 +20,7 @@ class Command {
 
   static get SCHEMA() {
     return Joi.object({
+      id: Joi.string().required(),
       type: Joi.string().valid(...Object.values(Command.TYPES)).required(),
       data: Joi.any().when('type', {
         is: Command.TYPES.SET_TARGETS,
