@@ -341,4 +341,66 @@ describe('Workflow', () => {
       })
     })
   })
+
+  describe('disconnect', () => {
+
+    it('removes the flow from the workflow', () => {
+      const gatewayId = 'gateway_0'
+      const eventListenerId = 'phase_0'
+      const flowId = 'flow_0'
+      const wf = WorkflowGenerator.generate({
+        elements: {
+          eventDispatchers: [],
+          eventListeners: [
+            ApprovalEventListener.create({ id: eventListenerId }),
+          ],
+          gateways: [
+            AndMergeGateway.create({ id: gatewayId }),
+          ],
+          phases: [],
+          flows: [{
+            srcId: eventListenerId,
+            destId: gatewayId,
+            id: flowId,
+          }],
+        },
+      })
+
+      const res = Workflow.disconnect(wf, flowId)
+
+      expect(res.elements.flows).toHaveLength(0)
+    })
+
+    describe('when disconnecting a flow from a LoopGateway', () => {
+      describe('when it is the loopback flow', () => {
+        it('removes the flow from the workflow and sets the loopbackFlowId to null', () => {
+          const gatewayId = 'gateway_0'
+          const phaseId = 'phase_0'
+          const flowId = 'flow_0'
+          const wf = WorkflowGenerator.generate({
+            elements: {
+              eventDispatchers: [],
+              eventListeners: [],
+              gateways: [
+                LoopGateway.create({ id: gatewayId, loopbackFlowId: flowId }),
+              ],
+              phases: [
+                Phase.create({ id: phaseId }),
+              ],
+              flows: [{
+                srcId: gatewayId,
+                destId: phaseId,
+                id: flowId,
+              }],
+            },
+          })
+
+          const res = Workflow.disconnect(wf, flowId)
+
+          expect(res.elements.flows).toHaveLength(0)
+          expect(res.elements.gateways[0].loopbackFlowId).toBeNull()
+        })
+      })
+    })
+  })
 })

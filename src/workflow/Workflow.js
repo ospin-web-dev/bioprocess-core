@@ -120,6 +120,20 @@ class Workflow {
     return Flows.addFlow(workflow, { srcId, destId })
   }
 
+  static disconnect(workflow, flowId) {
+    const flow = Flows.getById(workflow, flowId)
+    const { srcId } = flow
+    const srcEl = Workflow.getElementById(workflow, srcId)
+    const workflowWithoutFlow = Flows.removeFlow(workflow, flowId)
+
+    if (!(srcEl.elementType === Gateway.ELEMENT_TYPE
+      && srcEl.type === LoopGateway.TYPE && srcEl.loopbackFlowId === flowId)) {
+      return workflowWithoutFlow
+    }
+
+    return Gateways.updateGateway(workflowWithoutFlow, srcId, { loopbackFlowId: null })
+  }
+
   static connectGatewayLoopback(workflow, gatewayId, destId) {
     const gateway = Workflow.getElementById(workflow, gatewayId)
 
