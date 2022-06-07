@@ -53,3 +53,19 @@ can conncect to:
  - event dispatchers
  - gateways
  - phases
+
+#### AndMergeGateway
+
+Can have many inputs, but only one output
+
+#### AndSplitGateway
+
+Can have many outputs, but only one input
+
+#### OrMergeGateway
+
+Can have many inputs, but only one output
+
+#### Loopback
+
+Can have many outputs, but only one input and only one loopback flow
