@@ -16,6 +16,7 @@ const Flow = require('./elements/flows/Flow')
 const Flows = require('./elements/flows/Flows')
 
 const Gateway = require('./elements/gateways/Gateway')
+const Gateways = require('./elements/gateways/Gateways')
 const AndMergeGateway = require('./elements/gateways/AndMergeGateway')
 const AndSplitGateway = require('./elements/gateways/AndSplitGateway')
 const LoopGateway = require('./elements/gateways/LoopGateway')
@@ -100,6 +101,25 @@ class Workflow {
   static connect(workflow, srcId, destId) {
     Workflow.validateConnect(workflow, srcId, destId)
     return Flows.addFlow(workflow, { srcId, destId })
+  }
+
+  static connectGatewayLoopback(workflow, gatewayId, destId) {
+    const gateway = Workflow.getElementById(workflow, gatewayId)
+
+    if (gateway.elementType !== Gateway.ELEMENT_TYPE) {
+      throw new Error(`${gateway.elementType} is not a gateway`)
+    }
+
+    if (gateway.type !== LoopGateway.TYPE) {
+      throw new Error(`gateway of type ${gateway.type} does not provide a loopback flow`)
+    }
+
+    Workflow.validateConnect(workflow, gatewayId, destId)
+    const wfWithFlow = Flows.addFlow(workflow, { srcId: gatewayId, destId })
+    const flows = Flows.getAll(wfWithFlow)
+    const addedFlow = flows[flows.length - 1]
+
+    return Gateways.updateGateway(wfWithFlow, gatewayId, { loopbackFlowId: addedFlow.id })
   }
 
   static createTemplate() {

@@ -162,5 +162,83 @@ describe('Workflow', () => {
           .toThrow(/a\(n\) EVENT_DISPATCHER cannot connect to a PHASE/)
       })
     })
+
+    describe('when connecting gateways', () => {
+      describe('when connecting the loopback flow of a LoopGateway', () => {
+        describe('when the passed elementId does not belong to a gateway', () => {
+          it('throws an error', () => {
+            const listenerId = 'eventListener_0'
+            const dispatcherId = 'eventDispatcher_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [
+                  EndEventDispatcher.create({ id: dispatcherId }),
+                ],
+                eventListeners: [
+                  ApprovalEventListener.create({ id: listenerId }),
+                ],
+                flows: [],
+                gateways: [],
+                phases: [],
+              },
+            })
+
+            expect(() => Workflow.connectGatewayLoopback(wf, listenerId, dispatcherId))
+              .toThrow(/is not a gateway/)
+          })
+        })
+
+        describe('when the passed elementId does belong to gateway, but not a loop gateway', () => {
+          it('throws an error', () => {
+            const gatewayId = 'gateway_0'
+            const dispatcherId = 'eventDispatcher_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [
+                  EndEventDispatcher.create({ id: dispatcherId }),
+                ],
+                eventListeners: [],
+                flows: [],
+                gateways: [
+                  AndMergeGateway.create({ id: gatewayId }),
+                ],
+                phases: [],
+              },
+            })
+
+            expect(() => Workflow.connectGatewayLoopback(wf, gatewayId, dispatcherId))
+              .toThrow(/does not provide a loopback flow/)
+          })
+        })
+
+        describe('when the passed elementId does belong to loopback gateway', () => {
+          it('creates the required flow and updates the loopbackFlowId of the gateway', () => {
+            const gatewayId = 'gateway_0'
+            const phaseId = 'phase_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [],
+                eventListeners: [],
+                flows: [],
+                gateways: [
+                  LoopGateway.create({ id: gatewayId }),
+                ],
+                phases: [
+                  Phase.create({ id: phaseId }),
+                ],
+              },
+            })
+
+            const res = Workflow.connectGatewayLoopback(wf, gatewayId, phaseId)
+
+            expect(res.elements.flows[0]).toStrictEqual(expect.objectContaining({
+              srcId: gatewayId,
+              destId: phaseId,
+            }))
+            expect(res.elements.gateways[0].loopbackFlowId).toBe(res.elements.flows[0].id)
+          })
+        })
+      })
+    })
   })
 })
