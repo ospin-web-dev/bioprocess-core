@@ -10,8 +10,6 @@ class OrMergeGateway extends Gateway {
   static get SCHEMA() {
     return super.SCHEMA.concat(Joi.object({
       type: Joi.string().allow(OrMergeGateway.TYPE).default(OrMergeGateway.TYPE),
-      incoming: super.SCHEMA.extract('id').optional().allow(null).default(null),
-      outgoing: Joi.array().items(super.SCHEMA.extract('id').optional()).default([]),
     }))
   }
 
