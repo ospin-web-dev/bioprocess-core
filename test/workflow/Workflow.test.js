@@ -120,4 +120,47 @@ describe('Workflow', () => {
         .toBe(res.elements.eventDispatchers[0].id)
     })
   })
+
+  describe('when connecting elements', () => {
+    describe('when trying to connect a phase to something else', () => {
+      it('throws an error', () => {
+        const phaseId1 = 'phase_0'
+        const phaseId2 = 'phase_1'
+        const wf = WorkflowGenerator.generate({
+          elements: {
+            eventDispatchers: [],
+            eventListeners: [],
+            gateways: [],
+            phases: [
+              Phase.create({ id: phaseId1 }),
+              Phase.create({ id: phaseId2 }),
+            ],
+          },
+        })
+        expect(() => Workflow.connect(wf, phaseId1, phaseId2))
+          .toThrow(/a\(n\) PHASE cannot connect to a PHASE/)
+      })
+    })
+
+    describe('when trying to connect an event dispatcher to something else', () => {
+      it('throws an error', () => {
+        const phaseId = 'phase_0'
+        const dispatcherId = 'phase_1'
+        const wf = WorkflowGenerator.generate({
+          elements: {
+            eventDispatchers: [
+              EndEventDispatcher.create({ id: dispatcherId }),
+            ],
+            eventListeners: [],
+            gateways: [],
+            phases: [
+              Phase.create({ id: phaseId }),
+            ],
+          },
+        })
+        expect(() => Workflow.connect(wf, dispatcherId, phaseId))
+          .toThrow(/a\(n\) EVENT_DISPATCHER cannot connect to a PHASE/)
+      })
+    })
+  })
 })

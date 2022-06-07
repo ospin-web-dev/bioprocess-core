@@ -1,26 +1,28 @@
 const Joi = require('joi')
 const uuid = require('uuid')
 
+const EventDispatcher = require('./elements/eventDispatchers/EventDispatcher')
+const EventDispatchers = require('./elements/eventDispatchers/EventDispatchers')
 const EndEventDispatcher = require('./elements/eventDispatchers/EndEventDispatcher')
 
+const EventListener = require('./elements/eventListeners/EventListener')
+const EventListeners = require('./elements/eventListeners/EventListeners')
 const ApprovalEventListener = require('./elements/eventListeners/ApprovalEventListener')
 const ConditionEventListener = require('./elements/eventListeners/ConditionEventListener')
 const StartEventListener = require('./elements/eventListeners/StartEventListener')
 const TimerEventListener = require('./elements/eventListeners/TimerEventListener')
 
 const Flow = require('./elements/flows/Flow')
+const Flows = require('./elements/flows/Flows')
 
+const Gateway = require('./elements/gateways/Gateway')
 const AndMergeGateway = require('./elements/gateways/AndMergeGateway')
 const AndSplitGateway = require('./elements/gateways/AndSplitGateway')
 const LoopGateway = require('./elements/gateways/LoopGateway')
 const OrMergeGateway = require('./elements/gateways/OrMergeGateway')
 
 const Phase = require('./elements/phases/Phase')
-
-const EventListeners = require('./elements/eventListeners/EventListeners')
 const Phases = require('./elements/phases/Phases')
-const EventDispatchers = require('./elements/eventDispatchers/EventDispatchers')
-const Flows = require('./elements/flows/Flows')
 
 class Workflow {
 
@@ -60,7 +62,43 @@ class Workflow {
     })
   }
 
+  static getElementById(workflow, id) {
+    const collectionNames = Object.keys(workflow.elements)
+
+    for (const col of collectionNames) {
+      const el = workflow.elements[col].find(colEl => colEl.id === id)
+      if (el) return el
+    }
+  }
+
+  static get CONNECTION_MAP() {
+    return {
+      [EventDispatcher.ELEMENT_TYPE]: [],
+      [EventListener.ELEMENT_TYPE]: [
+        EventDispatcher.ELEMENT_TYPE,
+        Gateway.ELEMENT_TYPE,
+        Phase.ELEMENT_TYPE,
+      ],
+      [Gateway.ELEMENT_TYPE]: [
+        EventDispatcher.TYPE,
+        Gateway.ELEMENT_TYPE,
+        Phase.ELEMENT_TYPE,
+      ],
+      [Phase.ELEMENT_TYPE]: [],
+    }
+  }
+
+  static validateConnect(workflow, srcId, destId) {
+    const srcEl = Workflow.getElementById(workflow, srcId)
+    const destEl = Workflow.getElementById(workflow, destId)
+
+    if (!Workflow.CONNECTION_MAP[srcEl.elementType].includes(destEl.elementType)) {
+      throw new Error(`a(n) ${srcEl.elementType} cannot connect to a ${destEl.elementType}`)
+    }
+  }
+
   static connect(workflow, srcId, destId) {
+    Workflow.validateConnect(workflow, srcId, destId)
     return Flows.addFlow(workflow, { srcId, destId })
   }
 
