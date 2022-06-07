@@ -4,16 +4,19 @@ class Command {
 
   static get TYPES() {
     return {
-      SET_TARGET: 'SET_TARGET',
+      SET_TARGETS: 'SET_TARGETS',
     }
   }
 
   static get DATA_SCHEMAS() {
     return {
-      [Command.TYPES.SET_TARGET]: Joi.object({
-        fctId: Joi.string().required(),
-        slotName: Joi.string().required(),
-        target: Joi.alternatives().try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
+      [Command.TYPES.SET_TARGETS]: Joi.object({
+        targets: Joi.array().items(Joi.object({
+          fctId: Joi.string().required(),
+          slotName: Joi.string().required(),
+          target: Joi.alternatives()
+            .try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
+        })),
       }),
     }
   }
@@ -23,8 +26,8 @@ class Command {
       id: Joi.string().required(),
       type: Joi.string().valid(...Object.values(Command.TYPES)).required(),
       data: Joi.any().when('type', {
-        is: Command.TYPES.SET_TARGET,
-        then: Command.DATA_SCHEMAS[Command.TYPES.SET_TARGET].required(),
+        is: Command.TYPES.SET_TARGETS,
+        then: Command.DATA_SCHEMAS.SET_TARGETS,
         otherwise: Joi.forbidden(),
       }),
     })
