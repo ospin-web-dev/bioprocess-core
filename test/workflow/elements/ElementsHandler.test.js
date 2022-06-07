@@ -7,6 +7,10 @@ describe('ElementsHandler', () => {
 
   class TestClass extends ElementsHandler {
 
+    static get COLLECTION_NAME() {
+      return 'phases'
+    }
+
     static get ID_PREFIX() {
       return 'phase'
     }
@@ -29,6 +33,23 @@ describe('ElementsHandler', () => {
 
       expect(updatedElements[0].newKey).toBe('test')
       expect(updatedElements[1].newKey).toBeUndefined()
+    })
+  })
+
+  describe('getLast', () => {
+    it('returns the last element of a collection', () => {
+      const workflow = WorkflowGenerator.generate({
+        elements: {
+          phases: [
+            Phase.create({ id: 'phase_0' }),
+            Phase.create({ id: 'phase_1' }),
+          ],
+        },
+      })
+
+      const lastEl = TestClass.getLast(workflow)
+
+      expect(lastEl).toStrictEqual(workflow.elements.phases[1])
     })
   })
 

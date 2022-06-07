@@ -4,6 +4,11 @@ class ElementsHandler {
     return workflow.elements[this.COLLECTION_NAME]
   }
 
+  static getLast(workflow) {
+    const all = this.getAll(workflow)
+    return all[all.length - 1]
+  }
+
   static getManyBy(workflow, query) {
     return workflow.elements[this.COLLECTION_NAME].filter(el => {
       const keys = Object.keys(query)

@@ -16,11 +16,15 @@ Unreachable phases indicate a flaw in the execution of the workflow.
 
 **4. Every workflow needs to have at least one END event dispatcher**
 
-To define an end of a process an `END` event has to be dispatched, so that the workflow engine knows that a process has ended.
+To define an end of a workflow an `END` event has to be dispatched, so that the workflow engine knows that a workflow has ended.
 
-**5. Every END event dispatcher of the process has to be reachable**
+**5. Every END event dispatcher of the workflow has to be reachable**
 
 Unreachable `END` event dispatchers indicate a flaw in the execution of the workflow.
+
+**6. A workflow is considered started, when the first START event listener is triggered**
+
+**6. A workflow is considered ended, when the first END event dispatcher dispatches an event**
 
 ## Connection
 
