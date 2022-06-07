@@ -238,6 +238,106 @@ describe('Workflow', () => {
             expect(res.elements.gateways[0].loopbackFlowId).toBe(res.elements.flows[0].id)
           })
         })
+
+        describe('when trying to connect a second outgoing flow to an AndMergeGateway', () => {
+          it('throws an error', () => {
+            const gatewayId = 'gateway_0'
+            const phaseId = 'phase_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [],
+                eventListeners: [],
+                gateways: [
+                  AndMergeGateway.create({ id: gatewayId }),
+                ],
+                phases: [
+                  Phase.create({ id: phaseId }),
+                ],
+                flows: [{ srcId: gatewayId, destId: phaseId, id: 'flow_1' }],
+              },
+            })
+
+            expect(() => Workflow.connect(wf, gatewayId, phaseId))
+              .toThrow(/Only one outgoing flow/)
+          })
+        })
+
+        describe('when trying to connect a second outgoing flow to an OrMergeGateway', () => {
+          it('throws an error', () => {
+            const gatewayId = 'gateway_0'
+            const phaseId = 'phase_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [],
+                eventListeners: [],
+                gateways: [
+                  OrMergeGateway.create({ id: gatewayId }),
+                ],
+                phases: [
+                  Phase.create({ id: phaseId }),
+                ],
+                flows: [{ srcId: gatewayId, destId: phaseId, id: 'flow_1' }],
+              },
+            })
+
+            expect(() => Workflow.connect(wf, gatewayId, phaseId))
+              .toThrow(/Only one outgoing flow/)
+          })
+        })
+
+        describe('when trying to connect a second incoming flow to an AndSplitGateway', () => {
+          it('throws an error', () => {
+            const gatewayId = 'gateway_0'
+            const eventListenerId = 'phase_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [],
+                eventListeners: [
+                  ApprovalEventListener.create({ id: eventListenerId }),
+                ],
+                gateways: [
+                  AndSplitGateway.create({ id: gatewayId }),
+                ],
+                phases: [],
+                flows: [{
+                  srcId: eventListenerId,
+                  destId: gatewayId,
+                  id: 'flow_1',
+                }],
+              },
+            })
+
+            expect(() => Workflow.connect(wf, eventListenerId, gatewayId))
+              .toThrow(/Only one incoming flow/)
+          })
+        })
+
+        describe('when trying to connect a second incoming flow to an LoopGateway', () => {
+          it('throws an error', () => {
+            const gatewayId = 'gateway_0'
+            const eventListenerId = 'phase_0'
+            const wf = WorkflowGenerator.generate({
+              elements: {
+                eventDispatchers: [],
+                eventListeners: [
+                  ApprovalEventListener.create({ id: eventListenerId }),
+                ],
+                gateways: [
+                  LoopGateway.create({ id: gatewayId }),
+                ],
+                phases: [],
+                flows: [{
+                  srcId: eventListenerId,
+                  destId: gatewayId,
+                  id: 'flow_1',
+                }],
+              },
+            })
+
+            expect(() => Workflow.connect(wf, eventListenerId, gatewayId))
+              .toThrow(/Only one incoming flow/)
+          })
+        })
       })
     })
   })

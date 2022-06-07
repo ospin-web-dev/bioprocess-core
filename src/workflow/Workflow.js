@@ -96,6 +96,23 @@ class Workflow {
     if (!Workflow.CONNECTION_MAP[srcEl.elementType].includes(destEl.elementType)) {
       throw new Error(`a(n) ${srcEl.elementType} cannot connect to a ${destEl.elementType}`)
     }
+
+    if (srcEl.elementType === AndMergeGateway.ELEMENT_TYPE
+      || srcEl.elementType === OrMergeGateway.ELEMENT_TYPE) {
+      const totalIncomingFlows = Flows.getManyBy(workflow, { srcId })
+      if (totalIncomingFlows.length) {
+        throw new Error(`Only one outgoing flow for ${srcEl.type} allowed`)
+      }
+    }
+
+    if (destEl.elementType === AndSplitGateway.ELEMENT_TYPE
+      || destEl.elementType === LoopGateway.ELEMENT_TYPE
+    ) {
+      const totalOutgoingFlows = Flows.getManyBy(workflow, { destId })
+      if (totalOutgoingFlows.length) {
+        throw new Error(`Only one incoming flow for ${destEl.type} allowed`)
+      }
+    }
   }
 
   static connect(workflow, srcId, destId) {
