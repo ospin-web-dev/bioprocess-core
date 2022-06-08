@@ -1,6 +1,6 @@
-const RuleViolationError = require('./RuleViolationError')
+const ConfigurationError = require('./ConfigurationError')
 
-class NoEndEventDispatcherError extends RuleViolationError {
+class NoEndEventDispatcherError extends ConfigurationError {
 
   constructor() {
     super('Workflow has to contain at least one END event dispatcher')

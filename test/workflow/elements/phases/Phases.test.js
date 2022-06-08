@@ -57,7 +57,7 @@ describe('Phases', () => {
         })
 
         expect(() => Phases.removePhase(workflow, id))
-          .toThrow(/Cannot remove last phase/)
+          .toThrow(/Workflow has to contain at least one phase/)
       })
     })
   })

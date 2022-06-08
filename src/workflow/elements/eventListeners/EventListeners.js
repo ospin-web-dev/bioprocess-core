@@ -4,6 +4,8 @@ const ConditionEventListener = require('./ConditionEventListener')
 const StartEventListener = require('./StartEventListener')
 const TimerEventListener = require('./TimerEventListener')
 
+const IncorrectAmountOfStartEventListenersError = require('../../validator/errors/IncorrectAmountOfStartEventListenersError')
+
 class EventListeners extends ElementsHandler {
 
   static get COLLECTION_NAME() {
@@ -34,7 +36,7 @@ class EventListeners extends ElementsHandler {
 
   static removeEventListener(workflow, eventListenerId) {
     if (EventListeners.isStartEventListener(workflow, eventListenerId)) {
-      throw new Error('Cannot remove START event listener')
+      throw new IncorrectAmountOfStartEventListenersError()
     }
     return this.remove(workflow, eventListenerId)
   }
@@ -49,7 +51,7 @@ class EventListeners extends ElementsHandler {
 
   static addStartEventListener(workflow, data) {
     const existingListeners = this.getManyBy(workflow, { type: StartEventListener.TYPE })
-    if (existingListeners.length > 0) throw new Error('Workflow cannot contain more than one START event listener')
+    if (existingListeners.length > 0) throw new IncorrectAmountOfStartEventListenersError()
     return this.add(workflow, StartEventListener, data)
   }
 

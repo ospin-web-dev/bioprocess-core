@@ -1,6 +1,6 @@
-const RuleViolationError = require('./RuleViolationError')
+const ConfigurationError = require('./ConfigurationError')
 
-class UnreachableEndEventDispatcherError extends RuleViolationError {
+class UnreachableEndEventDispatcherError extends ConfigurationError {
 
   constructor(data) {
     super('Workflow contains unreachable END event dispatcher')

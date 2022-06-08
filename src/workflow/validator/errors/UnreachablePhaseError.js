@@ -1,6 +1,6 @@
-const RuleViolationError = require('./RuleViolationError')
+const ConfigurationError = require('./ConfigurationError')
 
-class UnreachablePhaseError extends RuleViolationError {
+class UnreachablePhaseError extends ConfigurationError {
 
   constructor(data) {
     super('Workflow contains unreachable phase')

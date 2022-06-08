@@ -1,6 +1,6 @@
-const RuleViolationError = require('./RuleViolationError')
+const ConfigurationError = require('./ConfigurationError')
 
-class NoPhasesError extends RuleViolationError {
+class NoPhasesError extends ConfigurationError {
 
   constructor() {
     super('Workflow has to contain at least one phase')

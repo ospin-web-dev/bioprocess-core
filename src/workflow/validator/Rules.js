@@ -16,7 +16,7 @@ class Rules {
     const startEventListeners = EventListeners
       .getManyBy(workflow, { type: StartEventListener.TYPE })
     if (startEventListeners.length !== 1) {
-      throw new IncorrectAmountOfStartEventListenersError({ startEventListeners })
+      throw new IncorrectAmountOfStartEventListenersError()
     }
   }
 

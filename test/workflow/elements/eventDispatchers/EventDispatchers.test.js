@@ -58,7 +58,7 @@ describe('EventDispatchers', () => {
         })
 
         expect(() => EventDispatchers.removeEventDispatcher(workflow, id))
-          .toThrow(/Cannot remove last END event dispatcher/)
+          .toThrow(/Workflow has to contain at least one END event dispatcher/)
       })
     })
   })

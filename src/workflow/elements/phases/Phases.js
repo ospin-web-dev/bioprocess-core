@@ -3,6 +3,8 @@ const ElementsHandler = require('../ElementsHandler')
 const Phase = require('./Phase')
 const Command = require('./commands/Command')
 
+const NoPhasesError = require('../../validator/errors/NoPhasesError')
+
 class Phases extends ElementsHandler {
 
   static get COLLECTION_NAME() {
@@ -27,7 +29,7 @@ class Phases extends ElementsHandler {
 
   static removePhase(workflow, phaseId) {
     if (Phases.isLastPhase(workflow)) {
-      throw new Error('Cannot remove last phase')
+      throw new NoPhasesError()
     }
     return this.remove(workflow, phaseId)
   }

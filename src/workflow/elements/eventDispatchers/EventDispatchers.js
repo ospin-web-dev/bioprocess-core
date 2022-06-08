@@ -1,6 +1,8 @@
 const ElementsHandler = require('../ElementsHandler')
 const EndEventDispatcher = require('./EndEventDispatcher')
 
+const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
+
 class EventDispatchers extends ElementsHandler {
 
   static get COLLECTION_NAME() {
@@ -33,7 +35,7 @@ class EventDispatchers extends ElementsHandler {
 
   static removeEventDispatcher(workflow, eventDispatcherId) {
     if (EventDispatchers.isLastEndEventDispatcher(workflow, eventDispatcherId)) {
-      throw new Error('Cannot remove last END event dispatcher')
+      throw new NoEndEventDispatcherError()
     }
     return this.remove(workflow, eventDispatcherId)
   }

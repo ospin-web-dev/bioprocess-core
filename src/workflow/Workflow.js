@@ -25,6 +25,11 @@ const OrMergeGateway = require('./elements/gateways/OrMergeGateway')
 const Phase = require('./elements/phases/Phase')
 const Phases = require('./elements/phases/Phases')
 
+const ForbiddenConnectionError = require('./validator/errors/ForbiddenConnectionError')
+const IncorrectAmountOfOutgoingFlowsError = require('./validator/errors/IncorrectAmountOfOutgoingFlowsError')
+const IncorrectAmountOfIncomingFlowsError = require('./validator/errors/IncorrectAmountOfIncomingFlowsError')
+const IncorrectElementTypeError = require('./validator/errors/IncorrectElementTypeError')
+
 class Workflow {
 
   static get DEFAULT_VERSION() {
@@ -94,14 +99,20 @@ class Workflow {
     const destEl = Workflow.getElementById(workflow, destId)
 
     if (!Workflow.CONNECTION_MAP[srcEl.elementType].includes(destEl.elementType)) {
-      throw new Error(`a(n) ${srcEl.elementType} cannot connect to a ${destEl.elementType}`)
+      throw new ForbiddenConnectionError(
+        `a(n) ${srcEl.elementType} cannot connect to a ${destEl.elementType}`,
+        { srcEl, destEl },
+      )
     }
 
     if (srcEl.elementType === AndMergeGateway.ELEMENT_TYPE
       || srcEl.elementType === OrMergeGateway.ELEMENT_TYPE) {
       const totalIncomingFlows = Flows.getManyBy(workflow, { srcId })
       if (totalIncomingFlows.length) {
-        throw new Error(`Only one outgoing flow for ${srcEl.type} allowed`)
+        throw new IncorrectAmountOfOutgoingFlowsError(
+          `Only one outgoing flow for ${srcEl.type} allowed`,
+          { el: srcEl },
+        )
       }
     }
 
@@ -110,7 +121,10 @@ class Workflow {
     ) {
       const totalOutgoingFlows = Flows.getManyBy(workflow, { destId })
       if (totalOutgoingFlows.length) {
-        throw new Error(`Only one incoming flow for ${destEl.type} allowed`)
+        throw new IncorrectAmountOfIncomingFlowsError(
+          `Only one incoming flow for ${destEl.type} allowed`,
+          { el: destEl },
+        )
       }
     }
   }
@@ -135,14 +149,14 @@ class Workflow {
   }
 
   static connectGatewayLoopback(workflow, gatewayId, destId) {
-    const gateway = Workflow.getElementById(workflow, gatewayId)
+    const el = Workflow.getElementById(workflow, gatewayId)
 
-    if (gateway.elementType !== Gateway.ELEMENT_TYPE) {
-      throw new Error(`${gateway.elementType} is not a gateway`)
+    if (el.elementType !== Gateway.ELEMENT_TYPE) {
+      throw new IncorrectElementTypeError(`${el.elementType} is not a gateway`, { el })
     }
 
-    if (gateway.type !== LoopGateway.TYPE) {
-      throw new Error(`gateway of type ${gateway.type} does not provide a loopback flow`)
+    if (el.type !== LoopGateway.TYPE) {
+      throw new IncorrectElementTypeError(`gateway of type ${el.type} does not provide a loopback flow`, { el })
     }
 
     Workflow.validateConnect(workflow, gatewayId, destId)

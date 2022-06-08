@@ -47,7 +47,7 @@ describe('EventListeners', () => {
       const wfWithOneStartEventListener = EventListeners.addStartEventListener(wf)
 
       expect(() => EventListeners.addStartEventListener(wfWithOneStartEventListener))
-        .toThrow(/cannot contain more than one START event listener/)
+        .toThrow(/Workflow has to contain exactly one START event listener/)
     })
   })
 
@@ -79,7 +79,7 @@ describe('EventListeners', () => {
         })
 
         expect(() => EventListeners.removeEventListener(workflow, id))
-          .toThrow(/Cannot remove START event listener/)
+          .toThrow(/Workflow has to contain exactly one START event listener/)
       })
     })
   })
