@@ -1,6 +1,8 @@
 const ElementsHandler = require('../ElementsHandler')
 const EndEventDispatcher = require('./EndEventDispatcher')
 
+const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
+
 class EventDispatchers extends ElementsHandler {
 
   static get COLLECTION_NAME() {
@@ -21,12 +23,25 @@ class EventDispatchers extends ElementsHandler {
     return EventDispatchers.TYPE_TO_INTERFACE_MAP[eventDispatcher.type]
   }
 
+  static isLastEndEventDispatcher(workflow, eventDispatcherId) {
+    const dispatcher = this.getById(workflow, eventDispatcherId)
+    if (dispatcher.type === EndEventDispatcher.TYPE) {
+      const allEndEventDispatchers = EventDispatchers
+        .getManyBy(workflow, { type: EndEventDispatcher.TYPE })
+      return allEndEventDispatchers.length === 1
+    }
+    return false
+  }
+
   static removeEventDispatcher(workflow, eventDispatcherId) {
-    return this.removeElement(workflow, eventDispatcherId)
+    if (EventDispatchers.isLastEndEventDispatcher(workflow, eventDispatcherId)) {
+      throw new NoEndEventDispatcherError()
+    }
+    return this.remove(workflow, eventDispatcherId)
   }
 
   static addEndEventDispatcher(workflow, data) {
-    return this.addElement(workflow, EndEventDispatcher, data)
+    return this.add(workflow, EndEventDispatcher, data)
   }
 
 }

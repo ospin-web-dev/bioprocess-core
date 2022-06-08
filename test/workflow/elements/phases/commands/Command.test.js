@@ -28,13 +28,16 @@ describe('Command', () => {
     describe('when the data is valid', () => {
       it('does not throw an error', () => {
         const data = {
+          id: 'command_0',
           type: Command.TYPES.SET_TARGETS,
-          data: [
-            { fctId: '1', slotName: 'value', target: 'right' },
-            { fctId: '2', slotName: 'value', target: 1 },
-            { fctId: '3', slotName: 'value', target: 1.2 },
-            { fctId: '4', slotName: 'value', target: true },
-          ],
+          data: {
+            targets: [
+              { fctId: '1', slotName: 'value', target: 'right' },
+              { fctId: '2', slotName: 'value', target: 1 },
+              { fctId: '3', slotName: 'value', target: 1.2 },
+              { fctId: '4', slotName: 'value', target: true },
+            ],
+          },
         }
 
         expect(() => Command.create(data)).not.toThrow()
@@ -44,13 +47,15 @@ describe('Command', () => {
     describe('when the data is invalid', () => {
       it('does throw an error', () => {
         const data = {
-          type: 'FIRE',
-          data: [
-            { fctId: '1', slotName: 'value', target: 'right' },
-          ],
+          type: Command.TYPES.SET_TARGETS,
+          data: {
+            targets: [
+              { fctId: '1', slotName: 'value', target: 'right' },
+            ],
+          },
         }
 
-        expect(() => Command.create(data)).toThrow(/type/)
+        expect(() => Command.create(data)).toThrow(/id/)
       })
     })
   })

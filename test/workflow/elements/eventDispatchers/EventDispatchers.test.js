@@ -29,19 +29,37 @@ describe('EventDispatchers', () => {
 
   describe('removeEventDispatcher', () => {
     it('removes a EndEventDispatcher from the workflow', () => {
-      const id = 'eventDispatcher_1'
+      const id1 = 'eventDispatcher_1'
+      const id2 = 'eventDispatcher_2'
       const workflow = WorkflowGenerator.generate({
         elements: {
           eventDispatchers: [
-            EndEventDispatcher.create({ id }),
+            EndEventDispatcher.create({ id: id1 }),
+            EndEventDispatcher.create({ id: id2 }),
           ],
         },
       })
 
       const { elements: { eventDispatchers } } = EventDispatchers
-        .removeEventDispatcher(workflow, id)
+        .removeEventDispatcher(workflow, id1)
 
-      expect(eventDispatchers).toHaveLength(0)
+      expect(eventDispatchers).toHaveLength(1)
+    })
+
+    describe('when trying to remove the last end event dispatcher', () => {
+      it('throws an error', () => {
+        const id = 'eventDispatcher_1'
+        const workflow = WorkflowGenerator.generate({
+          elements: {
+            eventDispatchers: [
+              EndEventDispatcher.create({ id }),
+            ],
+          },
+        })
+
+        expect(() => EventDispatchers.removeEventDispatcher(workflow, id))
+          .toThrow(/Workflow has to contain at least one END event dispatcher/)
+      })
     })
   })
 

@@ -16,15 +16,15 @@ class Flows extends ElementsHandler {
   }
 
   static addFlow(workflow, data) {
-    return this.addElement(workflow, Flow, data)
+    return this.add(workflow, Flow, data)
   }
 
   static removeFlow(workflow, flowId) {
-    return this.removeElement(workflow, flowId)
+    return this.remove(workflow, flowId)
   }
 
   static updateFlow(workflow, id, data) {
-    return this.updateElement(workflow, id, data)
+    return this.update(workflow, id, data)
   }
 
 }

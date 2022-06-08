@@ -41,6 +41,16 @@ describe('EventListeners', () => {
     })
   })
 
+  describe('when trying to add a second start event listener', () => {
+    it('throws an error', () => {
+      const wf = WorkflowGenerator.generate()
+      const wfWithOneStartEventListener = EventListeners.addStartEventListener(wf)
+
+      expect(() => EventListeners.addStartEventListener(wfWithOneStartEventListener))
+        .toThrow(/Workflow has to contain exactly one START event listener/)
+    })
+  })
+
   describe('removeEventListener', () => {
     it('removes an event listener from a workflow', () => {
       const id = 'eventListener_1'
@@ -55,6 +65,22 @@ describe('EventListeners', () => {
       const { elements: { eventListeners } } = EventListeners.removeEventListener(workflow, id)
 
       expect(eventListeners).toHaveLength(0)
+    })
+
+    describe('when trying to remove the START event listener', () => {
+      it('throw an error', () => {
+        const id = 'eventListener_1'
+        const workflow = WorkflowGenerator.generate({
+          elements: {
+            eventListeners: [
+              StartEventListener.create({ id }),
+            ],
+          },
+        })
+
+        expect(() => EventListeners.removeEventListener(workflow, id))
+          .toThrow(/Workflow has to contain exactly one START event listener/)
+      })
     })
   })
 

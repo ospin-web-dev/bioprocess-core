@@ -11,20 +11,23 @@ class Command {
   static get DATA_SCHEMAS() {
     return {
       [Command.TYPES.SET_TARGETS]: Joi.object({
-        fctId: Joi.string().required(),
-        slotName: Joi.string().required(),
-        target: Joi.alternatives().try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
+        targets: Joi.array().items(Joi.object({
+          fctId: Joi.string().required(),
+          slotName: Joi.string().required(),
+          target: Joi.alternatives()
+            .try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
+        })),
       }),
     }
   }
 
   static get SCHEMA() {
     return Joi.object({
+      id: Joi.string().required(),
       type: Joi.string().valid(...Object.values(Command.TYPES)).required(),
       data: Joi.any().when('type', {
         is: Command.TYPES.SET_TARGETS,
-        then: Joi.array()
-          .items(Command.DATA_SCHEMAS[Command.TYPES.SET_TARGETS]).required(),
+        then: Command.DATA_SCHEMAS.SET_TARGETS,
         otherwise: Joi.forbidden(),
       }),
     })
