@@ -130,6 +130,19 @@ class Phases extends ElementsHandler {
     return Phases.updateSetTargetValueCommand(workflow, id, fctId, slotName, value)
   }
 
+  static getTargetValue(workflow, id, fctId, slotName) {
+    const existingSetTargetCommand = Phases
+      .getCommandByType(workflow, id, Command.TYPES.SET_TARGETS)
+
+    if (!existingSetTargetCommand) return
+
+    const targetEntry = existingSetTargetCommand.data.targets.find(target => (
+      target.fctId === fctId && target.slotName === slotName
+    ))
+
+    if (targetEntry) return targetEntry.target
+  }
+
 }
 
 module.exports = Phases
