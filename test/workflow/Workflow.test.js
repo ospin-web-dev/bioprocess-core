@@ -23,34 +23,24 @@ describe('Workflow', () => {
     describe('when used with valid data', () => {
       it('does NOT throw an error', () => {
         const data = WorkflowGenerator.generate({
-          elements: {
-            eventDispatchers: [
-              EndEventDispatcher.create({ id: 'endEventDispatcher_1' }),
-            ],
+          elements: [
+            EndEventDispatcher.create({ id: 'endEventDispatcher_1' }),
 
-            eventListeners: [
-              ApprovalEventListener.create({ id: 'eventListener_1' }),
-              ConditionEventListener.create({ id: 'eventListener_2' }),
-              StartEventListener.create({ id: 'eventListener_3' }),
-              TimerEventListener.create({ id: 'eventListener_4' }),
-            ],
+            ApprovalEventListener.create({ id: 'eventListener_1' }),
+            ConditionEventListener.create({ id: 'eventListener_2' }),
+            StartEventListener.create({ id: 'eventListener_3' }),
+            TimerEventListener.create({ id: 'eventListener_4' }),
 
-            flows: [
-              Flow.create({ id: 'flow_1', srcId: 'eventListener_3', destId: 'phase_1' }),
-              Flow.create({ id: 'flow_2', srcId: 'eventListener_2', destId: 'eventDispatcher_1' }),
-            ],
+            Flow.create({ id: 'flow_1', srcId: 'eventListener_3', destId: 'phase_1' }),
+            Flow.create({ id: 'flow_2', srcId: 'eventListener_2', destId: 'eventDispatcher_1' }),
 
-            gateways: [
-              AndMergeGateway.create({ id: 'gateway_1' }),
-              AndSplitGateway.create({ id: 'gateway_2' }),
-              LoopGateway.create({ id: 'gateway_3' }),
-              OrMergeGateway.create({ id: 'gateway_4' }),
-            ],
+            AndMergeGateway.create({ id: 'gateway_1' }),
+            AndSplitGateway.create({ id: 'gateway_2' }),
+            LoopGateway.create({ id: 'gateway_3' }),
+            OrMergeGateway.create({ id: 'gateway_4' }),
 
-            phases: [
-              Phase.create({ id: 'phase_1' }),
-            ],
-          },
+            Phase.create({ id: 'phase_1' }),
+          ],
         })
 
         expect(() => Workflow.validateSchema(data)).not.toThrow()

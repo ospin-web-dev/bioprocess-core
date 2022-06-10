@@ -22,7 +22,7 @@ describe('EventListeners', () => {
         it(`adds a new ${api.name} to the workflow`, () => {
           const workflow = WorkflowGenerator.generate()
 
-          const { elements: { eventListeners } } = EventListeners[method](workflow)
+          const { elements: eventListeners } = EventListeners[method](workflow)
 
           expect(eventListeners).toHaveLength(1)
           expect(eventListeners[0].type).toBe(api.TYPE)
@@ -55,14 +55,12 @@ describe('EventListeners', () => {
     it('removes an event listener from a workflow', () => {
       const id = 'eventListener_1'
       const workflow = WorkflowGenerator.generate({
-        elements: {
-          eventListeners: [
-            ApprovalEventListener.create({ id }),
-          ],
-        },
+        elements: [
+          ApprovalEventListener.create({ id }),
+        ],
       })
 
-      const { elements: { eventListeners } } = EventListeners.removeEventListener(workflow, id)
+      const { elements: eventListeners } = EventListeners.removeEventListener(workflow, id)
 
       expect(eventListeners).toHaveLength(0)
     })
@@ -71,11 +69,9 @@ describe('EventListeners', () => {
       it('throw an error', () => {
         const id = 'eventListener_1'
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            eventListeners: [
-              StartEventListener.create({ id }),
-            ],
-          },
+          elements: [
+            StartEventListener.create({ id }),
+          ],
         })
 
         expect(() => EventListeners.removeEventListener(workflow, id))
@@ -90,14 +86,12 @@ describe('EventListeners', () => {
         const id = 'eventListener_1'
         const update = { durationInMS: 666 }
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            eventListeners: [
-              TimerEventListener.create({ id }),
-            ],
-          },
+          elements: [
+            TimerEventListener.create({ id }),
+          ],
         })
 
-        const { elements: { eventListeners } } = EventListeners
+        const { elements: eventListeners } = EventListeners
           .updateEventListener(workflow, id, update)
 
         expect(eventListeners[0].durationInMS).toBe(update.durationInMS)
@@ -109,11 +103,9 @@ describe('EventListeners', () => {
         const id = 'eventListener_1'
         const update = { goat: 666 }
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            eventListeners: [
-              TimerEventListener.create({ id }),
-            ],
-          },
+          elements: [
+            TimerEventListener.create({ id }),
+          ],
         })
 
         expect(() => EventListeners.updateEventListener(workflow, id, update))

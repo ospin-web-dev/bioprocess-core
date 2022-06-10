@@ -9,7 +9,7 @@ describe('EventDispatchers', () => {
       it('adds a new EndEventDispatcher to the workflow', () => {
         const workflow = WorkflowGenerator.generate()
 
-        const { elements: { eventDispatchers } } = EventDispatchers.addEndEventDispatcher(workflow)
+        const { elements: eventDispatchers } = EventDispatchers.addEndEventDispatcher(workflow)
 
         expect(eventDispatchers).toHaveLength(1)
         expect(eventDispatchers[0].type).toBe(EndEventDispatcher.TYPE)
@@ -32,15 +32,13 @@ describe('EventDispatchers', () => {
       const id1 = 'eventDispatcher_1'
       const id2 = 'eventDispatcher_2'
       const workflow = WorkflowGenerator.generate({
-        elements: {
-          eventDispatchers: [
-            EndEventDispatcher.create({ id: id1 }),
-            EndEventDispatcher.create({ id: id2 }),
-          ],
-        },
+        elements: [
+          EndEventDispatcher.create({ id: id1 }),
+          EndEventDispatcher.create({ id: id2 }),
+        ],
       })
 
-      const { elements: { eventDispatchers } } = EventDispatchers
+      const { elements: eventDispatchers } = EventDispatchers
         .removeEventDispatcher(workflow, id1)
 
       expect(eventDispatchers).toHaveLength(1)
@@ -50,11 +48,9 @@ describe('EventDispatchers', () => {
       it('throws an error', () => {
         const id = 'eventDispatcher_1'
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            eventDispatchers: [
-              EndEventDispatcher.create({ id }),
-            ],
-          },
+          elements: [
+            EndEventDispatcher.create({ id }),
+          ],
         })
 
         expect(() => EventDispatchers.removeEventDispatcher(workflow, id))

@@ -1,7 +1,7 @@
 class ElementsHandler {
 
   static getAll(workflow) {
-    return workflow.elements[this.COLLECTION_NAME]
+    return workflow.elements.filter(el => el.elementType === this.ELEMENT_TYPE)
   }
 
   static getLast(workflow) {
@@ -10,14 +10,16 @@ class ElementsHandler {
   }
 
   static getManyBy(workflow, query) {
-    return workflow.elements[this.COLLECTION_NAME].filter(el => {
-      const keys = Object.keys(query)
-      return keys.every(key => el[key] === query[key])
-    })
+    return this
+      .getAll(workflow)
+      .filter(el => {
+        const keys = Object.keys(query)
+        return keys.every(key => el[key] === query[key])
+      })
   }
 
   static getBy(workflow, query) {
-    return workflow.elements[this.COLLECTION_NAME].find(el => {
+    return this.getAll(workflow).find(el => {
       const keys = Object.keys(query)
       return keys.every(key => el[key] === query[key])
     })
@@ -32,23 +34,7 @@ class ElementsHandler {
   }
 
   static getExistingIds(workflow) {
-    const {
-      elements: {
-        eventDispatchers,
-        eventListeners,
-        flows,
-        gateways,
-        phases,
-      },
-    } = workflow
-
-    return [
-      ...eventDispatchers.map(this.getElementId),
-      ...eventListeners.map(this.getElementId),
-      ...flows.map(this.getElementId),
-      ...gateways.map(this.getElementId),
-      ...phases.map(this.getElementId),
-    ]
+    return workflow.elements.map(el => el.id)
   }
 
   static generateUniqueId(workflow) {
@@ -67,10 +53,9 @@ class ElementsHandler {
   static replaceAll(workflow, updatedElements) {
     return {
       ...workflow,
-      elements: {
-        ...workflow.elements,
-        [this.COLLECTION_NAME]: updatedElements,
-      },
+      elements: [
+        ...updatedElements,
+      ],
     }
   }
 
@@ -84,8 +69,11 @@ class ElementsHandler {
   }
 
   static add(workflow, api, data) {
-    const element = api.create({ ...data, id: this.generateUniqueId(workflow) })
-    const elements = [ ...workflow.elements[this.COLLECTION_NAME], element]
+    const element = api.create({
+      ...data,
+      id: this.generateUniqueId(workflow),
+    })
+    const elements = [ ...workflow.elements, element]
 
     return this.replaceAll(workflow, elements)
   }
@@ -98,14 +86,13 @@ class ElementsHandler {
 
     api.validateSchema(updatedElement)
 
-    const updatedElements = this
-      .replace(workflow.elements[this.COLLECTION_NAME], updatedElement)
+    const updatedElements = this.replace(workflow.elements, updatedElement)
 
     return this.replaceAll(workflow, updatedElements)
   }
 
   static remove(workflow, id) {
-    const elements = workflow.elements[this.COLLECTION_NAME].filter(el => el.id !== id)
+    const elements = workflow.elements.filter(el => el.id !== id)
     return this.replaceAll(workflow, elements)
   }
 

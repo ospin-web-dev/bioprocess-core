@@ -2,8 +2,13 @@ const ElementsHandler = require('../ElementsHandler')
 const EndEventDispatcher = require('./EndEventDispatcher')
 
 const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
+const EventDispatcher = require('./EventDispatcher')
 
 class EventDispatchers extends ElementsHandler {
+
+  static get ELEMENT_TYPE() {
+    return EventDispatcher.ELEMENT_TYPE
+  }
 
   static get COLLECTION_NAME() {
     return 'eventDispatchers'

@@ -48,33 +48,25 @@ class Workflow {
     return Joi.object({
       id: Joi.string().required(),
       version: Joi.string().required(),
-      elements: Joi.object({
-        eventDispatchers: Joi.array().items(EndEventDispatcher.SCHEMA).default([]),
-        eventListeners: Joi.array().items(Joi.alternatives().try(
+      elements: Joi.array()
+        .items(Joi.alternatives().try(
+          EndEventDispatcher.SCHEMA,
           ApprovalEventListener.SCHEMA,
           ConditionEventListener.SCHEMA,
           StartEventListener.SCHEMA,
           TimerEventListener.SCHEMA,
-        )).default([]),
-        flows: Joi.array().items(Flow.SCHEMA).default([]),
-        gateways: Joi.array().items(Joi.alternatives().try(
           AndMergeGateway.SCHEMA,
           AndSplitGateway.SCHEMA,
           LoopGateway.SCHEMA,
           OrMergeGateway.SCHEMA,
+          Flow.SCHEMA,
+          Phase.SCHEMA,
         )).default([]),
-        phases: Joi.array().items(Phase.SCHEMA).default([]),
-      }).default(),
     })
   }
 
   static getElementById(workflow, id) {
-    const collectionNames = Object.keys(workflow.elements)
-
-    for (const col of collectionNames) {
-      const el = workflow.elements[col].find(colEl => colEl.id === id)
-      if (el) return el
-    }
+    return workflow.elements.find(colEl => colEl.id === id)
   }
 
   static get CONNECTION_MAP() {

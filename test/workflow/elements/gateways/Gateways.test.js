@@ -22,7 +22,7 @@ describe('EventListeners', () => {
         it(`adds a new ${api.name} to the workflow`, () => {
           const workflow = WorkflowGenerator.generate()
 
-          const { elements: { gateways } } = Gateways[method](workflow)
+          const { elements: gateways } = Gateways[method](workflow)
 
           expect(gateways).toHaveLength(1)
           expect(gateways[0].type).toBe(api.TYPE)
@@ -45,14 +45,12 @@ describe('EventListeners', () => {
     it('removes a gateway from the workflow', () => {
       const id = 'gateway_0'
       const workflow = WorkflowGenerator.generate({
-        elements: {
-          gateways: [
-            LoopGateway.create({ id }),
-          ],
-        },
+        elements: [
+          LoopGateway.create({ id }),
+        ],
       })
 
-      const { elements: { gateways } } = Gateways.removeGateway(workflow, id)
+      const { elements: gateways } = Gateways.removeGateway(workflow, id)
 
       expect(gateways).toHaveLength(0)
     })
@@ -64,14 +62,12 @@ describe('EventListeners', () => {
         const id = 'gateway_0'
         const update = { maxIterations: 666 }
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            gateways: [
-              LoopGateway.create({ id }),
-            ],
-          },
+          elements: [
+            LoopGateway.create({ id }),
+          ],
         })
 
-        const { elements: { gateways } } = Gateways.updateGateway(workflow, id, update)
+        const { elements: gateways } = Gateways.updateGateway(workflow, id, update)
 
         expect(gateways[0].maxIterations).toBe(update.maxIterations)
       })
@@ -81,11 +77,9 @@ describe('EventListeners', () => {
       it('throws an error', () => {
         const id = 'gateway_0'
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            gateways: [
-              LoopGateway.create({ id }),
-            ],
-          },
+          elements: [
+            LoopGateway.create({ id }),
+          ],
         })
 
         expect(() => Gateways.updateGateway(workflow, id, { acceptMe: 'senpai' }))

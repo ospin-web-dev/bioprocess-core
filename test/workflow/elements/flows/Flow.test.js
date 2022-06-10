@@ -10,7 +10,7 @@ describe('Flows', () => {
       const destId = 'phase_1'
       const workflow = WorkflowGenerator.generate()
 
-      const { elements: { flows } } = Flows.addFlow(workflow, { srcId, destId })
+      const { elements: flows } = Flows.addFlow(workflow, { srcId, destId })
 
       expect(flows).toHaveLength(1)
       expect(flows[0].srcId).toBe(srcId)
@@ -34,16 +34,14 @@ describe('Flows', () => {
       const srcId = 'eventListener_1'
       const destId = 'phase_1'
       const workflow = WorkflowGenerator.generate({
-        elements: {
-          flows: [
-            Flow.create({ id: flowId, srcId, destId }),
-          ],
-        },
+        elements: [
+          Flow.create({ id: flowId, srcId, destId }),
+        ],
       })
 
-      const { elements: { flows } } = Flows.removeFlow(workflow, flowId)
+      const { elements } = Flows.removeFlow(workflow, flowId)
 
-      expect(flows).toHaveLength(0)
+      expect(elements).toHaveLength(0)
     })
   })
 
@@ -55,15 +53,12 @@ describe('Flows', () => {
         const destId = 'phase_1'
         const newDestId = 'phase_2'
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            flows: [
-              Flow.create({ id: flowId, srcId, destId }),
-            ],
-          },
+          elements: [
+            Flow.create({ id: flowId, srcId, destId }),
+          ],
         })
 
-        const { elements: { flows } } = Flows
-          .updateFlow(workflow, flowId, { destId: newDestId })
+        const { elements: flows } = Flows.updateFlow(workflow, flowId, { destId: newDestId })
 
         expect(flows[0].destId).toBe(newDestId)
       })
@@ -75,11 +70,9 @@ describe('Flows', () => {
         const srcId = 'eventListener_1'
         const destId = 'phase_1'
         const workflow = WorkflowGenerator.generate({
-          elements: {
-            flows: [
-              Flow.create({ id: flowId, srcId, destId }),
-            ],
-          },
+          elements: [
+            Flow.create({ id: flowId, srcId, destId }),
+          ],
         })
 
         expect(() => Flows.updateFlow(workflow, flowId, { acceptMe: 'senpai' }))

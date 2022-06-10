@@ -3,10 +3,15 @@ const ApprovalEventListener = require('./ApprovalEventListener')
 const ConditionEventListener = require('./ConditionEventListener')
 const StartEventListener = require('./StartEventListener')
 const TimerEventListener = require('./TimerEventListener')
+const EventListener = require('./EventListener')
 
 const IncorrectAmountOfStartEventListenersError = require('../../validator/errors/IncorrectAmountOfStartEventListenersError')
 
 class EventListeners extends ElementsHandler {
+
+  static get ELEMENT_TYPE() {
+    return EventListener.ELEMENT_TYPE
+  }
 
   static get COLLECTION_NAME() {
     return 'eventListeners'

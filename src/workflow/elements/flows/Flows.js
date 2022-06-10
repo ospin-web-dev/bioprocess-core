@@ -3,8 +3,8 @@ const Flow = require('./Flow')
 
 class Flows extends ElementsHandler {
 
-  static get COLLECTION_NAME() {
-    return 'flows'
+  static get ELEMENT_TYPE() {
+    return Flow.ELEMENT_TYPE
   }
 
   static get ID_PREFIX() {

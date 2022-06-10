@@ -4,11 +4,12 @@ const AndMergeGateway = require('./AndMergeGateway')
 const AndSplitGateway = require('./AndSplitGateway')
 const LoopGateway = require('./LoopGateway')
 const OrMergeGateway = require('./OrMergeGateway')
+const Gateway = require('./Gateway')
 
 class Gateways extends ElementsHandler {
 
-  static get COLLECTION_NAME() {
-    return 'gateways'
+  static get ELEMENT_TYPE() {
+    return Gateway.ELEMENT_TYPE
   }
 
   static get ID_PREFIX() {

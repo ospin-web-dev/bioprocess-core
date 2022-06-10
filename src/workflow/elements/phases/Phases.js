@@ -7,8 +7,8 @@ const NoPhasesError = require('../../validator/errors/NoPhasesError')
 
 class Phases extends ElementsHandler {
 
-  static get COLLECTION_NAME() {
-    return 'phases'
+  static get ELEMENT_TYPE() {
+    return Phase.ELEMENT_TYPE
   }
 
   static get ID_PREFIX() {
