@@ -86,7 +86,7 @@ class Workflow {
         Phase.ELEMENT_TYPE,
       ],
       [Gateway.ELEMENT_TYPE]: [
-        EventDispatcher.TYPE,
+        EventDispatcher.ELEMENT_TYPE,
         Gateway.ELEMENT_TYPE,
         Phase.ELEMENT_TYPE,
       ],
@@ -105,10 +105,10 @@ class Workflow {
       )
     }
 
-    if (srcEl.elementType === AndMergeGateway.ELEMENT_TYPE
-      || srcEl.elementType === OrMergeGateway.ELEMENT_TYPE) {
-      const totalIncomingFlows = Flows.getManyBy(workflow, { srcId })
-      if (totalIncomingFlows.length) {
+    if (srcEl.type === AndMergeGateway.TYPE
+      || srcEl.type === OrMergeGateway.TYPE) {
+      const totalOutgoingFlows = Flows.getManyBy(workflow, { srcId })
+      if (totalOutgoingFlows.length) {
         throw new IncorrectAmountOfOutgoingFlowsError(
           `Only one outgoing flow for ${srcEl.type} allowed`,
           { el: srcEl },
@@ -116,11 +116,11 @@ class Workflow {
       }
     }
 
-    if (destEl.elementType === AndSplitGateway.ELEMENT_TYPE
-      || destEl.elementType === LoopGateway.ELEMENT_TYPE
+    if (destEl.type === AndSplitGateway.TYPE
+      || destEl.type === LoopGateway.TYPE
     ) {
-      const totalOutgoingFlows = Flows.getManyBy(workflow, { destId })
-      if (totalOutgoingFlows.length) {
+      const totalIncomingFlows = Flows.getManyBy(workflow, { destId })
+      if (totalIncomingFlows.length) {
         throw new IncorrectAmountOfIncomingFlowsError(
           `Only one incoming flow for ${destEl.type} allowed`,
           { el: destEl },
