@@ -7,6 +7,10 @@ class Flows extends ElementsHandler {
     return 'flows'
   }
 
+  static get ELEMENT_TYPE() {
+    return Flow.ELEMENT_TYPE
+  }
+
   static get ID_PREFIX() {
     return 'flow'
   }
@@ -15,16 +19,16 @@ class Flows extends ElementsHandler {
     return Flow
   }
 
-  static addFlow(workflow, data) {
-    return this.add(workflow, Flow, data)
+  static add(workflow, data) {
+    return this.addElement(workflow, Flow, data)
   }
 
-  static removeFlow(workflow, flowId) {
-    return this.remove(workflow, flowId)
+  static remove(workflow, flowId) {
+    return this.removeElement(workflow, flowId)
   }
 
-  static updateFlow(workflow, id, data) {
-    return this.update(workflow, id, data)
+  static update(workflow, id, data) {
+    return this.updateElement(workflow, id, data)
   }
 
 }

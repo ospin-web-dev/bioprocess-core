@@ -4,13 +4,13 @@ const Flows = require('../../../../src/workflow/elements/flows/Flows')
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
 
 describe('Flows', () => {
-  describe('addFlow', () => {
+  describe('add', () => {
     it('adds a new flow to the workflow', () => {
       const srcId = 'eventListener_1'
       const destId = 'phase_1'
       const workflow = WorkflowGenerator.generate()
 
-      const { elements: { flows } } = Flows.addFlow(workflow, { srcId, destId })
+      const { elements: { flows } } = Flows.add(workflow, { srcId, destId })
 
       expect(flows).toHaveLength(1)
       expect(flows[0].srcId).toBe(srcId)
@@ -22,13 +22,13 @@ describe('Flows', () => {
       it('throws an error', () => {
         const workflow = WorkflowGenerator.generate()
 
-        expect(() => Flows.addFlow(workflow, { acceptMe: 'senpai' }))
+        expect(() => Flows.add(workflow, { acceptMe: 'senpai' }))
           .toThrow(/"srcId" is required/)
       })
     })
   })
 
-  describe('removeFlow', () => {
+  describe('remove', () => {
     it('removes a flow from the workflow', () => {
       const flowId = 'flow_0'
       const srcId = 'eventListener_1'
@@ -41,13 +41,13 @@ describe('Flows', () => {
         },
       })
 
-      const { elements: { flows } } = Flows.removeFlow(workflow, flowId)
+      const { elements: { flows } } = Flows.remove(workflow, flowId)
 
       expect(flows).toHaveLength(0)
     })
   })
 
-  describe('updateFlow', () => {
+  describe('update', () => {
     describe('when the data is valid', () => {
       it('adds a new flow to the workflow', () => {
         const flowId = 'flow_0'
@@ -63,7 +63,7 @@ describe('Flows', () => {
         })
 
         const { elements: { flows } } = Flows
-          .updateFlow(workflow, flowId, { destId: newDestId })
+          .update(workflow, flowId, { destId: newDestId })
 
         expect(flows[0].destId).toBe(newDestId)
       })
@@ -82,7 +82,7 @@ describe('Flows', () => {
           },
         })
 
-        expect(() => Flows.updateFlow(workflow, flowId, { acceptMe: 'senpai' }))
+        expect(() => Flows.update(workflow, flowId, { acceptMe: 'senpai' }))
           .toThrow(/"acceptMe" is not allowed/)
       })
     })

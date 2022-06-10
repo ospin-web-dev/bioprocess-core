@@ -83,14 +83,14 @@ class ElementsHandler {
     })
   }
 
-  static add(workflow, api, data) {
+  static addElement(workflow, api, data) {
     const element = api.create({ ...data, id: this.generateUniqueId(workflow) })
     const elements = [ ...workflow.elements[this.COLLECTION_NAME], element]
 
     return this.replaceAll(workflow, elements)
   }
 
-  static update(workflow, id, data) {
+  static updateElement(workflow, id, data) {
     const element = this.getById(workflow, id)
     const updatedElement = { ...element, ...data }
 
@@ -104,7 +104,7 @@ class ElementsHandler {
     return this.replaceAll(workflow, updatedElements)
   }
 
-  static remove(workflow, id) {
+  static removeElement(workflow, id) {
     const elements = workflow.elements[this.COLLECTION_NAME].filter(el => el.id !== id)
     return this.replaceAll(workflow, elements)
   }

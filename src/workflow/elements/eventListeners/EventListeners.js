@@ -34,33 +34,33 @@ class EventListeners extends ElementsHandler {
     return listener.type === StartEventListener.TYPE
   }
 
-  static removeEventListener(workflow, eventListenerId) {
+  static remove(workflow, eventListenerId) {
     if (EventListeners.isStartEventListener(workflow, eventListenerId)) {
       throw new IncorrectAmountOfStartEventListenersError()
     }
-    return this.remove(workflow, eventListenerId)
+    return this.removeElement(workflow, eventListenerId)
   }
 
   static addApprovalEventListener(workflow, data) {
-    return this.add(workflow, ApprovalEventListener, data)
+    return this.addElement(workflow, ApprovalEventListener, data)
   }
 
   static addConditionEventListener(workflow, data) {
-    return this.add(workflow, ConditionEventListener, data)
+    return this.addElement(workflow, ConditionEventListener, data)
   }
 
   static addStartEventListener(workflow, data) {
     const existingListeners = this.getManyBy(workflow, { type: StartEventListener.TYPE })
     if (existingListeners.length > 0) throw new IncorrectAmountOfStartEventListenersError()
-    return this.add(workflow, StartEventListener, data)
+    return this.addElement(workflow, StartEventListener, data)
   }
 
   static addTimerEventListener(workflow, data) {
-    return this.add(workflow, TimerEventListener, data)
+    return this.addElement(workflow, TimerEventListener, data)
   }
 
-  static updateEventListener(workflow, id, data) {
-    return this.update(workflow, id, data)
+  static update(workflow, id, data) {
+    return this.updateElement(workflow, id, data)
   }
 
 }

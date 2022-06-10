@@ -51,7 +51,7 @@ describe('EventListeners', () => {
     })
   })
 
-  describe('removeEventListener', () => {
+  describe('remove', () => {
     it('removes an event listener from a workflow', () => {
       const id = 'eventListener_1'
       const workflow = WorkflowGenerator.generate({
@@ -62,7 +62,7 @@ describe('EventListeners', () => {
         },
       })
 
-      const { elements: { eventListeners } } = EventListeners.removeEventListener(workflow, id)
+      const { elements: { eventListeners } } = EventListeners.remove(workflow, id)
 
       expect(eventListeners).toHaveLength(0)
     })
@@ -78,13 +78,13 @@ describe('EventListeners', () => {
           },
         })
 
-        expect(() => EventListeners.removeEventListener(workflow, id))
+        expect(() => EventListeners.remove(workflow, id))
           .toThrow(/Workflow has to contain exactly one START event listener/)
       })
     })
   })
 
-  describe('updateEventListener', () => {
+  describe('update', () => {
     describe('when the data is valid', () => {
       it('updates the data of an event listener', () => {
         const id = 'eventListener_1'
@@ -98,7 +98,7 @@ describe('EventListeners', () => {
         })
 
         const { elements: { eventListeners } } = EventListeners
-          .updateEventListener(workflow, id, update)
+          .update(workflow, id, update)
 
         expect(eventListeners[0].durationInMS).toBe(update.durationInMS)
       })
@@ -116,7 +116,7 @@ describe('EventListeners', () => {
           },
         })
 
-        expect(() => EventListeners.updateEventListener(workflow, id, update))
+        expect(() => EventListeners.update(workflow, id, update))
           .toThrow(/"goat" is not allowed/)
       })
     })

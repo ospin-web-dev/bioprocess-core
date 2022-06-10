@@ -41,7 +41,7 @@ describe('EventListeners', () => {
     })
   })
 
-  describe('removeGateway', () => {
+  describe('remove', () => {
     it('removes a gateway from the workflow', () => {
       const id = 'gateway_0'
       const workflow = WorkflowGenerator.generate({
@@ -52,13 +52,13 @@ describe('EventListeners', () => {
         },
       })
 
-      const { elements: { gateways } } = Gateways.removeGateway(workflow, id)
+      const { elements: { gateways } } = Gateways.remove(workflow, id)
 
       expect(gateways).toHaveLength(0)
     })
   })
 
-  describe('updateGateway', () => {
+  describe('update', () => {
     describe('when the data is valid', () => {
       it('updates a gateway on the workflow', () => {
         const id = 'gateway_0'
@@ -71,7 +71,7 @@ describe('EventListeners', () => {
           },
         })
 
-        const { elements: { gateways } } = Gateways.updateGateway(workflow, id, update)
+        const { elements: { gateways } } = Gateways.update(workflow, id, update)
 
         expect(gateways[0].maxIterations).toBe(update.maxIterations)
       })
@@ -88,7 +88,7 @@ describe('EventListeners', () => {
           },
         })
 
-        expect(() => Gateways.updateGateway(workflow, id, { acceptMe: 'senpai' }))
+        expect(() => Gateways.update(workflow, id, { acceptMe: 'senpai' }))
           .toThrow(/"acceptMe" is not allowed/)
       })
     })

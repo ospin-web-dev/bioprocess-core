@@ -28,28 +28,28 @@ class Gateways extends ElementsHandler {
     return Gateways.TYPE_TO_INTERFACE_MAP[gateway.type]
   }
 
-  static removeGateway(workflow, gatewayId) {
-    return this.remove(workflow, gatewayId)
+  static remove(workflow, gatewayId) {
+    return this.removeElement(workflow, gatewayId)
   }
 
   static addAndMergeGateway(workflow, data) {
-    return this.add(workflow, AndMergeGateway, data)
+    return this.addElement(workflow, AndMergeGateway, data)
   }
 
   static addAndSplitGateway(workflow, data) {
-    return this.add(workflow, AndSplitGateway, data)
+    return this.addElement(workflow, AndSplitGateway, data)
   }
 
   static addLoopGateway(workflow, data) {
-    return this.add(workflow, LoopGateway, data)
+    return this.addElement(workflow, LoopGateway, data)
   }
 
   static addOrMergeGateway(workflow, data) {
-    return this.add(workflow, OrMergeGateway, data)
+    return this.addElement(workflow, OrMergeGateway, data)
   }
 
-  static updateGateway(workflow, id, data) {
-    return this.update(workflow, id, data)
+  static update(workflow, id, data) {
+    return this.updateElement(workflow, id, data)
   }
 
 }

@@ -20,19 +20,19 @@ class Phases extends ElementsHandler {
     return Phase
   }
 
-  static addPhase(workflow, data = {}) {
-    return this.add(workflow, Phase, data)
+  static add(workflow, data = {}) {
+    return this.addElement(workflow, Phase, data)
   }
 
   static isLastPhase(workflow) {
     return this.getAll(workflow).length === 1
   }
 
-  static removePhase(workflow, phaseId) {
+  static remove(workflow, phaseId) {
     if (Phases.isLastPhase(workflow)) {
       throw new NoPhasesError()
     }
-    let wfWithoutPhase = this.remove(workflow, phaseId)
+    let wfWithoutPhase = this.removeElement(workflow, phaseId)
     const eventListeners = EventListeners.getManyBy(wfWithoutPhase, { phaseId })
 
     if (eventListeners.length) {
@@ -44,8 +44,8 @@ class Phases extends ElementsHandler {
     return wfWithoutPhase
   }
 
-  static updatePhase(workflow, id, data) {
-    return this.update(workflow, id, data)
+  static update(workflow, id, data) {
+    return this.updateElement(workflow, id, data)
   }
 
   static getExistingPhaseCommandIds(workflow, id) {
@@ -70,7 +70,7 @@ class Phases extends ElementsHandler {
   static addCommand(workflow, id, command) {
     const phase = this.getById(workflow, id)
     const commandWithId = { ...command, id: Phases.generateUniqueCommandId(workflow, id) }
-    return this.updatePhase(workflow, id, { commands: [ ...phase.commands, commandWithId ] })
+    return this.update(workflow, id, { commands: [ ...phase.commands, commandWithId ] })
   }
 
   static updateCommand(workflow, id, updatedCommand) {
@@ -79,13 +79,13 @@ class Phases extends ElementsHandler {
       if (command.id === updatedCommand.id) return updatedCommand
       return command
     })
-    return this.updatePhase(workflow, id, { commands: updatedCommands })
+    return this.update(workflow, id, { commands: updatedCommands })
   }
 
   static removeCommand(workflow, id, commandId) {
     const phase = this.getById(workflow, id)
     const updatedCommands = phase.commands.filter(command => command.id !== commandId)
-    return this.updatePhase(workflow, id, { commands: updatedCommands })
+    return this.update(workflow, id, { commands: updatedCommands })
   }
 
   static getCommandByType(workflow, id, commandType) {

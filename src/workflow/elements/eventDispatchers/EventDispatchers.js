@@ -33,15 +33,15 @@ class EventDispatchers extends ElementsHandler {
     return false
   }
 
-  static removeEventDispatcher(workflow, eventDispatcherId) {
+  static remove(workflow, eventDispatcherId) {
     if (EventDispatchers.isLastEndEventDispatcher(workflow, eventDispatcherId)) {
       throw new NoEndEventDispatcherError()
     }
-    return this.remove(workflow, eventDispatcherId)
+    return this.removeElement(workflow, eventDispatcherId)
   }
 
   static addEndEventDispatcher(workflow, data) {
-    return this.add(workflow, EndEventDispatcher, data)
+    return this.addElement(workflow, EndEventDispatcher, data)
   }
 
 }

@@ -6,12 +6,12 @@ const Phases = require('../../../../src/workflow/elements/phases/Phases')
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
 
 describe('Phases', () => {
-  describe('addPhase', () => {
+  describe('add', () => {
     describe('when the data is valid', () => {
       it('adds a new phase to the workflow', () => {
         const workflow = WorkflowGenerator.generate()
 
-        const { elements: { phases } } = Phases.addPhase(workflow)
+        const { elements: { phases } } = Phases.add(workflow)
 
         expect(phases).toHaveLength(1)
         expect(phases[0].id).toBe('phase_0')
@@ -22,13 +22,13 @@ describe('Phases', () => {
       it('throws an error', () => {
         const workflow = WorkflowGenerator.generate()
 
-        expect(() => Phases.addPhase(workflow, { acceptMe: 'senpai' }))
+        expect(() => Phases.add(workflow, { acceptMe: 'senpai' }))
           .toThrow(/"acceptMe" is not allowed/)
       })
     })
   })
 
-  describe('removePhase', () => {
+  describe('remove', () => {
     it('removes a phase from the workflow', () => {
       const id1 = 'phase_0'
       const id2 = 'phase_1'
@@ -41,7 +41,7 @@ describe('Phases', () => {
         },
       })
 
-      const { elements: { phases } } = Phases.removePhase(workflow, id1)
+      const { elements: { phases } } = Phases.remove(workflow, id1)
 
       expect(phases).toHaveLength(1)
     })
@@ -57,7 +57,7 @@ describe('Phases', () => {
           },
         })
 
-        expect(() => Phases.removePhase(workflow, id))
+        expect(() => Phases.remove(workflow, id))
           .toThrow(/Workflow has to contain at least one phase/)
       })
     })
@@ -86,7 +86,7 @@ describe('Phases', () => {
     })
   })
 
-  describe('updatePhase', () => {
+  describe('update', () => {
     describe('when the data is valid', () => {
       it('updates a phase on the workflow', () => {
         const id = 'phase_0'
@@ -112,7 +112,7 @@ describe('Phases', () => {
         })
 
         const { elements: { phases } } = Phases
-          .updatePhase(workflow, id, update)
+          .update(workflow, id, update)
 
         expect(phases[0].commands).toHaveLength(1)
       })
@@ -129,7 +129,7 @@ describe('Phases', () => {
           },
         })
 
-        expect(() => Phases.updatePhase(workflow, id, { acceptMe: 'senpai' }))
+        expect(() => Phases.update(workflow, id, { acceptMe: 'senpai' }))
           .toThrow(/"acceptMe" is not allowed/)
       })
     })

@@ -27,7 +27,7 @@ describe('EventDispatchers', () => {
     })
   })
 
-  describe('removeEventDispatcher', () => {
+  describe('remove', () => {
     it('removes a EndEventDispatcher from the workflow', () => {
       const id1 = 'eventDispatcher_1'
       const id2 = 'eventDispatcher_2'
@@ -41,7 +41,7 @@ describe('EventDispatchers', () => {
       })
 
       const { elements: { eventDispatchers } } = EventDispatchers
-        .removeEventDispatcher(workflow, id1)
+        .remove(workflow, id1)
 
       expect(eventDispatchers).toHaveLength(1)
     })
@@ -57,7 +57,7 @@ describe('EventDispatchers', () => {
           },
         })
 
-        expect(() => EventDispatchers.removeEventDispatcher(workflow, id))
+        expect(() => EventDispatchers.remove(workflow, id))
           .toThrow(/Workflow has to contain at least one END event dispatcher/)
       })
     })

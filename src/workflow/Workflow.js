@@ -68,6 +68,23 @@ class Workflow {
     })
   }
 
+  static getElementTypeInterface({ el }) {
+    switch (el.elementTyp) {
+      case EventDispatcher.ELEMENT_TYPE:
+        return EventDispatchers
+      case EventListener.ELEMENT_TYPE:
+        return EventListeners
+      case Flow.ELEMENT_TYPE:
+        return Flows
+      case Gateway.ELEMENT_TYPE:
+        return Gateways
+      case Phase.ELEMENT_TYPE:
+        return Phases
+      default:
+        throw new Error(`Unknown element type ${el.elementType} provided`)
+    }
+  }
+
   static getElementById(workflow, id) {
     const collectionNames = Object.keys(workflow.elements)
 
@@ -141,21 +158,21 @@ class Workflow {
 
   static connect(workflow, srcId, destId) {
     Workflow.validateConnect(workflow, srcId, destId)
-    return Flows.addFlow(workflow, { srcId, destId })
+    return Flows.add(workflow, { srcId, destId })
   }
 
   static disconnect(workflow, flowId) {
     const flow = Flows.getById(workflow, flowId)
     const { srcId } = flow
     const srcEl = Workflow.getElementById(workflow, srcId)
-    const workflowWithoutFlow = Flows.removeFlow(workflow, flowId)
+    const workflowWithoutFlow = Flows.remove(workflow, flowId)
 
     if (!(srcEl.elementType === Gateway.ELEMENT_TYPE
       && srcEl.type === LoopGateway.TYPE && srcEl.loopbackFlowId === flowId)) {
       return workflowWithoutFlow
     }
 
-    return Gateways.updateGateway(workflowWithoutFlow, srcId, { loopbackFlowId: null })
+    return Gateways.update(workflowWithoutFlow, srcId, { loopbackFlowId: null })
   }
 
   static connectGatewayLoopback(workflow, gatewayId, destId) {
@@ -170,11 +187,34 @@ class Workflow {
     }
 
     Workflow.validateConnect(workflow, gatewayId, destId)
-    const wfWithFlow = Flows.addFlow(workflow, { srcId: gatewayId, destId })
+    const wfWithFlow = Flows.add(workflow, { srcId: gatewayId, destId })
     const flows = Flows.getAll(wfWithFlow)
     const addedFlow = flows[flows.length - 1]
 
-    return Gateways.updateGateway(wfWithFlow, gatewayId, { loopbackFlowId: addedFlow.id })
+    return Gateways.update(wfWithFlow, gatewayId, { loopbackFlowId: addedFlow.id })
+  }
+
+  static removeAttachedElementFlows(workflow, id) {
+    const flows = [
+      ...Flows.getManyBy(workflow, { srcId: id }),
+      ...Flows.getManyBy(workflow, { destId: id }),
+    ]
+
+    let newWf = workflow
+
+    flows.forEach(flow => {
+      newWf = Workflow.disconnect(newWf, flow.id)
+    })
+
+    return newWf
+  }
+
+  static removeElement(workflow, id) {
+    const el = Workflow.getElementById(workflow, id)
+
+    const wfWithoutFlow = Workflow.disconnect(workflow, id)
+    if (el.ELEMENT_TYPE === Flow.ELEMENT_TYPE) return wfWithoutFlow
+    return Workflow.removeAttachedElementFlows(workflow, id)
   }
 
   static createTemplate() {
@@ -182,7 +222,7 @@ class Workflow {
     const workflow = Workflow._create({ version: Workflow.DEFAULT_VERSION, id })
     const withStartEvent = EventListeners.addStartEventListener(workflow)
 
-    const withPhase = Phases.addPhase(withStartEvent)
+    const withPhase = Phases.add(withStartEvent)
 
     const startEvent = EventListeners.getAll(withPhase)[0]
     const firstPhase = Phases.getAll(withPhase)[0]

@@ -30,7 +30,7 @@ describe('Validator', () => {
         describe('when the workflow does contains multiple START events', () => {
           it('throws an error', () => {
             const wf = WorkflowGenerator.generate()
-            const workflowWithPhase = Phases.addPhase(wf)
+            const workflowWithPhase = Phases.add(wf)
             const updatedWorkflow = EventListeners
               .addStartEventListener(workflowWithPhase)
 
@@ -63,7 +63,7 @@ describe('Validator', () => {
             const wf = WorkflowGenerator.generate()
             const workflowWithOneStartEvent = EventListeners
               .addStartEventListener(wf)
-            const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
+            const workflowWithPhase = Phases.add(workflowWithOneStartEvent)
 
             expect(() => Validator.validate(workflowWithPhase)).toThrow(/contains unreachable phase/)
           })
@@ -76,8 +76,8 @@ describe('Validator', () => {
             const wf = WorkflowGenerator.generate()
             const workflowWithOneStartEvent = EventListeners
               .addStartEventListener(wf)
-            const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
-            const withPhaseConnected = Flows.addFlow(workflowWithPhase, {
+            const workflowWithPhase = Phases.add(workflowWithOneStartEvent)
+            const withPhaseConnected = Flows.add(workflowWithPhase, {
               srcId: workflowWithPhase.elements.eventListeners[0].id,
               destId: workflowWithPhase.elements.phases[0].id,
             })
@@ -93,8 +93,8 @@ describe('Validator', () => {
             const wf = WorkflowGenerator.generate()
             const workflowWithOneStartEvent = EventListeners
               .addStartEventListener(wf)
-            const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
-            const withPhaseConnected = Flows.addFlow(workflowWithPhase, {
+            const workflowWithPhase = Phases.add(workflowWithOneStartEvent)
+            const withPhaseConnected = Flows.add(workflowWithPhase, {
               srcId: workflowWithPhase.elements.eventListeners[0].id,
               destId: workflowWithPhase.elements.phases[0].id,
             })
@@ -113,8 +113,8 @@ describe('Validator', () => {
         const wf = WorkflowGenerator.generate()
         const workflowWithOneStartEvent = EventListeners
           .addStartEventListener(wf, { interrupting: true })
-        const workflowWithPhase = Phases.addPhase(workflowWithOneStartEvent)
-        const withPhaseConnected = Flows.addFlow(workflowWithPhase, {
+        const workflowWithPhase = Phases.add(workflowWithOneStartEvent)
+        const withPhaseConnected = Flows.add(workflowWithPhase, {
           srcId: workflowWithPhase.elements.eventListeners[0].id,
           destId: workflowWithPhase.elements.phases[0].id,
         })
@@ -126,7 +126,7 @@ describe('Validator', () => {
             { phaseId: workFlowWithEndEventDispatcher.elements.phases[0].id },
           )
 
-        const fullyConnected = Flows.addFlow(workflowWithApprovalEvent, {
+        const fullyConnected = Flows.add(workflowWithApprovalEvent, {
           srcId: workflowWithApprovalEvent.elements.eventListeners[1].id,
           destId: workflowWithApprovalEvent.elements.eventDispatchers[0].id,
         })
