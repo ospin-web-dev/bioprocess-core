@@ -289,7 +289,6 @@ describe('Phases', () => {
           const phaseId = 'phase_0'
           const fctId = 'fctId'
           const slotName = 'temperature'
-          const target = Math.random()
           const workflow = WorkflowGenerator.generate({
             elements: {
               phases: [
@@ -309,7 +308,7 @@ describe('Phases', () => {
 
           const res = Phases.getTargetValue(workflow, phaseId, fctId, slotName)
 
-          expect(res).toBe(target)
+          expect(res).toBeUndefined()
         })
       })
     })

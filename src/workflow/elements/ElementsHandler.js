@@ -43,11 +43,11 @@ class ElementsHandler {
     } = workflow
 
     return [
-      ...eventDispatchers.map(ElementsHandler.getElementId),
-      ...eventListeners.map(ElementsHandler.getElementId),
-      ...flows.map(ElementsHandler.getElementId),
-      ...gateways.map(ElementsHandler.getElementId),
-      ...phases.map(ElementsHandler.getElementId),
+      ...eventDispatchers.map(this.getElementId),
+      ...eventListeners.map(this.getElementId),
+      ...flows.map(this.getElementId),
+      ...gateways.map(this.getElementId),
+      ...phases.map(this.getElementId),
     ]
   }
 

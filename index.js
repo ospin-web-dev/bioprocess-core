@@ -4,6 +4,7 @@ const EventListeners = require('./src/workflow/elements/eventListeners/EventList
 const EventDispatchers = require('./src/workflow/elements/eventDispatchers/EventDispatchers')
 const Phases = require('./src/workflow/elements/phases/Phases')
 const Gateways = require('./src/workflow/elements/gateways/Gateways')
+const Flows = require('./src/workflow/elements/flows/Flows')
 
 module.exports = {
   Workflow,
@@ -13,5 +14,6 @@ module.exports = {
     EventDispatchers,
     Phases,
     Gateways,
+    Flows,
   },
 }
