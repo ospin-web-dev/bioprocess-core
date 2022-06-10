@@ -275,6 +275,70 @@ describe('Phases', () => {
     })
   })
 
+  describe('getTargetValue', () => {
+    describe('when there is a SET_TARGETS command', () => {
+      describe('when there is a value set for the fctId and slotName', () => {
+        it('returns the target value', () => {
+          const phaseId = 'phase_0'
+          const fctId = 'fctId'
+          const slotName = 'temperature'
+          const target = Math.random()
+          const workflow = WorkflowGenerator.generate({
+            elements: {
+              phases: [
+                Phase.create({
+                  id: phaseId,
+                  commands: [{
+                    id: 'command_0',
+                    type: Command.TYPES.SET_TARGETS,
+                    data: {
+                      targets: [
+                        { fctId, slotName, target },
+                      ],
+                    },
+                  }],
+                }),
+              ],
+            },
+          })
+
+          const res = Phases.getTargetValue(workflow, phaseId, fctId, slotName)
+
+          expect(res).toBe(target)
+        })
+      })
+
+      describe('when there is NO value set for the fctId and slotName', () => {
+        it('returns undefined', () => {
+          const phaseId = 'phase_0'
+          const fctId = 'fctId'
+          const slotName = 'temperature'
+          const target = Math.random()
+          const workflow = WorkflowGenerator.generate({
+            elements: {
+              phases: [
+                Phase.create({
+                  id: phaseId,
+                  commands: [{
+                    id: 'command_0',
+                    type: Command.TYPES.SET_TARGETS,
+                    data: {
+                      targets: [],
+                    },
+                  }],
+                }),
+              ],
+            },
+          })
+
+          const res = Phases.getTargetValue(workflow, phaseId, fctId, slotName)
+
+          expect(res).toBe(target)
+        })
+      })
+    })
+  })
+
   describe('generateUniqueCommandId', () => {
     it('generates a unqiue commandId', () => {
       const phaseId = 'phase_0'
