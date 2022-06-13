@@ -44,6 +44,8 @@ can conncect to:
  - gateways
  - phases
 
+An event listener can only have one outgoing flow
+
 ### Event Dispatchers
 
 can conncect to:

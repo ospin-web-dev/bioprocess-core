@@ -11,7 +11,7 @@ class ConditionEventListener extends EventListener {
   static get SCHEMA() {
     return super.SCHEMA.concat(Joi.object({
       type: Joi.string().allow(ConditionEventListener.TYPE).default(ConditionEventListener.TYPE),
-      condition: Condition.SCHEMA.default(),
+      condition: Condition.SCHEMA.allow(null).default(null),
     }))
   }
 

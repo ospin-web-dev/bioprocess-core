@@ -22,8 +22,9 @@ describe('the Condition interface', () => {
 
   describe('create', () => {
     it('creates a condition with the unset values when no arguments are passed', () => {
-      const res = Condition.create()
-      expect(res).toStrictEqual({ operator: null, left: null, right: null, options: {} })
+      const res = Condition.create(null, { left: null, right: null })
+      expect(res).toStrictEqual(expect
+        .objectContaining({ left: null, right: null, operator: null, options: {} }))
     })
 
     it('creates a condition with the set values when arguments are passed', () => {
@@ -36,604 +37,161 @@ describe('the Condition interface', () => {
         },
       }
       const options = { consecutiveTimeMS: Math.random(), allowedDeviation: Math.random() }
-      const res = Condition.create({ operator, left, right, options })
-      expect(res).toStrictEqual({ operator, left, right, options })
+      const res = Condition.create(null, { operator, left, right, options })
+      expect(res).toStrictEqual(expect.objectContaining({ operator, left, right, options }))
+    })
+
+    describe('when "conditions" and "left" is provided', () => {
+      it('throws an error when conditions AND left is provided', () => {
+        const left = {
+          dataSource: {
+            type: DataSource.TYPES.SENSOR_DATA,
+            data: { fctId: '1', slotName: 'value' },
+          },
+        }
+        const conditions = []
+        expect(() => Condition.create(null, { left, conditions })).toThrow(/conflict between exclusive peers/)
+      })
+    })
+
+    describe('when "conditions" and "right" is provided', () => {
+      it('throws an error when conditions AND left is provided', () => {
+        const right = {
+          dataSource: {
+            type: DataSource.TYPES.SENSOR_DATA,
+            data: { fctId: '1', slotName: 'value' },
+          },
+        }
+        const conditions = []
+        expect(() => Condition.create(null, { right, conditions })).toThrow(/conflict between exclusive peers/)
+      })
     })
   })
 
-  describe('setLeft', () => {
-    it('sets the left value of a condition', () => {
-      const condition = createSimpleCondition()
-      const newLeft = Math.random()
-      const res = Condition.setLeft(condition, newLeft)
-      expect(res.left).toStrictEqual(newLeft)
+  describe('getAllConditionIds', () => {
+    it('returns all conditionIds within a condition', () => {
+      const rootCondition = {
+        id: 'condition_0',
+        operator: 'AND',
+        conditions: [
+          {
+            id: 'condition_1',
+            operator: 'OR',
+            conditions: [
+              {
+                id: 'condition_2',
+                operator: '<=',
+                left: {
+                  dataSource: {
+                    type: DataSource.TYPES.SENSOR_DATA,
+                    data: { fctId: '1', slotName: 'value' },
+                  },
+                },
+                right: 12,
+              },
+              {
+                id: 'condition_3',
+                operator: '<=',
+                left: {
+                  dataSource: {
+                    type: DataSource.TYPES.SENSOR_DATA,
+                    data: { fctId: '2', slotName: 'value' },
+                  },
+                },
+                right: 1,
+              },
+            ],
+          },
+        ],
+      }
+
+      const res = Condition.getAllConditionIds(rootCondition)
+      expect(res)
+        .toStrictEqual(expect.arrayContaining(['condition_0', 'condition_1', 'condition_2', 'condition_3']))
     })
   })
 
-  describe('setRight', () => {
-    it('sets the right value of a condition', () => {
-      const condition = createSimpleCondition()
-      const newRight = Math.random()
-      const res = Condition.setRight(condition, newRight)
-      expect(res.right).toStrictEqual(newRight)
+  describe('createRootCondition', () => {
+    it('creates a new AND condition with an empty condition array', () => {
+      const root = Condition.createRootCondition()
+
+      expect(root.id).toStrictEqual(expect.any(String))
+      expect(root.operator).toBe('AND')
+      expect(root.conditions).toStrictEqual([])
+    })
+  })
+
+  describe('addConditionToGroup', () => {
+    it('should add a new condition to an existing group', () => {
+      const root = Condition.createRootCondition()
+      const updatedCon = Condition.addConditionToGroup(root, root.id)
+
+      expect(updatedCon.conditions).toHaveLength(1)
+    })
+  })
+
+  describe('addGroupToGroup', () => {
+    it('should add a new condition to an existing group', () => {
+      const root = Condition.createRootCondition()
+      const updatedCon = Condition.addGroupToGroup(root, root.id)
+
+      expect(updatedCon.conditions).toHaveLength(1)
+      expect(updatedCon.conditions[0].operator).toBe(Condition.OPERATORS.AND)
+      expect(updatedCon.conditions[0].conditions).toStrictEqual([])
     })
   })
 
   describe('setOperator', () => {
-    it('sets the operator of a condition', () => {
-      const condition = createSimpleCondition()
-      const newOperator = '=='
-      const res = Condition.setOperator(condition, newOperator)
-      expect(res.operator).toStrictEqual(newOperator)
+    it('should set a new operator to an existing condition', () => {
+      const root = Condition.createRootCondition()
+      const updatedCon = Condition.setOperator(root, root.id, Condition.OPERATORS.OR)
+
+      expect(updatedCon.operator).toBe(Condition.OPERATORS.OR)
     })
   })
 
-  describe('setOptions', () => {
-    it('sets the options of a condition', () => {
-      const condition = createSimpleCondition()
-      const newOptions = { allowedDeviation: Math.random(), consecutiveTimeMS: Math.random() }
-      const res = Condition.setOptions(condition, newOptions)
-      expect(res.options).toStrictEqual(newOptions)
+  describe('setLeft', () => {
+    it('should set a new operator to an existing condition', () => {
+      const root = Condition.createRootCondition()
+      const newLeft = Math.random()
+      const updatedCon = Condition.addConditionToGroup(root, root.id)
+      const resCon = Condition.setLeft(updatedCon, updatedCon.conditions[0].id, newLeft)
+
+      expect(resCon.conditions[0].left).toBe(newLeft)
     })
   })
 
-  describe('wrapInAnd', () => {
-    it('wraps a condition into a new AND condition and adds another empty condition', () => {
-      const condition = createSimpleCondition()
-      const res = Condition.wrapInAnd(condition)
+  describe('setRight', () => {
+    it('should set a new operator to an existing condition', () => {
+      const root = Condition.createRootCondition()
+      const newRight = Math.random()
+      const updatedCon = Condition.addConditionToGroup(root, root.id)
+      const resCon = Condition.setRight(updatedCon, updatedCon.conditions[0].id, newRight)
 
-      expect(res.operator).toBe('AND')
-      expect(res.left).toStrictEqual(condition)
-      expect(res.right).toStrictEqual({ operator: null, left: null, right: null, options: {} })
-    })
-
-    it('wraps a condition into a new AND condition and adds second provided condition', () => {
-      const condition1 = createSimpleCondition()
-      const condition2 = createSimpleCondition()
-      const res = Condition.wrapInAnd(condition1, condition2)
-
-      expect(res.operator).toBe('AND')
-      expect(res.left).toStrictEqual(condition1)
-      expect(res.right).toStrictEqual(condition2)
+      expect(resCon.conditions[0].right).toBe(newRight)
     })
   })
 
-  describe('wrapInOr', () => {
-    it('wraps a condition into a new OR condition and adds another empty condition', () => {
-      const condition = createSimpleCondition()
-      const res = Condition.wrapInOr(condition)
+  describe('deleteConditionFromGroup', () => {
+    describe('when removing a normal condition', () => {
+      it('should remove a condition from the group', () => {
+        const root = Condition.createRootCondition()
+        const updatedCon = Condition.addConditionToGroup(root, root.id)
+        const resCon = Condition.deleteConditionFromGroup(updatedCon, updatedCon.conditions[0].id)
 
-      expect(res.operator).toBe('OR')
-      expect(res.left).toStrictEqual(condition)
-      expect(res.right).toStrictEqual({ operator: null, left: null, right: null, options: {} })
+        expect(resCon.conditions).toHaveLength(0)
+      })
     })
 
-    it('wraps a condition into a new OR condition and adds second provided condition', () => {
-      const condition1 = createSimpleCondition()
-      const condition2 = createSimpleCondition()
-      const res = Condition.wrapInOr(condition1, condition2)
+    describe('when removing a group', () => {
+      it('should remove a group from the group', () => {
+        const root = Condition.createRootCondition()
+        const updatedCon = Condition.addGroupToGroup(root, root.id)
+        const resCon = Condition.deleteConditionFromGroup(updatedCon, updatedCon.conditions[0].id)
 
-      expect(res.operator).toBe('OR')
-      expect(res.left).toStrictEqual(condition1)
-      expect(res.right).toStrictEqual(condition2)
-    })
-  })
-
-  describe('parseFromASTToGroupRepresentation', () => {
-    it('parses the first example correctly into a condition with group representation', () => {
-      const example = {
-        operator: '<',
-        left: 2,
-        right: {
-          dataSource: {
-            type: DataSource.TYPES.SENSOR_DATA,
-            data: { fctId: '1', slotName: 'value' },
-          },
-        },
-      }
-
-      const expectedResult = {
-        group: false,
-        operator: '<',
-        left: 2,
-        right: {
-          dataSource: {
-            type: DataSource.TYPES.SENSOR_DATA,
-            data: { fctId: '1', slotName: 'value' },
-          },
-        },
-      }
-
-      const res = Condition.parseFromASTToGroupRepresentation(example)
-
-      expect(res).toStrictEqual(expectedResult)
-    })
-
-    it('parses the second example correctly into a condition with group representation', () => {
-      const example1 = {
-        operator: 'OR',
-        left: {
-          operator: '<',
-          left: 2,
-          right: {
-            dataSource: {
-              type: DataSource.TYPES.SENSOR_DATA,
-              data: { fctId: '1', slotName: 'value' },
-            },
-          },
-        },
-        right: {
-          operator: '<',
-          left: 3,
-          right: {
-            dataSource: {
-              type: DataSource.TYPES.SENSOR_DATA,
-              data: { fctId: '2', slotName: 'value' },
-            },
-          },
-        },
-      }
-
-      const expectedResult = {
-        group: true,
-        operator: 'OR',
-        conditions: [
-          {
-            group: false,
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '1', slotName: 'value' },
-              },
-            },
-          },
-          {
-            group: false,
-            operator: '<',
-            left: 3,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '2', slotName: 'value' },
-              },
-            },
-          },
-        ],
-      }
-
-      const res = Condition.parseFromASTToGroupRepresentation(example1)
-
-      expect(res).toStrictEqual(expectedResult)
-    })
-
-    it('parses the third example correctly into a condition with group representation', () => {
-      const example = {
-        operator: 'OR',
-        left: {
-          operator: 'OR',
-          left: {
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '1', slotName: 'value' },
-              },
-            },
-          },
-          right: {
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '2', slotName: 'value' },
-              },
-            },
-          },
-        },
-        right: {
-          operator: '<',
-          left: 3,
-          right: {
-            dataSource: {
-              type: DataSource.TYPES.SENSOR_DATA,
-              data: { fctId: '3', slotName: 'value' },
-            },
-          },
-        },
-      }
-
-      const expectedResult = {
-        group: true,
-        operator: 'OR',
-        conditions: [
-          {
-            group: false,
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '1', slotName: 'value' },
-              },
-            },
-          },
-          {
-            group: false,
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '2', slotName: 'value' },
-              },
-            },
-          },
-          {
-            group: false,
-            operator: '<',
-            left: 3,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '3', slotName: 'value' },
-              },
-            },
-          },
-        ],
-      }
-
-      const res = Condition.parseFromASTToGroupRepresentation(example)
-
-      expect(res).toStrictEqual(expectedResult)
-    })
-
-    it('parses the fourth example correctly into a condition with group representation', () => {
-      const example = {
-        operator: 'OR',
-        left: {
-          operator: 'AND',
-          left: {
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '1', slotName: 'value' },
-              },
-            },
-          },
-          right: {
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '2', slotName: 'value' },
-              },
-            },
-          },
-        },
-        right: {
-          operator: '<',
-          left: 3,
-          right: {
-            dataSource: {
-              type: DataSource.TYPES.SENSOR_DATA,
-              data: { fctId: '3', slotName: 'value' },
-            },
-          },
-        },
-      }
-
-      const expectedResult = {
-        group: true,
-        operator: 'OR',
-        conditions: [
-          {
-            group: true,
-            operator: 'AND',
-            conditions: [
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '1', slotName: 'value' },
-                  },
-                },
-              },
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '2', slotName: 'value' },
-                  },
-                },
-              },
-            ],
-          },
-          {
-            group: false,
-            operator: '<',
-            left: 3,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '3', slotName: 'value' },
-              },
-            },
-          },
-        ],
-      }
-
-      const res = Condition.parseFromASTToGroupRepresentation(example)
-
-      expect(res).toStrictEqual(expectedResult)
-    })
-
-    it('parses the fiths example correctly into a condition with group representation', () => {
-      const example = {
-        operator: 'OR',
-        left: {
-          operator: 'AND',
-          left: {
-            operator: 'AND',
-            left: {
-              operator: '<',
-              left: 2,
-              right: {
-                dataSource: {
-                  type: DataSource.TYPES.SENSOR_DATA,
-                  data: { fctId: '1', slotName: 'value' },
-                },
-              },
-            },
-            right: {
-              operator: '<',
-              left: 2,
-              right: {
-                dataSource: {
-                  type: DataSource.TYPES.SENSOR_DATA,
-                  data: { fctId: '2', slotName: 'value' },
-                },
-              },
-            },
-          },
-          right: {
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '3', slotName: 'value' },
-              },
-            },
-          },
-        },
-        right: {
-          operator: '<',
-          left: 3,
-          right: {
-            dataSource: {
-              type: DataSource.TYPES.SENSOR_DATA,
-              data: { fctId: '4', slotName: 'value' },
-            },
-          },
-        },
-      }
-
-      const expectedResult = {
-        group: true,
-        operator: 'OR',
-        conditions: [
-          {
-            group: true,
-            operator: 'AND',
-            conditions: [
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '1', slotName: 'value' },
-                  },
-                },
-              },
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '2', slotName: 'value' },
-                  },
-                },
-              },
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '3', slotName: 'value' },
-                  },
-                },
-              },
-            ],
-          },
-          {
-            group: false,
-            operator: '<',
-            left: 3,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '4', slotName: 'value' },
-              },
-            },
-          },
-        ],
-      }
-
-      const res = Condition.parseFromASTToGroupRepresentation(example)
-
-      expect(res).toStrictEqual(expectedResult)
-    })
-
-    it('parses the sixth example correctly into a condition with group representation', () => {
-      const example = {
-        operator: 'OR',
-        left: {
-          operator: 'AND',
-          left: {
-            operator: 'AND',
-            left: {
-              operator: 'OR',
-              left: {
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '1', slotName: 'value' },
-                  },
-                },
-              },
-              right: {
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '2', slotName: 'value' },
-                  },
-                },
-              },
-            },
-            right: {
-              operator: '<',
-              left: 2,
-              right: {
-                dataSource: {
-                  type: DataSource.TYPES.SENSOR_DATA,
-                  data: { fctId: '3', slotName: 'value' },
-                },
-              },
-            },
-          },
-          right: {
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '4', slotName: 'value' },
-              },
-            },
-          },
-        },
-        right: {
-          operator: '<',
-          left: 2,
-          right: {
-            dataSource: {
-              type: DataSource.TYPES.SENSOR_DATA,
-              data: { fctId: '5', slotName: 'value' },
-            },
-          },
-        },
-      }
-
-      const expectedResult = {
-        group: true,
-        operator: 'OR',
-        conditions: [
-          {
-            operator: 'AND',
-            group: true,
-            conditions: [
-              {
-                group: true,
-                operator: 'OR',
-                conditions: [
-                  {
-                    group: false,
-                    operator: '<',
-                    left: 2,
-                    right: {
-                      dataSource: {
-                        type: DataSource.TYPES.SENSOR_DATA,
-                        data: { fctId: '1', slotName: 'value' },
-                      },
-                    },
-                  },
-                  {
-                    group: false,
-                    operator: '<',
-                    left: 2,
-                    right: {
-                      dataSource: {
-                        type: DataSource.TYPES.SENSOR_DATA,
-                        data: { fctId: '2', slotName: 'value' },
-                      },
-                    },
-                  },
-                ],
-              },
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '3', slotName: 'value' },
-                  },
-                },
-              },
-              {
-                group: false,
-                operator: '<',
-                left: 2,
-                right: {
-                  dataSource: {
-                    type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '4', slotName: 'value' },
-                  },
-                },
-              },
-            ],
-          },
-          {
-            group: false,
-            operator: '<',
-            left: 2,
-            right: {
-              dataSource: {
-                type: DataSource.TYPES.SENSOR_DATA,
-                data: { fctId: '5', slotName: 'value' },
-              },
-            },
-          },
-        ],
-      }
-
-      const res = Condition.parseFromASTToGroupRepresentation(example)
-
-      expect(res).toStrictEqual(expectedResult)
+        expect(resCon.conditions).toHaveLength(0)
+      })
     })
   })
+
 })
