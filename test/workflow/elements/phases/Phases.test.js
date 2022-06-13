@@ -1,4 +1,5 @@
 const Phase = require('../../../../src/workflow/elements/phases/Phase')
+const ApprovalEventListener = require('../../../../src/workflow/elements/eventListeners/ApprovalEventListener')
 const Command = require('../../../../src/workflow/elements/phases/commands/Command')
 const Phases = require('../../../../src/workflow/elements/phases/Phases')
 
@@ -59,6 +60,29 @@ describe('Phases', () => {
         expect(() => Phases.removePhase(workflow, id))
           .toThrow(/Workflow has to contain at least one phase/)
       })
+    })
+
+    it('removes any attached event listeners', () => {
+      const id0 = 'phase_0'
+      const id1 = 'phase_0'
+      const id2 = 'eventListener_0'
+      const id3 = 'eventListener_1'
+      const workflow = WorkflowGenerator.generate({
+        elements: {
+          phases: [
+            Phase.create({ id: id0 }),
+            Phase.create({ id: id1 }),
+          ],
+          eventListeners: [
+            ApprovalEventListener.create({ id: id2, phaseId: id1 }),
+            ApprovalEventListener.create({ id: id3, phaseId: id1 }),
+          ],
+        },
+      })
+
+      const { elements: { eventListeners } } = Phases.removePhase(workflow, id1)
+
+      expect(eventListeners).toHaveLength(0)
     })
   })
 

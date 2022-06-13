@@ -1,4 +1,5 @@
 const ElementsHandler = require('../ElementsHandler')
+const EventListeners = require('../eventListeners/EventListeners')
 
 const Phase = require('./Phase')
 const Command = require('./commands/Command')
@@ -31,7 +32,16 @@ class Phases extends ElementsHandler {
     if (Phases.isLastPhase(workflow)) {
       throw new NoPhasesError()
     }
-    return this.remove(workflow, phaseId)
+    let wfWithoutPhase = this.remove(workflow, phaseId)
+    const eventListeners = EventListeners.getManyBy(wfWithoutPhase, { phaseId })
+
+    if (eventListeners.length) {
+      eventListeners.forEach(listener => {
+        wfWithoutPhase = EventListeners.remove(wfWithoutPhase, listener.id)
+      })
+    }
+
+    return wfWithoutPhase
   }
 
   static updatePhase(workflow, id, data) {
