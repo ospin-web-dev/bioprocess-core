@@ -127,6 +127,16 @@ class Workflow {
         )
       }
     }
+
+    if (srcEl.elementType === EventListener.ELEMENT_TYPE) {
+      const totalOutgoingFlows = Flows.getManyBy(workflow, { srcId })
+      if (totalOutgoingFlows.length) {
+        throw new IncorrectAmountOfOutgoingFlowsError(
+          `Only one outgoing flow for ${srcEl.elementType} allowed`,
+          { el: srcEl },
+        )
+      }
+    }
   }
 
   static connect(workflow, srcId, destId) {

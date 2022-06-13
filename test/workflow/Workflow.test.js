@@ -163,6 +163,35 @@ describe('Workflow', () => {
       })
     })
 
+    describe('when connecting event listeners', () => {
+      describe('when trying to connected a second outgoing flow', () => {
+        it('should throw an error', () => {
+          const listenerId = 'eventListener_0'
+          const dispatcherId1 = 'eventDispatcher_0'
+          const dispatcherId2 = 'eventDispatcher_1'
+          const wf = WorkflowGenerator.generate({
+            elements: {
+              eventDispatchers: [
+                EndEventDispatcher.create({ id: dispatcherId1 }),
+                EndEventDispatcher.create({ id: dispatcherId2 }),
+              ],
+              eventListeners: [
+                ApprovalEventListener.create({ id: listenerId }),
+              ],
+              flows: [
+                { id: 'flow_0', srcId: listenerId, destId: dispatcherId1 },
+              ],
+              gateways: [],
+              phases: [],
+            },
+          })
+
+          expect(() => Workflow.connect(wf, listenerId, dispatcherId2))
+            .toThrow(/Only one outgoing flow/)
+        })
+      })
+    })
+
     describe('when connecting gateways', () => {
       describe('when connecting the loopback flow of a LoopGateway', () => {
         describe('when the passed elementId does not belong to a gateway', () => {
