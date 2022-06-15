@@ -1,18 +1,4 @@
-const Joi = require('joi')
-const EventDispatcher = require('./EventDispatcher')
+const { TYPES } = require('./EventDispatchers')
+const createDefaultEventDispatcherInterface = require('./createDefaultEventDispatcherInterface')
 
-class EndEventDispatcher extends EventDispatcher {
-
-  static get TYPE() {
-    return 'END'
-  }
-
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(EndEventDispatcher.TYPE).default(EndEventDispatcher.TYPE),
-    }))
-  }
-
-}
-
-module.exports = EndEventDispatcher
+module.exports = createDefaultEventDispatcherInterface(TYPES.END)

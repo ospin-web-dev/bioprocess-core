@@ -15,7 +15,6 @@ const TimerEventListener = require('./elements/eventListeners/TimerEventListener
 const Flow = require('./elements/flows/Flow')
 const Flows = require('./elements/flows/Flows')
 
-const Gateway = require('./elements/gateways/Gateway')
 const Gateways = require('./elements/gateways/Gateways')
 const AndMergeGateway = require('./elements/gateways/AndMergeGateway')
 const AndSplitGateway = require('./elements/gateways/AndSplitGateway')
@@ -30,7 +29,7 @@ const IncorrectAmountOfOutgoingFlowsError = require('./validator/errors/Incorrec
 const IncorrectAmountOfIncomingFlowsError = require('./validator/errors/IncorrectAmountOfIncomingFlowsError')
 const IncorrectElementTypeError = require('./validator/errors/IncorrectElementTypeError')
 
-() => {
+const Workflow = () => {
 
   const DEFAULT_VERSION = '1.0'
   const SCHEMA = Joi.object({
@@ -111,7 +110,7 @@ class Workflow {
         return EventListeners
       case Flow.ELEMENT_TYPE:
         return Flows
-      case Gateway.ELEMENT_TYPE:
+      case Gateways.ELEMENT_TYPE:
         return Gateways
       case Phase.ELEMENT_TYPE:
         return Phases
@@ -134,12 +133,12 @@ class Workflow {
       [EventDispatcher.ELEMENT_TYPE]: [],
       [EventListener.ELEMENT_TYPE]: [
         EventDispatcher.ELEMENT_TYPE,
-        Gateway.ELEMENT_TYPE,
+        Gateways.ELEMENT_TYPE,
         Phase.ELEMENT_TYPE,
       ],
-      [Gateway.ELEMENT_TYPE]: [
+      [Gateways.ELEMENT_TYPE]: [
         EventDispatcher.ELEMENT_TYPE,
-        Gateway.ELEMENT_TYPE,
+        Gateways.ELEMENT_TYPE,
         Phase.ELEMENT_TYPE,
       ],
       [Phase.ELEMENT_TYPE]: [],
@@ -192,7 +191,7 @@ class Workflow {
     const srcEl = Workflow.getElementById(workflow, srcId)
     const workflowWithoutFlow = Flows.remove(workflow, flowId)
 
-    if (!(srcEl.elementType === Gateway.ELEMENT_TYPE
+    if (!(srcEl.elementType === Gateways.ELEMENT_TYPE
       && srcEl.type === LoopGateway.TYPE && srcEl.loopbackFlowId === flowId)) {
       return workflowWithoutFlow
     }
@@ -203,7 +202,7 @@ class Workflow {
   static connectGatewayLoopback(workflow, gatewayId, destId) {
     const el = Workflow.getElementById(workflow, gatewayId)
 
-    if (el.elementType !== Gateway.ELEMENT_TYPE) {
+    if (el.elementType !== Gateways.ELEMENT_TYPE) {
       throw new IncorrectElementTypeError(`${el.elementType} is not a gateway`, { el })
     }
 

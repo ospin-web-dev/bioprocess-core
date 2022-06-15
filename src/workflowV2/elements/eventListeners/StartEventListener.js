@@ -1,18 +1,34 @@
 const Joi = require('joi')
-const EventListener = require('./EventListener')
+const eventListenerSchema = require('./eventListenerSchema')
+const addElement = require('../functions/collection/addElement')
+const updateElement = require('../functions/collection/updateElement')
+const getAllElements = require('../functions/collection/typeSpecific/getAllElements')
+const {
+  TYPES,
+  COLLECTION_NAME,
+} = require('./EventListeners')
+const IncorrectAmountOfStartEventListenersError = require('../../validator/errors/IncorrectAmountOfStartEventListenersError')
 
-class StartEventListener extends EventListener {
+const TYPE = TYPES.START
 
-  static get TYPE() {
-    return 'START'
-  }
+const SCHEMA = (
+  eventListenerSchema.concat(Joi.object({
+    type: Joi.string().allow(TYPE).default(TYPE),
+  }))
+)
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(StartEventListener.TYPE).default(StartEventListener.TYPE),
-    }))
-  }
+const getAll = wf => getAllElements(wf, COLLECTION_NAME, TYPE)
 
+const add = (wf, data) => {
+  const startListeners = getAll(wf)
+  if (startListeners.length > 0) throw new IncorrectAmountOfStartEventListenersError()
+  return addElement(wf, SCHEMA, data)
 }
 
-module.exports = StartEventListener
+module.exports = {
+  SCHEMA,
+  TYPE,
+  add,
+  getAll,
+  update: (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, data),
+}

@@ -1,36 +1,25 @@
-const ElementsHandler = require('../ElementsHandler')
-const Flow = require('./Flow')
+const flowSchema = require('../baseSchema')
+const createCollectionGetters = require('../compositions/createCollectionGetters')
+const addElement = require('../functions/collection/addElement')
+const removeElement = require('../functions/collection/removeElement')
 
-class Flows extends ElementsHandler {
+const COLLECTION_NAME = 'flows'
 
-  static get COLLECTION_NAME() {
-    return 'flows'
-  }
+const {
+  getAll,
+  getBy,
+  getById,
+  getLast,
+  getManyBy,
+} = createCollectionGetters(COLLECTION_NAME)
 
-  static get ELEMENT_TYPE() {
-    return Flow.ELEMENT_TYPE
-  }
-
-  static get ID_PREFIX() {
-    return 'flow'
-  }
-
-  static getInterface() {
-    return Flow
-  }
-
-  static add(workflow, data) {
-    return this.addElement(workflow, Flow, data)
-  }
-
-  static remove(workflow, flowId) {
-    return this.removeElement(workflow, flowId)
-  }
-
-  static update(workflow, id, data) {
-    return this.updateElement(workflow, id, data)
-  }
-
+module.exports = {
+  SCHEMA: flowSchema,
+  add: (wf, data) => addElement(wf, COLLECTION_NAME, flowSchema, data),
+  getAll,
+  getBy,
+  getById,
+  getLast,
+  getManyBy,
+  remove: (wf, id) => removeElement(wf, COLLECTION_NAME, id),
 }
-
-module.exports = Flows
