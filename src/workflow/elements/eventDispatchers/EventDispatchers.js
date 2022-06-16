@@ -1,49 +1,45 @@
-const ElementsHandler = require('../ElementsHandler')
-const EndEventDispatcher = require('./EndEventDispatcher')
-
+const createCollectionGetters = require('../compositions/createCollectionGetters')
+const removeElement = require('../functions/collection/removeElement')
 const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
 
-class EventDispatchers extends ElementsHandler {
-
-  static get COLLECTION_NAME() {
-    return 'eventDispatchers'
-  }
-
-  static get ID_PREFIX() {
-    return 'eventDispatcher'
-  }
-
-  static get TYPE_TO_INTERFACE_MAP() {
-    return {
-      [EndEventDispatcher.TYPE]: EndEventDispatcher,
-    }
-  }
-
-  static getInterface(eventDispatcher) {
-    return EventDispatchers.TYPE_TO_INTERFACE_MAP[eventDispatcher.type]
-  }
-
-  static isLastEndEventDispatcher(workflow, eventDispatcherId) {
-    const dispatcher = this.getById(workflow, eventDispatcherId)
-    if (dispatcher.type === EndEventDispatcher.TYPE) {
-      const allEndEventDispatchers = EventDispatchers
-        .getManyBy(workflow, { type: EndEventDispatcher.TYPE })
-      return allEndEventDispatchers.length === 1
-    }
-    return false
-  }
-
-  static remove(workflow, eventDispatcherId) {
-    if (EventDispatchers.isLastEndEventDispatcher(workflow, eventDispatcherId)) {
-      throw new NoEndEventDispatcherError()
-    }
-    return this.removeElement(workflow, eventDispatcherId)
-  }
-
-  static addEndEventDispatcher(workflow, data) {
-    return this.addElement(workflow, EndEventDispatcher, data)
-  }
-
+const COLLECTION_NAME = 'eventDispatchers'
+const ELEMENT_TYPE = 'EVENT_DISPATCHER'
+const TYPES = {
+  END: 'END',
 }
 
-module.exports = EventDispatchers
+const {
+  getAll,
+  getBy,
+  getById,
+  getLast,
+  getManyBy,
+} = createCollectionGetters(COLLECTION_NAME)
+
+const isLastEndEventDispatcher = (wf, eventDispatcherId) => {
+  const dispatcher = getById(wf, eventDispatcherId)
+  if (dispatcher.type === TYPES.END) {
+    const allEndEventDispatchers = getManyBy(wf, { type: TYPES.END })
+    return allEndEventDispatchers.length === 1
+  }
+  return false
+}
+
+const remove = (wf, eventDispatcherId) => {
+  if (isLastEndEventDispatcher(wf, eventDispatcherId)) {
+    throw new NoEndEventDispatcherError()
+  }
+  return removeElement(wf, COLLECTION_NAME, eventDispatcherId)
+}
+
+module.exports = {
+  COLLECTION_NAME,
+  ELEMENT_TYPE,
+  TYPES,
+  getAll,
+  getBy,
+  getById,
+  getLast,
+  getManyBy,
+  remove,
+}

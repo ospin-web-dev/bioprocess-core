@@ -1,41 +1,33 @@
 const Joi = require('joi')
 
-class Command {
+const Command = {
 
-  static get TYPES() {
-    return {
-      SET_TARGETS: 'SET_TARGETS',
-    }
-  }
+  TYPES: {
+    SET_TARGETS: 'SET_TARGETS',
+  },
 
-  static get DATA_SCHEMAS() {
-    return {
-      [Command.TYPES.SET_TARGETS]: Joi.object({
-        targets: Joi.array().items(Joi.object({
-          fctId: Joi.string().required(),
-          slotName: Joi.string().required(),
-          target: Joi.alternatives()
-            .try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
-        })),
-      }),
-    }
-  }
+  DATA_SCHEMAS: {
+    [this.TYPES.SET_TARGETS]: Joi.object({
+      targets: Joi.array().items(Joi.object({
+        fctId: Joi.string().required(),
+        slotName: Joi.string().required(),
+        target: Joi.alternatives()
+          .try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
+      })),
+    }),
+  },
 
-  static get SCHEMA() {
-    return Joi.object({
-      id: Joi.string().required(),
-      type: Joi.string().valid(...Object.values(Command.TYPES)).required(),
-      data: Joi.any().when('type', {
-        is: Command.TYPES.SET_TARGETS,
-        then: Command.DATA_SCHEMAS.SET_TARGETS,
-        otherwise: Joi.forbidden(),
-      }),
-    })
-  }
+  SCHEMA: Joi.object({
+    id: Joi.string().required(),
+    type: Joi.string().valid(...Object.values(this.TYPES)).required(),
+    data: Joi.any().when('type', {
+      is: this.TYPES.SET_TARGETS,
+      then: this.DATA_SCHEMAS.SET_TARGETS,
+      otherwise: Joi.forbidden(),
+    }),
+  }),
 
-  static create(data) {
-    return Joi.attempt(data, this.SCHEMA)
-  }
+  create: data => Joi.attempt(data, this.SCHEMA),
 
 }
 

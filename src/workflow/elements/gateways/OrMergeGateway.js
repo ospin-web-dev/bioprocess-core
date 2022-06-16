@@ -1,18 +1,4 @@
-const Joi = require('joi')
-const Gateway = require('./Gateway')
+const { TYPES } = require('./Gateways')
+const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-class OrMergeGateway extends Gateway {
-
-  static get TYPE() {
-    return 'OR_MERGE'
-  }
-
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(OrMergeGateway.TYPE).default(OrMergeGateway.TYPE),
-    }))
-  }
-
-}
-
-module.exports = OrMergeGateway
+module.exports = createDefaultGatewayInterface(TYPES.OR_MERGE)

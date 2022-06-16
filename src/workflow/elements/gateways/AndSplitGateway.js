@@ -1,18 +1,4 @@
-const Joi = require('joi')
-const Gateway = require('./Gateway')
+const { TYPES } = require('./Gateways')
+const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-class AndSplitGateway extends Gateway {
-
-  static get TYPE() {
-    return 'AND_SPLIT'
-  }
-
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(AndSplitGateway.TYPE).default(AndSplitGateway.TYPE),
-    }))
-  }
-
-}
-
-module.exports = AndSplitGateway
+module.exports = createDefaultGatewayInterface(TYPES.AND_SPLIT)

@@ -1,20 +1,18 @@
 const Joi = require('joi')
-const EventListener = require('./EventListener')
+const eventListenerSchema = require('./eventListenerSchema')
+const {
+  TYPES,
+} = require('./EventListeners')
+const createDefaultEventListenerInterface = require('./createDefaultEventListenerInterface')
 const Condition = require('../../../conditions/Condition')
 
-class ConditionEventListener extends EventListener {
+const TYPE = TYPES.CONDITION
 
-  static get TYPE() {
-    return 'CONDITION'
-  }
+const SCHEMA = (
+  eventListenerSchema.concat(Joi.object({
+    condition: Condition.SCHEMA.default(),
+    type: Joi.string().allow(TYPE).default(TYPE),
+  }))
+)
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(ConditionEventListener.TYPE).default(ConditionEventListener.TYPE),
-      condition: Condition.SCHEMA.allow(null).default(null),
-    }))
-  }
-
-}
-
-module.exports = ConditionEventListener
+module.exports = createDefaultEventListenerInterface(TYPE, SCHEMA)

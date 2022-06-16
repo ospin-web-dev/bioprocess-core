@@ -1,20 +1,18 @@
 const Joi = require('joi')
-const Gateway = require('./Gateway')
+const baseSchema = require('../baseSchema')
+const { TYPES, ELEMENT_TYPE } = require('./Gateways')
 
-class LoopGateway extends Gateway {
+const TYPE = TYPES.LOOP
 
-  static get TYPE() {
-    return 'LOOP'
-  }
+const SCHEMA = (
+  baseSchema.concat(Joi.object({
+    elementType: Joi.string().valid(ELEMENT_TYPE).default(ELEMENT_TYPE),
+    loopbackFlowId: baseSchema.extract('id').optional().allow(null).default(null),
+    maxIterations: Joi.number().integer().strict().default(1),
+    type: Joi.string().allow(TYPE).default(TYPE),
+  }))
+)
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(LoopGateway.TYPE).default(LoopGateway.TYPE),
-      maxIterations: Joi.number().integer().strict().default(1),
-      loopbackFlowId: super.SCHEMA.extract('id').optional().allow(null).default(null),
-    }))
-  }
+const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-}
-
-module.exports = LoopGateway
+module.exports = createDefaultGatewayInterface(TYPE, SCHEMA)
