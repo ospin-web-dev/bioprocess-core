@@ -1,20 +1,16 @@
-const Joi = require('joi')
-
 const createCollectionGetters = require('../compositions/createCollectionGetters')
 const addElement = require('../functions/collection/addElement')
 const removeElement = require('../functions/collection/removeElement')
 const updateElement = require('../functions/collection/updateElement')
-const baseSchema = require('../baseSchema')
 const Command = require('./commands/Command')
+const createElementSchema = require('../createElementSchema')
+const createCommonPhaseSchema = require('./createCommonPhaseSchema')
 const NoPhasesError = require('../../validator/errors/NoPhasesError')
 
 const ELEMENT_TYPE = 'PHASE'
 const COLLECTION_NAME = 'phases'
 
-const SCHEMA = baseSchema.concat(Joi.object({
-  commands: Joi.array().items(Command.SCHEMA).default([]),
-  elementType: Joi.string().valid(ELEMENT_TYPE).default(ELEMENT_TYPE),
-}))
+const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema())
 
 const {
   getAll,

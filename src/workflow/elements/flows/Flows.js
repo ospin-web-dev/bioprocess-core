@@ -1,8 +1,10 @@
-const flowSchema = require('../baseSchema')
+const createElementSchema = require('../createElementSchema')
+const createCommonSchema = require('./createCommonFlowSchema')
 const createCollectionGetters = require('../compositions/createCollectionGetters')
 const addElement = require('../functions/collection/addElement')
 const removeElement = require('../functions/collection/removeElement')
 
+const ELEMENT_TYPE = 'FLOW'
 const COLLECTION_NAME = 'flows'
 
 const {
@@ -13,9 +15,13 @@ const {
   getManyBy,
 } = createCollectionGetters(COLLECTION_NAME)
 
+const SCHEMA = createElementSchema(ELEMENT_TYPE)
+  .concat(createCommonSchema())
+
 module.exports = {
-  SCHEMA: flowSchema,
-  add: (wf, data) => addElement(wf, COLLECTION_NAME, flowSchema, data),
+  ELEMENT_TYPE,
+  SCHEMA,
+  add: (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data),
   getAll,
   getBy,
   getById,
