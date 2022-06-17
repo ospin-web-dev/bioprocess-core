@@ -19,6 +19,7 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE)
   .concat(createCommonSchema())
 
 module.exports = {
+  COLLECTION_NAME,
   ELEMENT_TYPE,
   SCHEMA,
   add: (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data),

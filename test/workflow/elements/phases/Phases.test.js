@@ -6,8 +6,14 @@ const {
 
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
 const testCollectionDefaultGetters = require('../helpers/testCollectionDefaultGetters')
+const testAddMethod = require('../helpers/testAddMethod')
 
 describe('Phases', () => {
+
+  /* eslint-disable */
+  testCollectionDefaultGetters(Phases)
+  testAddMethod(Phases)
+  /* eslint-enable */
 
   const createSinglePhaseWorkflow = () => {
     let wf = WorkflowGenerator.generate()
@@ -15,31 +21,6 @@ describe('Phases', () => {
     const phase = Phases.getAll(wf)[0]
     return { phase, wf }
   }
-
-  /* eslint-disable-next-line */
-  testCollectionDefaultGetters(Phases)
-
-  describe('add', () => {
-    describe('when the data is valid', () => {
-      it('adds a new phase to the workflow', () => {
-        const wf = WorkflowGenerator.generate()
-
-        const { elements: { phases } } = Phases.add(wf)
-
-        expect(phases).toHaveLength(1)
-        expect(phases[0].id).toBe('phase_0')
-      })
-    })
-
-    describe('when the data is invalid', () => {
-      it('throws an error', () => {
-        const wf = WorkflowGenerator.generate()
-
-        expect(() => Phases.add(wf, { acceptMe: 'senpai' }))
-          .toThrow(/"acceptMe" is not allowed/)
-      })
-    })
-  })
 
   describe('remove', () => {
     it('removes a phase from the workflow', () => {

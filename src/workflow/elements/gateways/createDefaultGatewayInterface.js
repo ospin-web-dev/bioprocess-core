@@ -17,8 +17,8 @@ module.exports = (type, schema = Joi.object()) => {
     SCHEMA,
     TYPE: type,
     getAll: wf => getAllElements(wf, COLLECTION_NAME, type),
-    add: (wf, data) => addElement(wf, COLLECTION_NAME, schema, data),
-    update: (wf, id, data) => updateElement(wf, COLLECTION_NAME, schema, id, data),
+    add: (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data),
+    update: (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, data),
     remove: (wf, id) => removeElement(wf, COLLECTION_NAME, id),
   }
 }

@@ -1,30 +1,15 @@
 const EndEventDispatcher = require('../../../../src/workflow/elements/eventDispatchers/EndEventDispatcher')
+const Flows = require('../../../../src/workflow/elements/flows/Flows')
+const ApprovalEventListener = require('../../../../src/workflow/elements/eventListeners/ApprovalEventListener')
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
 
-describe('EventDispatchers', () => {
+const testAddMethod = require('../helpers/testAddMethod')
 
-  describe('add', () => {
-    describe('when the data is valid', () => {
-      it('adds a new EndEventDispatcher to the workflow', () => {
-        const workflow = WorkflowGenerator.generate()
+describe('EndEventDispatcher', () => {
 
-        const { elements: { eventDispatchers } } = EndEventDispatcher.add(workflow)
-
-        expect(eventDispatchers).toHaveLength(1)
-        expect(eventDispatchers[0].type).toBe(EndEventDispatcher.TYPE)
-        expect(eventDispatchers[0].id).toBe('eventDispatcher_0')
-      })
-    })
-
-    describe('when the data is invalid', () => {
-      it('throw an error', () => {
-        const workflow = WorkflowGenerator.generate()
-
-        expect(() => EndEventDispatcher.add(workflow, { acceptMe: 'senpai' }))
-          .toThrow(/"acceptMe" is not allowed/)
-      })
-    })
-  })
+  /* eslint-disable */
+  testAddMethod(EndEventDispatcher)
+  /* eslint-enable */
 
   describe('remove', () => {
     it('removes an EndEventDispatcher from the workflow', () => {
@@ -48,6 +33,19 @@ describe('EventDispatchers', () => {
         expect(() => EndEventDispatcher.remove(wf, dispatcher.id))
           .toThrow(/Workflow has to contain at least one END event dispatcher/)
       })
+    })
+
+    it('removes all attached flows', () => {
+      let wf = WorkflowGenerator.generate()
+      wf = EndEventDispatcher.add(wf)
+      wf = EndEventDispatcher.add(wf)
+      wf = ApprovalEventListener.add(wf)
+      const dispatcher = EndEventDispatcher.getAll(wf)[0]
+      wf = Flows.add(wf, { srcId: ApprovalEventListener.getAll(wf)[0].id, destId: dispatcher.id })
+
+      wf = EndEventDispatcher.remove(wf, dispatcher.id)
+
+      expect(Flows.getAll(wf)).toHaveLength(0)
     })
   })
 })

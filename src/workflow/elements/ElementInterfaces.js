@@ -34,13 +34,13 @@ const addRemoveLoopbackReferenceHook = flowRemoveFn => (workflow, flowId) => {
   const flow = Flows.getById(workflow, flowId)
   const workflowWithoutFlow = flowRemoveFn(workflow, flowId)
 
-  const gateway = Gateways.findBy(workflowWithoutFlow, { loopbackFlowId: flow.id })
+  const gateway = Gateways.getBy(workflowWithoutFlow, { loopbackFlowId: flow.id })
 
   if (!gateway) {
     return workflowWithoutFlow
   }
 
-  return Gateways.update(workflowWithoutFlow, gateway.id, { loopbackFlowId: null })
+  return LoopGateway.update(workflowWithoutFlow, gateway.id, { loopbackFlowId: null })
 }
 
 Flows.remove = addRemoveLoopbackReferenceHook(Flows.remove)
@@ -107,6 +107,11 @@ const CONNECTION_MAP = {
 }
 
 const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => {
+
+  if (srcId === destId) {
+    throw new Error('Cannot connect an element to itself')
+  }
+
   const srcEl = getElementById(workflow, srcId)
   const destEl = getElementById(workflow, destId)
 
@@ -159,7 +164,7 @@ const addLoopbackReferenceHook = flowAddFn => (workflow, { srcId, destId }) => {
   const wfWithFlow = flowAddFn(workflow, { srcId, destId })
   const flow = Flows.getLast(wfWithFlow)
 
-  return Gateways.update(wfWithFlow, srcId, { loopbackFlowId: flow.id })
+  return LoopGateway.update(wfWithFlow, srcId, { loopbackFlowId: flow.id })
 }
 
 Flows.addLoopbackFlow = addLoopbackReferenceHook(Flows.add)
