@@ -1,4 +1,8 @@
 const { TYPES } = require('./EventListeners')
 const createDefaultEventListenerInterface = require('./createDefaultEventListenerInterface')
 
-module.exports = createDefaultEventListenerInterface(TYPES.APPROVAL)
+const defaultInterface = createDefaultEventListenerInterface(TYPES.APPROVAL)
+
+delete defaultInterface.update
+
+module.exports = defaultInterface

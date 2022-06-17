@@ -17,7 +17,7 @@ module.exports = (elementInterface, defaultData = {}) => {
       it('throw an error', () => {
         const wf = WorkflowGenerator.generate()
 
-        expect(() => elementInterface.add(wf, { acceptMe: 'senpai' }))
+        expect(() => elementInterface.add(wf, { ...defaultData, acceptMe: 'senpai' }))
           .toThrow(/"acceptMe" is not allowed/)
       })
     })

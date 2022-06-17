@@ -1,6 +1,4 @@
 const createCollectionGetters = require('../compositions/createCollectionGetters')
-const removeElement = require('../functions/collection/removeElement')
-const IncorrectAmountOfStartEventListenersError = require('../../validator/errors/IncorrectAmountOfStartEventListenersError')
 
 const COLLECTION_NAME = 'eventListeners'
 const ELEMENT_TYPE = 'EVENT_LISTENER'

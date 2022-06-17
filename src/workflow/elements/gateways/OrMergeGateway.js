@@ -1,4 +1,8 @@
 const { TYPES } = require('./Gateways')
 const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-module.exports = createDefaultGatewayInterface(TYPES.OR_MERGE)
+const defaultInterface = createDefaultGatewayInterface(TYPES.OR_MERGE)
+
+delete defaultInterface.update
+
+module.exports = defaultInterface

@@ -7,11 +7,11 @@ const removeElement = require('../functions/collection/removeElement')
 const getAllElements = require('../functions/collection/typeSpecific/getAllElements')
 const { COLLECTION_NAME, ELEMENT_TYPE } = require('./Gateways')
 
-module.exports = (type, schema = Joi.object()) => {
+module.exports = (type, typeSpecificSchema = Joi.object()) => {
 
   const SCHEMA = createElementSchema(ELEMENT_TYPE)
     .concat(createCommonGatewaySchema(type))
-    .concat(schema)
+    .concat(typeSpecificSchema)
 
   return {
     SCHEMA,
