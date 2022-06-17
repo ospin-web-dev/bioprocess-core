@@ -10,7 +10,14 @@ const add = (wf, data) => {
   return defaultInterface.add(wf, data)
 }
 
+const remove = (wf, id) => {
+  const startListeners = defaultInterface.getAll(wf)
+  if (startListeners.length === 0) throw new IncorrectAmountOfStartEventListenersError()
+  return defaultInterface.remove(wf, id)
+}
+
 module.exports = {
   ...defaultInterface,
   add,
+  remove,
 }

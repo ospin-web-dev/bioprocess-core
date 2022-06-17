@@ -19,18 +19,6 @@ const {
   getManyBy,
 } = createCollectionGetters(COLLECTION_NAME)
 
-const isStartEventListener = (wf, eventListenerId) => {
-  const listener = getById(wf, eventListenerId)
-  return listener.type === TYPES.START
-}
-
-const remove = (wf, eventListenerId) => {
-  if (isStartEventListener(wf, eventListenerId)) {
-    throw new IncorrectAmountOfStartEventListenersError()
-  }
-  return removeElement(wf, COLLECTION_NAME, eventListenerId)
-}
-
 module.exports = {
   TYPES,
   COLLECTION_NAME,
@@ -40,5 +28,4 @@ module.exports = {
   getById,
   getLast,
   getManyBy,
-  remove,
 }

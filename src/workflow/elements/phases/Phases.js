@@ -141,7 +141,9 @@ const getTargetValue = (wf, phaseId, fctId, slotName) => {
 }
 
 module.exports = {
+  COLLECTION_NAME,
   SCHEMA,
+  ELEMENT_TYPE,
   add,
   addCommand,
   getAll,

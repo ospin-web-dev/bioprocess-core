@@ -1,5 +1,4 @@
 const createCollectionGetters = require('../compositions/createCollectionGetters')
-const removeElement = require('../functions/collection/removeElement')
 
 const COLLECTION_NAME = 'gateways'
 const ELEMENT_TYPE = 'GATEWAY'
@@ -27,5 +26,4 @@ module.exports = {
   getById,
   getLast,
   getManyBy,
-  remove: (wf, id) => removeElement(wf, COLLECTION_NAME, id),
 }

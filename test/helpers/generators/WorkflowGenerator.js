@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const Workflow = require('../../../src/workflow/Workflow')
+const Workflow = require('../../../src/workflow')
 
 class WorkflowGenerator {
 
