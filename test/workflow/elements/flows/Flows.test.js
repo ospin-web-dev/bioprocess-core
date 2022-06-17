@@ -4,6 +4,9 @@ const Gateways = require('../../../../src/workflow/elements/gateways/Gateways')
 const ApprovalEventListener = require('../../../../src/workflow/elements/eventListeners/ApprovalEventListener')
 const EndEventDispatcher = require('../../../../src/workflow/elements/eventDispatchers/EndEventDispatcher')
 const LoopGateway = require('../../../../src/workflow/elements/gateways/LoopGateway')
+const AndMergeGateway = require('../../../../src/workflow/elements/gateways/AndMergeGateway')
+const OrMergeGateway = require('../../../../src/workflow/elements/gateways/OrMergeGateway')
+const AndSplitGateway = require('../../../../src/workflow/elements/gateways/AndSplitGateway')
 
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
 const testCollectionDefaultGetters = require('../helpers/testCollectionDefaultGetters')
@@ -39,14 +42,14 @@ describe('Flows', () => {
       })
     })
 
-    describe('when trying to add a flow from an event dispatcher...', () => {
+    describe('when trying to add a flow from an event dispatcher', () => {
 
       const createSetupWithEndEventDispather = () => {
         const wf = WorkflowGenerator.generate()
         return EndEventDispatcher.add(wf)
       }
 
-      describe('...to an event dispatcher', () => {
+      describe('to an event dispatcher', () => {
         it('throws an error', () => {
           let wf = createSetupWithEndEventDispather()
           wf = EndEventDispatcher.add(wf)
@@ -58,7 +61,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to an event listener', () => {
+      describe('to an event listener', () => {
         it('throws an error', () => {
           let wf = createSetupWithEndEventDispather()
           wf = ApprovalEventListener.add(wf)
@@ -70,7 +73,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a gateway', () => {
+      describe('to a gateway', () => {
         it('throws an error', () => {
           let wf = createSetupWithEndEventDispather()
           wf = LoopGateway.add(wf)
@@ -82,7 +85,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a phase', () => {
+      describe('to a phase', () => {
         it('throws an error', () => {
           let wf = createSetupWithEndEventDispather()
           wf = Phases.add(wf)
@@ -95,14 +98,14 @@ describe('Flows', () => {
       })
     })
 
-    describe('when trying to add a flow from an event listener...', () => {
+    describe('when trying to add a flow from an event listener', () => {
 
       const createSetupWithApprovalEventListener = () => {
         const wf = WorkflowGenerator.generate()
         return ApprovalEventListener.add(wf)
       }
 
-      describe('...to an event dispatcher', () => {
+      describe('to an event dispatcher', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = EndEventDispatcher.add(wf)
@@ -114,7 +117,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to an event listener', () => {
+      describe('to an event listener', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = ApprovalEventListener.add(wf)
@@ -126,7 +129,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a gateway', () => {
+      describe('to a gateway', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = LoopGateway.add(wf)
@@ -138,7 +141,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a phase', () => {
+      describe('to a phase', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = Phases.add(wf)
@@ -151,14 +154,14 @@ describe('Flows', () => {
       })
     })
 
-    describe('when trying to add a flow from a gateway...', () => {
+    describe('when trying to add a flow from a gateway', () => {
 
       const createSetupWithApprovalEventListener = () => {
         const wf = WorkflowGenerator.generate()
         return LoopGateway.add(wf)
       }
 
-      describe('...to an event dispatcher', () => {
+      describe('to an event dispatcher', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = EndEventDispatcher.add(wf)
@@ -170,7 +173,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to an event listener', () => {
+      describe('to an event listener', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = ApprovalEventListener.add(wf)
@@ -182,7 +185,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a gateway', () => {
+      describe('to a gateway', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = LoopGateway.add(wf)
@@ -194,7 +197,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a phase', () => {
+      describe('to a phase', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = Phases.add(wf)
@@ -207,14 +210,14 @@ describe('Flows', () => {
       })
     })
 
-    describe('when trying to add a flow from a phase...', () => {
+    describe('when trying to add a flow from a phase', () => {
 
       const createSetupWithApprovalEventListener = () => {
         const wf = WorkflowGenerator.generate()
         return Phases.add(wf)
       }
 
-      describe('...to an event dispatcher', () => {
+      describe('to an event dispatcher', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = EndEventDispatcher.add(wf)
@@ -226,7 +229,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to an event listener', () => {
+      describe('to an event listener', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = ApprovalEventListener.add(wf)
@@ -238,7 +241,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a gateway', () => {
+      describe('to a gateway', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = LoopGateway.add(wf)
@@ -250,7 +253,7 @@ describe('Flows', () => {
         })
       })
 
-      describe('...to a phase', () => {
+      describe('to a phase', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
           wf = Phases.add(wf)
@@ -262,10 +265,43 @@ describe('Flows', () => {
         })
       })
     })
-  })
 
-  describe('addLoopbackFlow', () => {
+    describe.each([
+      { elemInterface: AndMergeGateway, name: 'AndMergeGateway' },
+      { elemInterface: OrMergeGateway, name: 'OrMergeGateway' },
+    ])('when adding a second outgoing flow to an $name', ({ elemInterface }) => {
+      it('throws an error', () => {
+        let wf = WorkflowGenerator.generate()
+        wf = Phases.add(wf)
+        wf = Phases.add(wf)
+        wf = elemInterface.add(wf)
+        const phases = Phases.getAll(wf)
+        const gateway = elemInterface.getAll(wf)[0]
 
+        wf = Flows.add(wf, { srcId: gateway.id, destId: phases[0].id })
+        expect(() => Flows.add(wf, { srcId: gateway.id, destId: phases[1].id }))
+          .toThrow(/Only one outgoing flow/)
+      })
+    })
+
+    describe.each([
+      { elemInterface: LoopGateway, name: 'LoopGateway' },
+      { elemInterface: AndSplitGateway, name: 'AndSplitGateway' },
+      { elemInterface: Phases, name: 'Phase' },
+    ])('when adding a second incoming flow to an $name', ({ elemInterface }) => {
+      it('throws an error', () => {
+        let wf = WorkflowGenerator.generate()
+        wf = ApprovalEventListener.add(wf)
+        wf = ApprovalEventListener.add(wf)
+        wf = elemInterface.add(wf)
+        const listeners = ApprovalEventListener.getAll(wf)
+        const gateway = elemInterface.getAll(wf)[0]
+
+        wf = Flows.add(wf, { srcId: listeners[0].id, destId: gateway.id })
+        expect(() => Flows.add(wf, { srcId: listeners[1].id, destId: gateway.id }))
+          .toThrow(/Only one incoming flow/)
+      })
+    })
   })
 
   describe('remove', () => {

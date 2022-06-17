@@ -107,19 +107,31 @@ const CONNECTION_MAP = {
 }
 
 const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => {
-
-  if (srcId === destId) {
-    throw new Error('Cannot connect an element to itself')
-  }
-
   const srcEl = getElementById(workflow, srcId)
   const destEl = getElementById(workflow, destId)
+
+  if (srcId === destId) {
+    throw new ForbiddenConnectionError(
+      'Cannot connect an element to itself',
+      { srcEl, destEl },
+    )
+  }
 
   if (!CONNECTION_MAP[srcEl.elementType].includes(destEl.elementType)) {
     throw new ForbiddenConnectionError(
       `a(n) ${srcEl.elementType} cannot connect to a ${destEl.elementType}`,
       { srcEl, destEl },
     )
+  }
+
+  if (destEl.elementType === Phases.ELEMENT_TYPE) {
+    const totalIncomingFlows = Flows.getManyBy(workflow, { destId })
+    if (totalIncomingFlows.length) {
+      throw new IncorrectAmountOfIncomingFlowsError(
+        `Only one incoming flow for ${destEl.elementType} allowed`,
+        { el: destEl },
+      )
+    }
   }
 
   if (srcEl.type === AndMergeGateway.TYPE
