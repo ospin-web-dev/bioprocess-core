@@ -1,11 +1,22 @@
-const { TYPES } = require('./EventDispatchers')
+const createCommonEventDispatcherSchema = require('./createCommonEventDispatcherSchema')
+const createElementSchema = require('../createElementSchema')
+const addElement = require('../functions/collection/addElement')
+const removeElement = require('../functions/collection/removeElement')
+const getAllElements = require('../functions/collection/typeSpecific/getAllElements')
+const { COLLECTION_NAME, ELEMENT_TYPE, TYPES } = require('./EventDispatchers')
 const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
-const createDefaultEventDispatcherInterface = require('./createDefaultEventDispatcherInterface')
 
-const defaultInterface = createDefaultEventDispatcherInterface(TYPES.END)
+const TYPE = TYPES.END
+
+const SCHEMA = createElementSchema(ELEMENT_TYPE)
+  .concat(createCommonEventDispatcherSchema(TYPE))
+
+const getAll = wf => getAllElements(wf, COLLECTION_NAME, TYPE)
+
+const add = (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data)
 
 const isLastEndEventDispatcher = wf => {
-  const dispatchers = defaultInterface.getAll(wf)
+  const dispatchers = getAll(wf)
   return dispatchers.length === 1
 }
 
@@ -13,10 +24,13 @@ const remove = (wf, eventDispatcherId) => {
   if (isLastEndEventDispatcher(wf)) {
     throw new NoEndEventDispatcherError()
   }
-  return defaultInterface.remove(wf, eventDispatcherId)
+  return removeElement(wf, COLLECTION_NAME, eventDispatcherId)
 }
 
 module.exports = {
-  ...defaultInterface,
+  SCHEMA,
+  TYPE,
+  getAll,
+  add,
   remove,
 }
