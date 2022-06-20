@@ -1,4 +1,3 @@
-const Joi = require('joi')
 const Command = require('../../../../../src/workflow/elements/phases/commands/Command')
 
 describe('Command', () => {
@@ -9,17 +8,6 @@ describe('Command', () => {
 
       expect(typesMap).toStrictEqual({
         SET_TARGETS: 'SET_TARGETS',
-      })
-    })
-  })
-
-  describe('DATA_SCHEMAS', () => {
-    it('returns a map of all types with the joi schemas', () => {
-      const dataSchemaMap = Command.DATA_SCHEMAS
-      const types = Object.values(Command.TYPES)
-
-      types.forEach(type => {
-        expect(dataSchemaMap[type] instanceof Joi.constructor).toBe(true)
       })
     })
   })
