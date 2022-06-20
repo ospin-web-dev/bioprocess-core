@@ -1,20 +1,18 @@
-const Workflow = require('../../src/workflow/Workflow')
+const Workflow = require('../../src/workflow')
 
-const EndEventDispatcher = require('../../src/workflow/elements/eventDispatchers/EndEventDispatcher')
-
-const ApprovalEventListener = require('../../src/workflow/elements/eventListeners/ApprovalEventListener')
-const ConditionEventListener = require('../../src/workflow/elements/eventListeners/ConditionEventListener')
-const StartEventListener = require('../../src/workflow/elements/eventListeners/StartEventListener')
-const TimerEventListener = require('../../src/workflow/elements/eventListeners/TimerEventListener')
-
-const Flow = require('../../src/workflow/elements/flows/Flow')
-
-const AndMergeGateway = require('../../src/workflow/elements/gateways/AndMergeGateway')
-const AndSplitGateway = require('../../src/workflow/elements/gateways/AndSplitGateway')
-const LoopGateway = require('../../src/workflow/elements/gateways/LoopGateway')
-const OrMergeGateway = require('../../src/workflow/elements/gateways/OrMergeGateway')
-
-const Phase = require('../../src/workflow/elements/phases/Phase')
+const {
+  Flows,
+  Phases,
+  EndEventDispatcher,
+  ApprovalEventListener,
+  ConditionEventListener,
+  StartEventListener,
+  TimerEventListener,
+  AndMergeGateway,
+  AndSplitGateway,
+  LoopGateway,
+  OrMergeGateway,
+} = Workflow
 
 const WorkflowGenerator = require('../helpers/generators/WorkflowGenerator')
 
@@ -22,38 +20,29 @@ describe('Workflow', () => {
   describe('validateSchema', () => {
     describe('when used with valid data', () => {
       it('does NOT throw an error', () => {
-        const data = WorkflowGenerator.generate({
-          elements: {
-            eventDispatchers: [
-              EndEventDispatcher.create({ id: 'endEventDispatcher_1' }),
-            ],
+        let wf = WorkflowGenerator.generate()
+        wf = Phases.add(wf)
 
-            eventListeners: [
-              ApprovalEventListener.create({ id: 'eventListener_1' }),
-              ConditionEventListener.create({ id: 'eventListener_2' }),
-              StartEventListener.create({ id: 'eventListener_3' }),
-              TimerEventListener.create({ id: 'eventListener_4' }),
-            ],
+        wf = EndEventDispatcher.add(wf)
 
-            flows: [
-              Flow.create({ id: 'flow_1', srcId: 'eventListener_3', destId: 'phase_1' }),
-              Flow.create({ id: 'flow_2', srcId: 'eventListener_2', destId: 'eventDispatcher_1' }),
-            ],
+        wf = ApprovalEventListener.add(wf)
+        wf = ConditionEventListener.add(wf)
+        wf = StartEventListener.add(wf)
+        wf = TimerEventListener.add(wf)
 
-            gateways: [
-              AndMergeGateway.create({ id: 'gateway_1' }),
-              AndSplitGateway.create({ id: 'gateway_2' }),
-              LoopGateway.create({ id: 'gateway_3' }),
-              OrMergeGateway.create({ id: 'gateway_4' }),
-            ],
+        wf = AndMergeGateway.add(wf)
+        wf = AndSplitGateway.add(wf)
+        wf = LoopGateway.add(wf)
+        wf = OrMergeGateway.add(wf)
 
-            phases: [
-              Phase.create({ id: 'phase_1' }),
-            ],
-          },
+        wf = Flows
+          .add(wf, { srcId: StartEventListener.getAll(wf)[0].id, destId: Phases.getAll(wf)[0].id })
+        wf = Flows.add(wf, {
+          srcId: TimerEventListener.getAll(wf)[0].id,
+          destId: EndEventDispatcher.getAll(wf)[0].id,
         })
 
-        expect(() => Workflow.validateSchema(data)).not.toThrow()
+        expect(() => Workflow.validateSchema(wf)).not.toThrow()
       })
     })
 
@@ -71,7 +60,7 @@ describe('Workflow', () => {
     it('creates a workflow and assigns id and version', () => {
       const res = Workflow.createTemplate()
 
-      expect(res.version).toBe(Workflow.DEFAULT_VERSION)
+      expect(res.version).toBe('1.0')
       expect(res.id).toStrictEqual(expect.any(String))
     })
 
@@ -121,315 +110,4 @@ describe('Workflow', () => {
     })
   })
 
-  describe('when connecting elements', () => {
-    describe('when trying to connect a phase to something else', () => {
-      it('throws an error', () => {
-        const phaseId1 = 'phase_0'
-        const phaseId2 = 'phase_1'
-        const wf = WorkflowGenerator.generate({
-          elements: {
-            eventDispatchers: [],
-            eventListeners: [],
-            gateways: [],
-            phases: [
-              Phase.create({ id: phaseId1 }),
-              Phase.create({ id: phaseId2 }),
-            ],
-          },
-        })
-        expect(() => Workflow.connect(wf, phaseId1, phaseId2))
-          .toThrow(/a\(n\) PHASE cannot connect to a PHASE/)
-      })
-    })
-
-    describe('when trying to connect an event dispatcher to something else', () => {
-      it('throws an error', () => {
-        const phaseId = 'phase_0'
-        const dispatcherId = 'phase_1'
-        const wf = WorkflowGenerator.generate({
-          elements: {
-            eventDispatchers: [
-              EndEventDispatcher.create({ id: dispatcherId }),
-            ],
-            eventListeners: [],
-            gateways: [],
-            phases: [
-              Phase.create({ id: phaseId }),
-            ],
-          },
-        })
-        expect(() => Workflow.connect(wf, dispatcherId, phaseId))
-          .toThrow(/a\(n\) EVENT_DISPATCHER cannot connect to a PHASE/)
-      })
-    })
-
-    describe('when connecting event listeners', () => {
-      describe('when trying to connected a second outgoing flow', () => {
-        it('should throw an error', () => {
-          const listenerId = 'eventListener_0'
-          const dispatcherId1 = 'eventDispatcher_0'
-          const dispatcherId2 = 'eventDispatcher_1'
-          const wf = WorkflowGenerator.generate({
-            elements: {
-              eventDispatchers: [
-                EndEventDispatcher.create({ id: dispatcherId1 }),
-                EndEventDispatcher.create({ id: dispatcherId2 }),
-              ],
-              eventListeners: [
-                ApprovalEventListener.create({ id: listenerId }),
-              ],
-              flows: [
-                { id: 'flow_0', srcId: listenerId, destId: dispatcherId1 },
-              ],
-              gateways: [],
-              phases: [],
-            },
-          })
-
-          expect(() => Workflow.connect(wf, listenerId, dispatcherId2))
-            .toThrow(/Only one outgoing flow/)
-        })
-      })
-    })
-
-    describe('when connecting gateways', () => {
-      describe('when connecting the loopback flow of a LoopGateway', () => {
-        describe('when the passed elementId does not belong to a gateway', () => {
-          it('throws an error', () => {
-            const listenerId = 'eventListener_0'
-            const dispatcherId = 'eventDispatcher_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [
-                  EndEventDispatcher.create({ id: dispatcherId }),
-                ],
-                eventListeners: [
-                  ApprovalEventListener.create({ id: listenerId }),
-                ],
-                flows: [],
-                gateways: [],
-                phases: [],
-              },
-            })
-
-            expect(() => Workflow.connectGatewayLoopback(wf, listenerId, dispatcherId))
-              .toThrow(/is not a gateway/)
-          })
-        })
-
-        describe('when the passed elementId does belong to gateway, but not a loop gateway', () => {
-          it('throws an error', () => {
-            const gatewayId = 'gateway_0'
-            const dispatcherId = 'eventDispatcher_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [
-                  EndEventDispatcher.create({ id: dispatcherId }),
-                ],
-                eventListeners: [],
-                flows: [],
-                gateways: [
-                  AndMergeGateway.create({ id: gatewayId }),
-                ],
-                phases: [],
-              },
-            })
-
-            expect(() => Workflow.connectGatewayLoopback(wf, gatewayId, dispatcherId))
-              .toThrow(/does not provide a loopback flow/)
-          })
-        })
-
-        describe('when the passed elementId does belong to loopback gateway', () => {
-          it('creates the required flow and updates the loopbackFlowId of the gateway', () => {
-            const gatewayId = 'gateway_0'
-            const phaseId = 'phase_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [],
-                eventListeners: [],
-                flows: [],
-                gateways: [
-                  LoopGateway.create({ id: gatewayId }),
-                ],
-                phases: [
-                  Phase.create({ id: phaseId }),
-                ],
-              },
-            })
-
-            const res = Workflow.connectGatewayLoopback(wf, gatewayId, phaseId)
-
-            expect(res.elements.flows[0]).toStrictEqual(expect.objectContaining({
-              srcId: gatewayId,
-              destId: phaseId,
-            }))
-            expect(res.elements.gateways[0].loopbackFlowId).toBe(res.elements.flows[0].id)
-          })
-        })
-
-        describe('when trying to connect a second outgoing flow to an AndMergeGateway', () => {
-          it('throws an error', () => {
-            const gatewayId = 'gateway_0'
-            const phaseId = 'phase_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [],
-                eventListeners: [],
-                gateways: [
-                  AndMergeGateway.create({ id: gatewayId }),
-                ],
-                phases: [
-                  Phase.create({ id: phaseId }),
-                ],
-                flows: [{ srcId: gatewayId, destId: phaseId, id: 'flow_1' }],
-              },
-            })
-
-            expect(() => Workflow.connect(wf, gatewayId, phaseId))
-              .toThrow(/Only one outgoing flow/)
-          })
-        })
-
-        describe('when trying to connect a second outgoing flow to an OrMergeGateway', () => {
-          it('throws an error', () => {
-            const gatewayId = 'gateway_0'
-            const phaseId = 'phase_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [],
-                eventListeners: [],
-                gateways: [
-                  OrMergeGateway.create({ id: gatewayId }),
-                ],
-                phases: [
-                  Phase.create({ id: phaseId }),
-                ],
-                flows: [{ srcId: gatewayId, destId: phaseId, id: 'flow_1' }],
-              },
-            })
-
-            expect(() => Workflow.connect(wf, gatewayId, phaseId))
-              .toThrow(/Only one outgoing flow/)
-          })
-        })
-
-        describe('when trying to connect a second incoming flow to an AndSplitGateway', () => {
-          it('throws an error', () => {
-            const gatewayId = 'gateway_0'
-            const eventListenerId = 'phase_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [],
-                eventListeners: [
-                  ApprovalEventListener.create({ id: eventListenerId }),
-                ],
-                gateways: [
-                  AndSplitGateway.create({ id: gatewayId }),
-                ],
-                phases: [],
-                flows: [{
-                  srcId: eventListenerId,
-                  destId: gatewayId,
-                  id: 'flow_1',
-                }],
-              },
-            })
-
-            expect(() => Workflow.connect(wf, eventListenerId, gatewayId))
-              .toThrow(/Only one incoming flow/)
-          })
-        })
-
-        describe('when trying to connect a second incoming flow to an LoopGateway', () => {
-          it('throws an error', () => {
-            const gatewayId = 'gateway_0'
-            const eventListenerId = 'phase_0'
-            const wf = WorkflowGenerator.generate({
-              elements: {
-                eventDispatchers: [],
-                eventListeners: [
-                  ApprovalEventListener.create({ id: eventListenerId }),
-                ],
-                gateways: [
-                  LoopGateway.create({ id: gatewayId }),
-                ],
-                phases: [],
-                flows: [{
-                  srcId: eventListenerId,
-                  destId: gatewayId,
-                  id: 'flow_1',
-                }],
-              },
-            })
-
-            expect(() => Workflow.connect(wf, eventListenerId, gatewayId))
-              .toThrow(/Only one incoming flow/)
-          })
-        })
-      })
-    })
-  })
-
-  describe('disconnect', () => {
-
-    it('removes the flow from the workflow', () => {
-      const gatewayId = 'gateway_0'
-      const eventListenerId = 'phase_0'
-      const flowId = 'flow_0'
-      const wf = WorkflowGenerator.generate({
-        elements: {
-          eventDispatchers: [],
-          eventListeners: [
-            ApprovalEventListener.create({ id: eventListenerId }),
-          ],
-          gateways: [
-            AndMergeGateway.create({ id: gatewayId }),
-          ],
-          phases: [],
-          flows: [{
-            srcId: eventListenerId,
-            destId: gatewayId,
-            id: flowId,
-          }],
-        },
-      })
-
-      const res = Workflow.disconnect(wf, flowId)
-
-      expect(res.elements.flows).toHaveLength(0)
-    })
-
-    describe('when disconnecting a flow from a LoopGateway', () => {
-      describe('when it is the loopback flow', () => {
-        it('removes the flow from the workflow and sets the loopbackFlowId to null', () => {
-          const gatewayId = 'gateway_0'
-          const phaseId = 'phase_0'
-          const flowId = 'flow_0'
-          const wf = WorkflowGenerator.generate({
-            elements: {
-              eventDispatchers: [],
-              eventListeners: [],
-              gateways: [
-                LoopGateway.create({ id: gatewayId, loopbackFlowId: flowId }),
-              ],
-              phases: [
-                Phase.create({ id: phaseId }),
-              ],
-              flows: [{
-                srcId: gatewayId,
-                destId: phaseId,
-                id: flowId,
-              }],
-            },
-          })
-
-          const res = Workflow.disconnect(wf, flowId)
-
-          expect(res.elements.flows).toHaveLength(0)
-          expect(res.elements.gateways[0].loopbackFlowId).toBeNull()
-        })
-      })
-    })
-  })
 })

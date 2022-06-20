@@ -4,7 +4,7 @@ const addElement = require('../functions/collection/addElement')
 const removeElement = require('../functions/collection/removeElement')
 const getAllElements = require('../functions/collection/typeSpecific/getAllElements')
 const { COLLECTION_NAME, ELEMENT_TYPE, TYPES } = require('./EventDispatchers')
-const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
+const NoEndEventDispatcherError = require('../../errors/NoEndEventDispatcherError')
 
 const TYPE = TYPES.END
 

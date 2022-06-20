@@ -1,5 +1,5 @@
 const { TYPES } = require('./EventListeners')
-const IncorrectAmountOfStartEventListenersError = require('../../validator/errors/IncorrectAmountOfStartEventListenersError')
+const IncorrectAmountOfStartEventListenersError = require('../../errors/IncorrectAmountOfStartEventListenersError')
 const createDefaultEventListenerInterface = require('./createDefaultEventListenerInterface')
 
 const defaultInterface = createDefaultEventListenerInterface(TYPES.START)

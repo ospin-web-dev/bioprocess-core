@@ -41,6 +41,8 @@ class Condition {
       options: Joi.object().default({}),
       id: Joi.string().required(),
     }).xor('conditions', 'left').xor('conditions', 'right')
+      .allow({})
+      .default({})
   }
 
   static getUniqueConditionId(rootCondition = null) {

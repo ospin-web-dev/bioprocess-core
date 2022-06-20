@@ -20,6 +20,7 @@ const {
 const getElementById = require('./functions/getElementById')
 const validateSchema = require('./functions/validateSchema')
 const createFromSchema = require('./functions/createFromSchema')
+const validate = require('./validate')
 
 const SCHEMA = Joi.object({
   id: Joi.string().required(),
@@ -67,6 +68,7 @@ const createTemplate = () => {
 
 module.exports = {
   validateSchema: data => validateSchema(data, SCHEMA),
+  validate,
   getElementById,
   createTemplate,
   create,

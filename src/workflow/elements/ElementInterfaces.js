@@ -1,6 +1,5 @@
 /* Here we overwrite/add CRUD operations on the element interfaces whenever
  * we have to interact with another element groups
- * Careful: Order matters!
  */
 
 const Flows = require('./flows/Flows')
@@ -23,10 +22,10 @@ const EndEventDispatcher = require('./eventDispatchers/EndEventDispatcher')
 
 const getElementById = require('../functions/getElementById')
 
-const ForbiddenConnectionError = require('../validator/errors/ForbiddenConnectionError')
-const IncorrectAmountOfOutgoingFlowsError = require('../validator/errors/IncorrectAmountOfOutgoingFlowsError')
-const IncorrectAmountOfIncomingFlowsError = require('../validator/errors/IncorrectAmountOfIncomingFlowsError')
-const IncorrectElementTypeError = require('../validator/errors/IncorrectElementTypeError')
+const ForbiddenConnectionError = require('../errors/ForbiddenConnectionError')
+const IncorrectAmountOfOutgoingFlowsError = require('../errors/IncorrectAmountOfOutgoingFlowsError')
+const IncorrectAmountOfIncomingFlowsError = require('../errors/IncorrectAmountOfIncomingFlowsError')
+const IncorrectElementTypeError = require('../errors/IncorrectElementTypeError')
 
 /* whenever a loopback flow of a LoopGateway is removed, unset the loopbackFlowId */
 

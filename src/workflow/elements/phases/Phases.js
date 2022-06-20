@@ -5,7 +5,7 @@ const updateElement = require('../functions/collection/updateElement')
 const Command = require('./commands/Command')
 const createElementSchema = require('../createElementSchema')
 const createCommonPhaseSchema = require('./createCommonPhaseSchema')
-const NoPhasesError = require('../../validator/errors/NoPhasesError')
+const NoPhasesError = require('../../errors/NoPhasesError')
 
 const ELEMENT_TYPE = 'PHASE'
 const COLLECTION_NAME = 'phases'

@@ -5,7 +5,7 @@ const Condition = require('../../../conditions/Condition')
 
 const typeSpecificSchema = (
   Joi.object({
-    condition: Condition.SCHEMA.default(),
+    condition: Condition.SCHEMA,
   })
 )
 
