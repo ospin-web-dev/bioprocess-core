@@ -9,6 +9,13 @@ const validateRules = wf => {
   Rules.everyEndEventDispatcherIsReachable(wf)
 }
 
+/**
+ * @function validate
+ * @memberof Workflow
+ * @arg {Object} workflow - workflow object
+ * @desc validates a workflow in regards of the data schema and workflow rules
+ */
+
 const validate = wf => {
   validateSchema(wf)
   validateRules(wf)

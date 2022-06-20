@@ -12,6 +12,43 @@ const ELEMENT_TYPE = 'PHASE'
 const COLLECTION_NAME = 'phases'
 
 const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema())
+/**
+  * @function getAll
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @desc returns all phases
+  */
+
+/**
+  * @function getLast
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @desc returns the last phase
+  */
+
+/**
+  * @function getBy
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns the first phase matching the query
+  */
+
+/**
+  * @function getManyBy
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns all phases matching the query
+  */
+
+/**
+  * @function getById
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {String} id
+  * @desc returns the phase matching the passed id
+  */
 
 const {
   getAll,

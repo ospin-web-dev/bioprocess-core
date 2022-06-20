@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: elements/phases/Phases.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: elements/phases/Phases.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const addElement = require('../functions/addElement')
+const removeElement = require('../functions/removeElement')
+const updateElement = require('../functions/updateElement')
+const createCommonCollectionInterface = require('../createCommonCollectionInterface')
+
+const Command = require('./commands/Command')
+const createElementSchema = require('../createElementSchema')
+const createCommonPhaseSchema = require('./createCommonPhaseSchema')
+const NoPhasesError = require('../../errors/NoPhasesError')
+
+const ELEMENT_TYPE = 'PHASE'
+const COLLECTION_NAME = 'phases'
+
+const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema())
+/**
+  * @function getAll
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @desc returns all phases
+  */
+
+/**
+  * @function getLast
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @desc returns the last phase
+  */
+
+/**
+  * @function getBy
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns the first phase matching the query
+  */
+
+/**
+  * @function getManyBy
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns all phases matching the query
+  */
+
+/**
+  * @function getById
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {String} id
+  * @desc returns the phase matching the passed id
+  */
+
+const {
+  getAll,
+  getBy,
+  getById,
+  getLast,
+  getManyBy,
+} = createCommonCollectionInterface(COLLECTION_NAME)
+
+const add = (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data)
+const update = (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, data)
+
+const isLastPhase = wf => (
+  getAll(wf).length === 1
+)
+
+const remove = (wf, phaseId) => {
+  if (isLastPhase(wf)) {
+    throw new NoPhasesError()
+  }
+  return removeElement(wf, COLLECTION_NAME, phaseId)
+}
+
+const getExistingPhaseCommandIds = (wf, phaseId) => {
+  const phase = getById(wf, phaseId)
+  return phase.commands.map(command => command.phaseId)
+}
+
+const generateUniqueCommandId = (wf, phaseId) => {
+  const existingIds = getExistingPhaseCommandIds(wf, phaseId)
+  let counter = 0
+  const prefix = 'command'
+  let newId = `${prefix}_${counter}`
+
+  while (existingIds.includes(newId)) {
+    counter += 1
+    newId = `${prefix}_${counter}`
+  }
+
+  return newId
+}
+
+const addCommand = (wf, phaseId, command) => {
+  const phase = getById(wf, phaseId)
+  const commandWithId = Command.create({ ...command, id: generateUniqueCommandId(wf, phaseId) })
+  return update(wf, phaseId, { commands: [ ...phase.commands, commandWithId ] })
+}
+
+const updateCommand = (wf, phaseId, updatedCommand) => {
+  const phase = getById(wf, phaseId)
+  const updatedCommands = phase.commands.map(command => {
+    if (command.id === updatedCommand.id) return updatedCommand
+    return command
+  })
+  return update(wf, phaseId, { commands: updatedCommands })
+}
+
+const removeCommand = (wf, phaseId, commandId) => {
+  const phase = getById(wf, phaseId)
+  const updatedCommands = phase.commands.filter(command => command.id !== commandId)
+  return update(wf, phaseId, { commands: updatedCommands })
+}
+
+const getCommandByType = (wf, phaseId, commandType) => {
+  const phase = getById(wf, phaseId)
+  return phase.commands.find(command => command.type === commandType)
+}
+
+const getSetTargetCommand = (wf, phaseId) => (
+  getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
+)
+
+const updateSetTargetValueCommand = (wf, phaseId, fctId, slotName, value) => {
+  const command = getSetTargetCommand(wf, phaseId)
+
+  const existingTargetValue = command.data.targets
+    .some(target => target.fctId === fctId &amp;&amp; target.slotName === slotName)
+
+  const updatedTargets = existingTargetValue
+    ? command.data.targets.map(target => {
+      if (target.fctId === fctId &amp;&amp; target.slotName === slotName) {
+        return { ...target, target: value }
+      }
+      return target
+    })
+    : [ ...command.data.targets, { fctId, slotName, target: value } ]
+
+  const updatedCommand = {
+    ...command,
+    data: {
+      ...command.data,
+      targets: updatedTargets,
+    },
+  }
+
+  return updateCommand(wf, phaseId, updatedCommand)
+}
+
+const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
+  const existingSetTargetCommand = getSetTargetCommand(wf, phaseId)
+
+  if (!existingSetTargetCommand) {
+    const command = {
+      type: Command.TYPES.SET_TARGETS,
+      data: { targets: [] },
+    }
+    return updateSetTargetValueCommand(
+      addCommand(wf, phaseId, command),
+      phaseId,
+      fctId,
+      slotName,
+      value,
+    )
+  }
+  return updateSetTargetValueCommand(wf, phaseId, fctId, slotName, value)
+}
+
+const getTargetValue = (wf, phaseId, fctId, slotName) => {
+  const existingSetTargetCommand = getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
+
+  if (!existingSetTargetCommand) return
+
+  const targetEntry = existingSetTargetCommand.data.targets.find(target => (
+    target.fctId === fctId &amp;&amp; target.slotName === slotName
+  ))
+
+  if (targetEntry) return targetEntry.target
+}
+
+module.exports = {
+  COLLECTION_NAME,
+  ELEMENT_TYPE,
+  SCHEMA,
+  add,
+  addCommand,
+  getAll,
+  getBy,
+  getById,
+  getLast,
+  getManyBy,
+  getTargetValue,
+  isLastPhase,
+  remove,
+  removeCommand,
+  setTargetValue,
+  update,
+  updateCommand,
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Workflow.html">Workflow</a></li><li><a href="Workflow.AndMergeGateway.html">AndMergeGateway</a></li><li><a href="Workflow.AndSplitGateway.html">AndSplitGateway</a></li><li><a href="Workflow.ApprovalEventListener.html">ApprovalEventListener</a></li><li><a href="Workflow.ConditionEventListener.html">ConditionEventListener</a></li><li><a href="Workflow.EndEventDispatcher.html">EndEventDispatcher</a></li><li><a href="Workflow.EventDispatchers.html">EventDispatchers</a></li><li><a href="Workflow.EventListeners.html">EventListeners</a></li><li><a href="Workflow.Flows.html">Flows</a></li><li><a href="Workflow.Gateways.html">Gateways</a></li><li><a href="Workflow.LoopGateway.html">LoopGateway</a></li><li><a href="Workflow.OrMergeGateway.html">OrMergeGateway</a></li><li><a href="Workflow.Phases.html">Phases</a></li><li><a href="Workflow.StartEventListener.html">StartEventListener</a></li><li><a href="Workflow.TimerEventListener.html">TimerEventListener</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon Jun 20 2022 19:55:23 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
