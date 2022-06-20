@@ -1,4 +1,4 @@
-const createCollectionGetters = require('../compositions/createCollectionGetters')
+const createCommonCollectionInterface = require('../createCommonCollectionInterface')
 
 const COLLECTION_NAME = 'eventListeners'
 const ELEMENT_TYPE = 'EVENT_LISTENER'
@@ -9,21 +9,11 @@ const TYPES = {
   TIMER: 'TIMER',
 }
 
-const {
-  getAll,
-  getBy,
-  getById,
-  getLast,
-  getManyBy,
-} = createCollectionGetters(COLLECTION_NAME)
+const common = createCommonCollectionInterface(COLLECTION_NAME)
 
 module.exports = {
-  TYPES,
   COLLECTION_NAME,
   ELEMENT_TYPE,
-  getAll,
-  getBy,
-  getById,
-  getLast,
-  getManyBy,
+  TYPES,
+  ...common,
 }

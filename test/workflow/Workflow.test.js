@@ -12,6 +12,8 @@ const {
   AndSplitGateway,
   LoopGateway,
   OrMergeGateway,
+  pipe,
+  validateSchema,
 } = Workflow
 
 const WorkflowGenerator = require('../helpers/generators/WorkflowGenerator')
@@ -20,29 +22,31 @@ describe('Workflow', () => {
   describe('validateSchema', () => {
     describe('when used with valid data', () => {
       it('does NOT throw an error', () => {
-        let wf = WorkflowGenerator.generate()
-        wf = Phases.add(wf)
 
-        wf = EndEventDispatcher.add(wf)
+        const workflow = pipe([
+          WorkflowGenerator.generate,
+          Phases.add,
+          EndEventDispatcher.add,
+          ApprovalEventListener.add,
+          ConditionEventListener.add,
+          StartEventListener.add,
+          TimerEventListener.add,
+          AndMergeGateway.add,
+          AndSplitGateway.add,
+          LoopGateway.add,
+          OrMergeGateway.add,
+          wf => Flows
+            .add(wf, {
+              srcId: StartEventListener.getAll(wf)[0].id,
+              destId: Phases.getAll(wf)[0].id,
+            }),
+          wf => Flows.add(wf, {
+            srcId: TimerEventListener.getAll(wf)[0].id,
+            destId: EndEventDispatcher.getAll(wf)[0].id,
+          }),
+        ])
 
-        wf = ApprovalEventListener.add(wf)
-        wf = ConditionEventListener.add(wf)
-        wf = StartEventListener.add(wf)
-        wf = TimerEventListener.add(wf)
-
-        wf = AndMergeGateway.add(wf)
-        wf = AndSplitGateway.add(wf)
-        wf = LoopGateway.add(wf)
-        wf = OrMergeGateway.add(wf)
-
-        wf = Flows
-          .add(wf, { srcId: StartEventListener.getAll(wf)[0].id, destId: Phases.getAll(wf)[0].id })
-        wf = Flows.add(wf, {
-          srcId: TimerEventListener.getAll(wf)[0].id,
-          destId: EndEventDispatcher.getAll(wf)[0].id,
-        })
-
-        expect(() => Workflow.validateSchema(wf)).not.toThrow()
+        expect(() => validateSchema(workflow)).not.toThrow()
       })
     })
 

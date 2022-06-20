@@ -1,7 +1,8 @@
-const createCollectionGetters = require('../compositions/createCollectionGetters')
-const addElement = require('../functions/collection/addElement')
-const removeElement = require('../functions/collection/removeElement')
-const updateElement = require('../functions/collection/updateElement')
+const addElement = require('../functions/addElement')
+const removeElement = require('../functions/removeElement')
+const updateElement = require('../functions/updateElement')
+const createCommonCollectionInterface = require('../createCommonCollectionInterface')
+
 const Command = require('./commands/Command')
 const createElementSchema = require('../createElementSchema')
 const createCommonPhaseSchema = require('./createCommonPhaseSchema')
@@ -18,7 +19,7 @@ const {
   getById,
   getLast,
   getManyBy,
-} = createCollectionGetters(COLLECTION_NAME)
+} = createCommonCollectionInterface(COLLECTION_NAME)
 
 const add = (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data)
 const update = (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, data)
@@ -142,8 +143,8 @@ const getTargetValue = (wf, phaseId, fctId, slotName) => {
 
 module.exports = {
   COLLECTION_NAME,
-  SCHEMA,
   ELEMENT_TYPE,
+  SCHEMA,
   add,
   addCommand,
   getAll,

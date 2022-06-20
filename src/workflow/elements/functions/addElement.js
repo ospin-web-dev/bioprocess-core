@@ -1,6 +1,6 @@
 const generateUniqueElementId = require('./generateUniqueElementId')
 const replaceElements = require('./replaceElements')
-const createFromSchema = require('../../../functions/createFromSchema')
+const createFromSchema = require('../../functions/createFromSchema')
 
 module.exports = (wf, collectionName, schema, data) => {
   const element = createFromSchema({

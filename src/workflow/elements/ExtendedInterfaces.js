@@ -1,5 +1,5 @@
 /* Here we overwrite/add CRUD operations on the element interfaces whenever
- * we have to interact with another element groups
+ * we have to interact with other element groups
  */
 
 const Flows = require('./flows/Flows')
