@@ -1,12 +1,15 @@
-const Flows = require('../../../../src/workflow/elements/flows/Flows')
-const Phases = require('../../../../src/workflow/elements/phases/Phases')
-const Gateways = require('../../../../src/workflow/elements/gateways/Gateways')
-const ApprovalEventListener = require('../../../../src/workflow/elements/eventListeners/ApprovalEventListener')
-const EndEventDispatcher = require('../../../../src/workflow/elements/eventDispatchers/EndEventDispatcher')
-const LoopGateway = require('../../../../src/workflow/elements/gateways/LoopGateway')
-const AndMergeGateway = require('../../../../src/workflow/elements/gateways/AndMergeGateway')
-const OrMergeGateway = require('../../../../src/workflow/elements/gateways/OrMergeGateway')
-const AndSplitGateway = require('../../../../src/workflow/elements/gateways/AndSplitGateway')
+const {
+  Flows,
+  Phases,
+  Gateways,
+  ApprovalEventListener,
+  EndEventDispatcher,
+  LoopGateway,
+  AndMergeGateway,
+  OrMergeGateway,
+  AndSplitGateway,
+  pipe,
+} = require('../../../../src/workflow/Workflow')
 
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
 const testCollectionDefaultGetters = require('../helpers/testCollectionDefaultGetters')
@@ -300,6 +303,38 @@ describe('Flows', () => {
         wf = Flows.add(wf, { srcId: listeners[0].id, destId: gateway.id })
         expect(() => Flows.add(wf, { srcId: listeners[1].id, destId: gateway.id }))
           .toThrow(/Only one incoming flow/)
+      })
+    })
+  })
+
+  describe('addLoopbackFlow', () => {
+    describe('when the passed srcId does NOT belong to a Gateway', () => {
+      it('throws an error', () => {
+        const wf = pipe([
+          WorkflowGenerator.generate,
+          Phases.add,
+          Phases.add,
+        ])
+
+        expect(() => Flows.addLoopbackFlow(wf, {
+          srcId: Phases.getAll(wf)[0].id,
+          destId: Phases.getAll(wf)[1].id,
+        })).toThrow(/is not a gateway/)
+      })
+    })
+
+    describe('when the passed srcId does NOT belong to a LoopGateway', () => {
+      it('throws an error', () => {
+        const wf = pipe([
+          WorkflowGenerator.generate,
+          Phases.add,
+          AndMergeGateway.add,
+        ])
+
+        expect(() => Flows.addLoopbackFlow(wf, {
+          srcId: Gateways.getAll(wf)[0].id,
+          destId: Phases.getAll(wf)[0].id,
+        })).toThrow(/does not provide a loopback flow/)
       })
     })
   })

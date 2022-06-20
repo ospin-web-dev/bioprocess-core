@@ -1,5 +1,5 @@
 const Flows = require('./elements/flows/Flows')
-const { EventListeners } = require('.')
+const { EventListeners } = require('./Workflow')
 
 const buildGraph = workflow => {
   /* the graph is build like that:

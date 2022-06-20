@@ -3,6 +3,4 @@ const createDefaultEventListenerInterface = require('./createDefaultEventListene
 
 const defaultInterface = createDefaultEventListenerInterface(TYPES.APPROVAL)
 
-delete defaultInterface.update
-
 module.exports = defaultInterface

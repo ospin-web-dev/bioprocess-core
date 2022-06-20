@@ -1,13 +1,14 @@
-const ConditionEventListener = require('../../../../src/workflow/elements/eventListeners/ConditionEventListener')
+const ApprovalEventListener = require('../../../../src/workflow/elements/eventListeners/ApprovalEventListener')
 const testAddMethod = require('../helpers/testAddMethod')
 const testRemoveMethod = require('../helpers/testRemoveMethod')
-const Condition = require('../../../../src/conditions/Condition')
+const testUpdateMethod = require('../helpers/testUpdateMethod')
 
-describe('ConditionEventListener', () => {
+describe('ApprovalEventListener', () => {
 
   /* eslint-disable */
-  testAddMethod(ConditionEventListener, { condition: Condition.createRootCondition() })
-  testRemoveMethod(ConditionEventListener, { condition: Condition.createRootCondition() })
+  testAddMethod(ApprovalEventListener)
+  testRemoveMethod(ApprovalEventListener)
+  testUpdateMethod(ApprovalEventListener, undefined, { phaseId: 'phase_0' })
   /* eslint-enable */
 
 })
