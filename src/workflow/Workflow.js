@@ -65,19 +65,9 @@ const create = initialData => createFromSchema(initialData, SCHEMA)
  * function are passed into the (n + 1)th function
  */
 
-const pipe = (functions, ...initParams) => {
-  let params = initParams
-  let firstExection = true
-
-  /* eslint-disable no-restricted-syntax */
-  for (const fn of functions) {
-    const newParams = firstExection ? fn(...params) : fn(params)
-    params = newParams
-    firstExection = false
-  }
-
-  return params
-}
+const pipe = (functions, ...initParams) => (
+  functions.reduce((res, fn, idx) => (idx > 0 ? fn(res) : fn(...res)), initParams)
+)
 
 /**
  * @function createTemplate
