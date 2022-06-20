@@ -50,6 +50,25 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema(
   * @desc returns the phase matching the passed id
   */
 
+/**
+  * @function add
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {Object} initialData
+  * @arg {Array} initialData.commands=[] - the commands to be executed for the phase
+  * @desc adds a phase to the workflow
+  */
+
+/**
+  * @function update
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @arg {Object} updateData
+  * @arg {Array} updateData.commands=[] - the commands to be executed for the phase
+  * @desc updates a phase in the workflow
+  */
+
 const {
   getAll,
   getBy,
@@ -61,12 +80,27 @@ const {
 const add = (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data)
 const update = (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, data)
 
-const isLastPhase = wf => (
+/**
+  * @function containsOnlyOnePhase
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @desc checks if the workflow contains only one phase
+  */
+
+const containsOnlyOnePhase = wf => (
   getAll(wf).length === 1
 )
 
+/**
+  * @function remove
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @desc removes a phase from the workflow
+  */
+
 const remove = (wf, phaseId) => {
-  if (isLastPhase(wf)) {
+  if (containsOnlyOnePhase(wf)) {
     throw new NoPhasesError()
   }
   return removeElement(wf, COLLECTION_NAME, phaseId)
@@ -106,12 +140,6 @@ const updateCommand = (wf, phaseId, updatedCommand) => {
   return update(wf, phaseId, { commands: updatedCommands })
 }
 
-const removeCommand = (wf, phaseId, commandId) => {
-  const phase = getById(wf, phaseId)
-  const updatedCommands = phase.commands.filter(command => command.id !== commandId)
-  return update(wf, phaseId, { commands: updatedCommands })
-}
-
 const getCommandByType = (wf, phaseId, commandType) => {
   const phase = getById(wf, phaseId)
   return phase.commands.find(command => command.type === commandType)
@@ -147,6 +175,17 @@ const updateSetTargetValueCommand = (wf, phaseId, fctId, slotName, value) => {
   return updateCommand(wf, phaseId, updatedCommand)
 }
 
+/**
+  * @function setTargetValue
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {string} phaseId
+  * @arg {string} fctId
+  * @arg {string} slotName
+  * @arg {number|string|boolean} value
+  * @desc sets the target value for a slot
+  */
+
 const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
   const existingSetTargetCommand = getSetTargetCommand(wf, phaseId)
 
@@ -166,6 +205,16 @@ const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
   return updateSetTargetValueCommand(wf, phaseId, fctId, slotName, value)
 }
 
+/**
+  * @function getTargetValue
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {string} phaseId
+  * @arg {string} fctId
+  * @arg {string} slotName
+  * @desc gets the target value for a slot
+  */
+
 const getTargetValue = (wf, phaseId, fctId, slotName) => {
   const existingSetTargetCommand = getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
 
@@ -183,17 +232,14 @@ module.exports = {
   ELEMENT_TYPE,
   SCHEMA,
   add,
-  addCommand,
+  containsOnlyOnePhase,
   getAll,
   getBy,
   getById,
   getLast,
   getManyBy,
   getTargetValue,
-  isLastPhase,
   remove,
-  removeCommand,
   setTargetValue,
   update,
-  updateCommand,
 }

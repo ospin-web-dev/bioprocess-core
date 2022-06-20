@@ -157,22 +157,6 @@ describe('Phases', () => {
     })
   })
 
-  describe('removeCommand', () => {
-    it('removes a command by Id', () => {
-      let { phase, wf } = createSinglePhaseWorkflow()
-      const fctId = 'fct_0'
-      const slotName = 'speed - with Keanu Reeves'
-      const target = Math.random()
-      wf = Phases.setTargetValue(wf, phase.id, fctId, slotName, target)
-
-      const commandId = Phases.getAll(wf)[0].commands[0].id
-
-      const updatedWf = Phases.removeCommand(wf, phase.id, commandId)
-
-      expect(updatedWf.elements.phases[0].commands).toHaveLength(0)
-    })
-  })
-
   describe('getTargetValue', () => {
 
     const createSetup = () => {

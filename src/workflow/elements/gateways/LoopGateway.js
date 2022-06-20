@@ -14,6 +14,8 @@ const { TYPES } = require('./Gateways')
   * @memberof Workflow.LoopGateway
   * @arg {Object} workflow
   * @arg {Object} initialData
+  * @arg {string|null} initialData.loopbackFlowId=null - the flow Id if the loopback flow
+  * @arg {number} initialData.maxIterations=0 - the amount of iterations of the loop
   * @desc adds a new LOOP gateway to the workflow
   */
 
@@ -23,6 +25,8 @@ const { TYPES } = require('./Gateways')
   * @arg {Object} workflow
   * @arg {id} id
   * @arg {Object} updateData
+  * @arg {string|null} updateData.loopbackFlowId=null - the flow Id if the loopback flow
+  * @arg {number} updateData.maxIterations=0 - the amount of iterations of the loop
   * @desc updates an LOOP gateway in the workflow
   */
 
