@@ -1,45 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: elements/phases/Phases.js</title>
+<!doctype html>
+<html>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+<head>
+  <meta name="generator" content="JSDoc 3.6.10">
+  <meta charset="utf-8">
+  <title>Source: elements/phases/Phases.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
 </head>
 
-<body>
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: elements/phases/Phases.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const addElement &#x3D; require(&#x27;../functions/addElement&#x27;)
+const removeElement &#x3D; require(&#x27;../functions/removeElement&#x27;)
+const updateElement &#x3D; require(&#x27;../functions/updateElement&#x27;)
+const createCommonCollectionInterface &#x3D; require(&#x27;../createCommonCollectionInterface&#x27;)
 
-<div id="main">
+const Command &#x3D; require(&#x27;./commands/Command&#x27;)
+const createElementSchema &#x3D; require(&#x27;../createElementSchema&#x27;)
+const createCommonPhaseSchema &#x3D; require(&#x27;./createCommonPhaseSchema&#x27;)
+const NoPhasesError &#x3D; require(&#x27;../../errors/NoPhasesError&#x27;)
 
-    <h1 class="page-title">Source: elements/phases/Phases.js</h1>
+const ELEMENT_TYPE &#x3D; &#x27;PHASE&#x27;
+const COLLECTION_NAME &#x3D; &#x27;phases&#x27;
 
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const addElement = require('../functions/addElement')
-const removeElement = require('../functions/removeElement')
-const updateElement = require('../functions/updateElement')
-const createCommonCollectionInterface = require('../createCommonCollectionInterface')
-
-const Command = require('./commands/Command')
-const createElementSchema = require('../createElementSchema')
-const createCommonPhaseSchema = require('./createCommonPhaseSchema')
-const NoPhasesError = require('../../errors/NoPhasesError')
-
-const ELEMENT_TYPE = 'PHASE'
-const COLLECTION_NAME = 'phases'
-
-const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema())
+const SCHEMA &#x3D; createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema())
 /**
   * @function getAll
   * @memberof Workflow.Phases
@@ -83,7 +86,7 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema(
   * @memberof Workflow.Phases
   * @arg {Object} workflow
   * @arg {Object} initialData
-  * @arg {Array} initialData.commands=[] - the commands to be executed for the phase
+  * @arg {Array} initialData.commands&#x3D;[] - the commands to be executed for the phase
   * @desc adds a phase to the workflow
   */
 
@@ -93,7 +96,7 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema(
   * @arg {Object} workflow
   * @arg {id} id
   * @arg {Object} updateData
-  * @arg {Array} updateData.commands=[] - the commands to be executed for the phase
+  * @arg {Array} updateData.commands&#x3D;[] - the commands to be executed for the phase
   * @desc updates a phase in the workflow
   */
 
@@ -103,10 +106,10 @@ const {
   getById,
   getLast,
   getManyBy,
-} = createCommonCollectionInterface(COLLECTION_NAME)
+} &#x3D; createCommonCollectionInterface(COLLECTION_NAME)
 
-const add = (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data)
-const update = (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, data)
+const add &#x3D; (wf, data) &#x3D;&gt; addElement(wf, COLLECTION_NAME, SCHEMA, data)
+const update &#x3D; (wf, id, data) &#x3D;&gt; updateElement(wf, COLLECTION_NAME, SCHEMA, id, data)
 
 /**
   * @function containsOnlyOnePhase
@@ -115,8 +118,8 @@ const update = (wf, id, data) => updateElement(wf, COLLECTION_NAME, SCHEMA, id, 
   * @desc checks if the workflow contains only one phase
   */
 
-const containsOnlyOnePhase = wf => (
-  getAll(wf).length === 1
+const containsOnlyOnePhase &#x3D; wf &#x3D;&gt; (
+  getAll(wf).length &#x3D;&#x3D;&#x3D; 1
 )
 
 /**
@@ -127,72 +130,72 @@ const containsOnlyOnePhase = wf => (
   * @desc removes a phase from the workflow
   */
 
-const remove = (wf, phaseId) => {
+const remove &#x3D; (wf, phaseId) &#x3D;&gt; {
   if (containsOnlyOnePhase(wf)) {
     throw new NoPhasesError()
   }
   return removeElement(wf, COLLECTION_NAME, phaseId)
 }
 
-const getExistingPhaseCommandIds = (wf, phaseId) => {
-  const phase = getById(wf, phaseId)
-  return phase.commands.map(command => command.phaseId)
+const getExistingPhaseCommandIds &#x3D; (wf, phaseId) &#x3D;&gt; {
+  const phase &#x3D; getById(wf, phaseId)
+  return phase.commands.map(command &#x3D;&gt; command.phaseId)
 }
 
-const generateUniqueCommandId = (wf, phaseId) => {
-  const existingIds = getExistingPhaseCommandIds(wf, phaseId)
-  let counter = 0
-  const prefix = 'command'
-  let newId = `${prefix}_${counter}`
+const generateUniqueCommandId &#x3D; (wf, phaseId) &#x3D;&gt; {
+  const existingIds &#x3D; getExistingPhaseCommandIds(wf, phaseId)
+  let counter &#x3D; 0
+  const prefix &#x3D; &#x27;command&#x27;
+  let newId &#x3D; &#x60;${prefix}_${counter}&#x60;
 
   while (existingIds.includes(newId)) {
-    counter += 1
-    newId = `${prefix}_${counter}`
+    counter +&#x3D; 1
+    newId &#x3D; &#x60;${prefix}_${counter}&#x60;
   }
 
   return newId
 }
 
-const addCommand = (wf, phaseId, command) => {
-  const phase = getById(wf, phaseId)
-  const commandWithId = Command.create({ ...command, id: generateUniqueCommandId(wf, phaseId) })
+const addCommand &#x3D; (wf, phaseId, command) &#x3D;&gt; {
+  const phase &#x3D; getById(wf, phaseId)
+  const commandWithId &#x3D; Command.create({ ...command, id: generateUniqueCommandId(wf, phaseId) })
   return update(wf, phaseId, { commands: [ ...phase.commands, commandWithId ] })
 }
 
-const updateCommand = (wf, phaseId, updatedCommand) => {
-  const phase = getById(wf, phaseId)
-  const updatedCommands = phase.commands.map(command => {
-    if (command.id === updatedCommand.id) return updatedCommand
+const updateCommand &#x3D; (wf, phaseId, updatedCommand) &#x3D;&gt; {
+  const phase &#x3D; getById(wf, phaseId)
+  const updatedCommands &#x3D; phase.commands.map(command &#x3D;&gt; {
+    if (command.id &#x3D;&#x3D;&#x3D; updatedCommand.id) return updatedCommand
     return command
   })
   return update(wf, phaseId, { commands: updatedCommands })
 }
 
-const getCommandByType = (wf, phaseId, commandType) => {
-  const phase = getById(wf, phaseId)
-  return phase.commands.find(command => command.type === commandType)
+const getCommandByType &#x3D; (wf, phaseId, commandType) &#x3D;&gt; {
+  const phase &#x3D; getById(wf, phaseId)
+  return phase.commands.find(command &#x3D;&gt; command.type &#x3D;&#x3D;&#x3D; commandType)
 }
 
-const getSetTargetCommand = (wf, phaseId) => (
+const getSetTargetCommand &#x3D; (wf, phaseId) &#x3D;&gt; (
   getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
 )
 
-const updateSetTargetValueCommand = (wf, phaseId, fctId, slotName, value) => {
-  const command = getSetTargetCommand(wf, phaseId)
+const updateSetTargetValueCommand &#x3D; (wf, phaseId, fctId, slotName, value) &#x3D;&gt; {
+  const command &#x3D; getSetTargetCommand(wf, phaseId)
 
-  const existingTargetValue = command.data.targets
-    .some(target => target.fctId === fctId &amp;&amp; target.slotName === slotName)
+  const existingTargetValue &#x3D; command.data.targets
+    .some(target &#x3D;&gt; target.fctId &#x3D;&#x3D;&#x3D; fctId &amp;amp;&amp;amp; target.slotName &#x3D;&#x3D;&#x3D; slotName)
 
-  const updatedTargets = existingTargetValue
-    ? command.data.targets.map(target => {
-      if (target.fctId === fctId &amp;&amp; target.slotName === slotName) {
+  const updatedTargets &#x3D; existingTargetValue
+    ? command.data.targets.map(target &#x3D;&gt; {
+      if (target.fctId &#x3D;&#x3D;&#x3D; fctId &amp;amp;&amp;amp; target.slotName &#x3D;&#x3D;&#x3D; slotName) {
         return { ...target, target: value }
       }
       return target
     })
     : [ ...command.data.targets, { fctId, slotName, target: value } ]
 
-  const updatedCommand = {
+  const updatedCommand &#x3D; {
     ...command,
     data: {
       ...command.data,
@@ -214,11 +217,11 @@ const updateSetTargetValueCommand = (wf, phaseId, fctId, slotName, value) => {
   * @desc sets the target value for a slot
   */
 
-const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
-  const existingSetTargetCommand = getSetTargetCommand(wf, phaseId)
+const setTargetValue &#x3D; (wf, phaseId, fctId, slotName, value) &#x3D;&gt; {
+  const existingSetTargetCommand &#x3D; getSetTargetCommand(wf, phaseId)
 
   if (!existingSetTargetCommand) {
-    const command = {
+    const command &#x3D; {
       type: Command.TYPES.SET_TARGETS,
       data: { targets: [] },
     }
@@ -243,19 +246,19 @@ const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
   * @desc gets the target value for a slot
   */
 
-const getTargetValue = (wf, phaseId, fctId, slotName) => {
-  const existingSetTargetCommand = getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
+const getTargetValue &#x3D; (wf, phaseId, fctId, slotName) &#x3D;&gt; {
+  const existingSetTargetCommand &#x3D; getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
 
   if (!existingSetTargetCommand) return
 
-  const targetEntry = existingSetTargetCommand.data.targets.find(target => (
-    target.fctId === fctId &amp;&amp; target.slotName === slotName
+  const targetEntry &#x3D; existingSetTargetCommand.data.targets.find(target &#x3D;&gt; (
+    target.fctId &#x3D;&#x3D;&#x3D; fctId &amp;amp;&amp;amp; target.slotName &#x3D;&#x3D;&#x3D; slotName
   ))
 
   if (targetEntry) return targetEntry.target
 }
 
-module.exports = {
+module.exports &#x3D; {
   COLLECTION_NAME,
   ELEMENT_TYPE,
   SCHEMA,
@@ -272,25 +275,25 @@ module.exports = {
   update,
 }
 </code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Workflow.html">Workflow</a></li><li><a href="Workflow.AndMergeGateway.html">AndMergeGateway</a></li><li><a href="Workflow.AndSplitGateway.html">AndSplitGateway</a></li><li><a href="Workflow.ApprovalEventListener.html">ApprovalEventListener</a></li><li><a href="Workflow.ConditionEventListener.html">ConditionEventListener</a></li><li><a href="Workflow.EndEventDispatcher.html">EndEventDispatcher</a></li><li><a href="Workflow.EventDispatchers.html">EventDispatchers</a></li><li><a href="Workflow.EventListeners.html">EventListeners</a></li><li><a href="Workflow.Flows.html">Flows</a></li><li><a href="Workflow.Gateways.html">Gateways</a></li><li><a href="Workflow.LoopGateway.html">LoopGateway</a></li><li><a href="Workflow.OrMergeGateway.html">OrMergeGateway</a></li><li><a href="Workflow.Phases.html">Phases</a></li><li><a href="Workflow.StartEventListener.html">StartEventListener</a></li><li><a href="Workflow.TimerEventListener.html">TimerEventListener</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Jun 21 2022 12:48:17 GMT+0200 (Central European Summer Time)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.10 on June 21, 2022.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
 </body>
+
 </html>

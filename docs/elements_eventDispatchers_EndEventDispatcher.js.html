@@ -1,42 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: elements/eventDispatchers/EndEventDispatcher.js</title>
+<!doctype html>
+<html>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+<head>
+  <meta name="generator" content="JSDoc 3.6.10">
+  <meta charset="utf-8">
+  <title>Source: elements/eventDispatchers/EndEventDispatcher.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
 </head>
 
-<body>
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: elements/eventDispatchers/EndEventDispatcher.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const createCommonEventDispatcherSchema &#x3D; require(&#x27;./createCommonEventDispatcherSchema&#x27;)
+const createElementSchema &#x3D; require(&#x27;../createElementSchema&#x27;)
+const addElement &#x3D; require(&#x27;../functions/addElement&#x27;)
+const removeElement &#x3D; require(&#x27;../functions/removeElement&#x27;)
+const getAllElementsByType &#x3D; require(&#x27;../functions/getAllElementsByType&#x27;)
+const { COLLECTION_NAME, ELEMENT_TYPE, TYPES } &#x3D; require(&#x27;./EventDispatchers&#x27;)
+const NoEndEventDispatcherError &#x3D; require(&#x27;../../errors/NoEndEventDispatcherError&#x27;)
 
-<div id="main">
+const TYPE &#x3D; TYPES.END
 
-    <h1 class="page-title">Source: elements/eventDispatchers/EndEventDispatcher.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const createCommonEventDispatcherSchema = require('./createCommonEventDispatcherSchema')
-const createElementSchema = require('../createElementSchema')
-const addElement = require('../functions/addElement')
-const removeElement = require('../functions/removeElement')
-const getAllElementsByType = require('../functions/getAllElementsByType')
-const { COLLECTION_NAME, ELEMENT_TYPE, TYPES } = require('./EventDispatchers')
-const NoEndEventDispatcherError = require('../../errors/NoEndEventDispatcherError')
-
-const TYPE = TYPES.END
-
-const SCHEMA = createElementSchema(ELEMENT_TYPE)
+const SCHEMA &#x3D; createElementSchema(ELEMENT_TYPE)
   .concat(createCommonEventDispatcherSchema(TYPE))
 
 /**
@@ -46,7 +49,7 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE)
   * @desc returns all event dispatchers of type END
   */
 
-const getAll = wf => getAllElementsByType(wf, COLLECTION_NAME, TYPE)
+const getAll &#x3D; wf &#x3D;&gt; getAllElementsByType(wf, COLLECTION_NAME, TYPE)
 
 /**
   * @function add
@@ -56,11 +59,11 @@ const getAll = wf => getAllElementsByType(wf, COLLECTION_NAME, TYPE)
   * @desc adds a new END event dispatcher to the workflow
   */
 
-const add = (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data)
+const add &#x3D; (wf, data) &#x3D;&gt; addElement(wf, COLLECTION_NAME, SCHEMA, data)
 
-const isLastEndEventDispatcher = wf => {
-  const dispatchers = getAll(wf)
-  return dispatchers.length === 1
+const isLastEndEventDispatcher &#x3D; wf &#x3D;&gt; {
+  const dispatchers &#x3D; getAll(wf)
+  return dispatchers.length &#x3D;&#x3D;&#x3D; 1
 }
 
 /**
@@ -71,14 +74,14 @@ const isLastEndEventDispatcher = wf => {
   * @desc removes an END event dispatcher from the workflow
   */
 
-const remove = (wf, eventDispatcherId) => {
+const remove &#x3D; (wf, eventDispatcherId) &#x3D;&gt; {
   if (isLastEndEventDispatcher(wf)) {
     throw new NoEndEventDispatcherError()
   }
   return removeElement(wf, COLLECTION_NAME, eventDispatcherId)
 }
 
-module.exports = {
+module.exports &#x3D; {
   SCHEMA,
   TYPE,
   getAll,
@@ -86,25 +89,25 @@ module.exports = {
   remove,
 }
 </code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Workflow.html">Workflow</a></li><li><a href="Workflow.AndMergeGateway.html">AndMergeGateway</a></li><li><a href="Workflow.AndSplitGateway.html">AndSplitGateway</a></li><li><a href="Workflow.ApprovalEventListener.html">ApprovalEventListener</a></li><li><a href="Workflow.ConditionEventListener.html">ConditionEventListener</a></li><li><a href="Workflow.EndEventDispatcher.html">EndEventDispatcher</a></li><li><a href="Workflow.EventDispatchers.html">EventDispatchers</a></li><li><a href="Workflow.EventListeners.html">EventListeners</a></li><li><a href="Workflow.Flows.html">Flows</a></li><li><a href="Workflow.Gateways.html">Gateways</a></li><li><a href="Workflow.LoopGateway.html">LoopGateway</a></li><li><a href="Workflow.OrMergeGateway.html">OrMergeGateway</a></li><li><a href="Workflow.Phases.html">Phases</a></li><li><a href="Workflow.StartEventListener.html">StartEventListener</a></li><li><a href="Workflow.TimerEventListener.html">TimerEventListener</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Jun 21 2022 12:48:17 GMT+0200 (Central European Summer Time)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.10 on June 21, 2022.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
 </body>
+
 </html>
