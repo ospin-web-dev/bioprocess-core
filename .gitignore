@@ -101,7 +101,3 @@ dist
 .dynamodb/
 
 .ignore
-
-# docs
-
-docs
