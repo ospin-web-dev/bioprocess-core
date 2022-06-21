@@ -272,7 +272,8 @@ describe('Flows', () => {
     describe.each([
       { elemInterface: AndMergeGateway, name: 'AndMergeGateway' },
       { elemInterface: OrMergeGateway, name: 'OrMergeGateway' },
-    ])('when adding a second outgoing flow to an $name', ({ elemInterface }) => {
+      { elemInterface: ApprovalEventListener, name: 'ApprovalEventListener' },
+    ])('when adding a second outgoing flow to a(n) $name', ({ elemInterface }) => {
       it('throws an error', () => {
         let wf = WorkflowGenerator.generate()
         wf = Phases.add(wf)
@@ -291,7 +292,8 @@ describe('Flows', () => {
       { elemInterface: LoopGateway, name: 'LoopGateway' },
       { elemInterface: AndSplitGateway, name: 'AndSplitGateway' },
       { elemInterface: Phases, name: 'Phase' },
-    ])('when adding a second incoming flow to an $name', ({ elemInterface }) => {
+      { elemInterface: EndEventDispatcher, name: 'EndEventDispatcher' },
+    ])('when adding a second incoming flow to a(n) $name', ({ elemInterface }) => {
       it('throws an error', () => {
         let wf = WorkflowGenerator.generate()
         wf = ApprovalEventListener.add(wf)

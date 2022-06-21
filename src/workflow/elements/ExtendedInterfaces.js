@@ -123,7 +123,20 @@ const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => 
     )
   }
 
-  if (destEl.elementType === Phases.ELEMENT_TYPE) {
+  if (srcEl.elementType === EventListeners.ELEMENT_TYPE) {
+    const totalOutgoingFlows = Flows.getManyBy(workflow, { srcId })
+    if (totalOutgoingFlows.length) {
+      throw new IncorrectAmountOfOutgoingFlowsError(
+        `Only one outgoing flow for ${srcEl.elementType} allowed`,
+        { el: srcEl },
+      )
+    }
+  }
+
+  if (
+    destEl.elementType === Phases.ELEMENT_TYPE
+    || destEl.elementType === EventDispatchers.ELEMENT_TYPE
+  ) {
     const totalIncomingFlows = Flows.getManyBy(workflow, { destId })
     if (totalIncomingFlows.length) {
       throw new IncorrectAmountOfIncomingFlowsError(
