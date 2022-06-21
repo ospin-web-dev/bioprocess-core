@@ -72,7 +72,7 @@ const pipe = (functions, ...initParams) => (
 /**
  * @function createTemplate
  * @memberof Workflow
- * @desc creates an empty workflow with the minumum required setup, including a START event
+ * @desc creates an empty workflow with the minimum required setup, including a START event
  * listener, a single phase, an APPROVAL event listener within the phase and an END dispatcher
  */
 
