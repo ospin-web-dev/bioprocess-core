@@ -85,9 +85,10 @@ const SCHEMA &#x3D; createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSc
   * @function add
   * @memberof Workflow.Phases
   * @arg {Object} workflow
-  * @arg {Object} initialData
-  * @arg {Array} initialData.commands&#x3D;[] - the commands to be executed for the phase
+  * @arg {Object} [initialData&#x3D;{}]
+  * @arg {Array} [initialData.commands&#x3D;[]] - the commands to be executed for the phase
   * @desc adds a phase to the workflow
+  * @return workflow
   */
 
 /**
@@ -96,7 +97,7 @@ const SCHEMA &#x3D; createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSc
   * @arg {Object} workflow
   * @arg {id} id
   * @arg {Object} updateData
-  * @arg {Array} updateData.commands&#x3D;[] - the commands to be executed for the phase
+  * @arg {Array} updateData.commands - the commands to be executed for the phase
   * @desc updates a phase in the workflow
   */
 

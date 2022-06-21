@@ -51,7 +51,7 @@ const SCHEMA = Joi.object({
  * @memberof Workflow
  * @arg {Object} initialData={}
  * @desc creates a new workflow with the passed data.
- * It is recommended to use createTemplate instead
+ * <strong>It is recommended to use createTemplate instead</strong>
  */
 
 const create = initialData => createFromSchema(initialData, SCHEMA)

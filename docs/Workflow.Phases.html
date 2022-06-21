@@ -38,7 +38,7 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Workflow.Phases.html#.add">add(workflow, initialData)</a></dt>
+                    <dt><a href="Workflow.Phases.html#.add">add(workflow[, initialData])</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="Workflow.Phases.html#.containsOnlyOnePhase">containsOnlyOnePhase(workflow)</a></dt>
@@ -88,7 +88,7 @@
             <h2>Methods</h2>
             <section>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
-              <h3 id=".add"><span class="symbol-name">add</span><span class="signature"><span class="signature-params">(workflow, initialData)</span></span></h3>
+              <h3 id=".add"><span class="symbol-name">add</span><span class="signature"><span class="signature-params">(workflow[, initialData])</span></span></h3>
               <p>adds a phase to the workflow</p>
               <section>
                 <h4>Parameters</h4>
@@ -123,9 +123,10 @@
                         <p>Object</p>
                       </td>
                       <td>
-                        <p>&nbsp;</p>
+                        <p>Yes</p>
                       </td>
                       <td>
+                        <p>Defaults to <code>{}</code>.</p>
                         <p>Values in <code>initialData</code> have the following properties:</p>
                         <table class="jsdoc-details-table">
                           <thead>
@@ -145,11 +146,11 @@
                                 <p>Array</p>
                               </td>
                               <td>
-                                <p>&nbsp;</p>
+                                <p>Yes</p>
                               </td>
                               <td>
                                 <p>the commands to be executed for the phase</p>
-                                <p>Defaults to <code>[</code>.</p>
+                                <p>Defaults to <code>[]</code>.</p>
                               </td>
                             </tr>
                           </tbody>
@@ -160,6 +161,10 @@
                 </table>
               </section>
               <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p>workflow</p>
+                </dd>
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
               <h3 id=".containsOnlyOnePhase"><span class="symbol-name">containsOnlyOnePhase</span><span class="signature"><span class="signature-params">(workflow)</span></span></h3>
@@ -676,7 +681,6 @@
                               </td>
                               <td>
                                 <p>the commands to be executed for the phase</p>
-                                <p>Defaults to <code>[</code>.</p>
                               </td>
                             </tr>
                           </tbody>

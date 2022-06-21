@@ -54,9 +54,10 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema(
   * @function add
   * @memberof Workflow.Phases
   * @arg {Object} workflow
-  * @arg {Object} initialData
-  * @arg {Array} initialData.commands=[] - the commands to be executed for the phase
+  * @arg {Object} [initialData={}]
+  * @arg {Array} [initialData.commands=[]] - the commands to be executed for the phase
   * @desc adds a phase to the workflow
+  * @return workflow
   */
 
 /**
@@ -65,7 +66,7 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE).concat(createCommonPhaseSchema(
   * @arg {Object} workflow
   * @arg {id} id
   * @arg {Object} updateData
-  * @arg {Array} updateData.commands=[] - the commands to be executed for the phase
+  * @arg {Array} updateData.commands - the commands to be executed for the phase
   * @desc updates a phase in the workflow
   */
 

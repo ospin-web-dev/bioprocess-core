@@ -81,8 +81,8 @@ const SCHEMA &#x3D; Joi.object({
  * @function create
  * @memberof Workflow
  * @arg {Object} initialData&#x3D;{}
- * @desc Creates a new workflow with the passed data.
- * It is recommended to use createTemplate instead
+ * @desc creates a new workflow with the passed data.
+ * &amp;lt;strong&gt;It is recommended to use createTemplate instead&amp;lt;/strong&gt;
  */
 
 const create &#x3D; initialData &#x3D;&gt; createFromSchema(initialData, SCHEMA)
@@ -92,7 +92,7 @@ const create &#x3D; initialData &#x3D;&gt; createFromSchema(initialData, SCHEMA)
  * @memberof Workflow
  * @arg {Array} functions - an array of functions to be executed on the workflow
  * @arg {...*} initParams - the parameters for the first function to be called with
- * @desc Executes a series of functions on a workflow, whereby the parameters of the nth
+ * @desc executes a series of functions on a workflow, whereby the parameters of the nth
  * function are passed into the (n + 1)th function
  */
 
