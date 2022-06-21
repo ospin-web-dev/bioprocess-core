@@ -78,11 +78,37 @@ const common = createCommonCollectionInterface(COLLECTION_NAME)
 const SCHEMA = createElementSchema(ELEMENT_TYPE)
   .concat(createCommonSchema())
 
+/**
+  * @function getIncomingFlows
+  * @memberof Workflow.Flows
+  * @arg {Object} workflow
+  * @arg {String} elementId
+  * @desc returns all incoming flows for an element
+  */
+
+const getIncomingFlows = (wf, elementId) => (
+  common.getManyBy(wf, { destId: elementId })
+)
+
+/**
+  * @function getOutgoingFlows
+  * @memberof Workflow.Flows
+  * @arg {Object} workflow
+  * @arg {String} elementId
+  * @desc returns all outgoing flows for an element
+  */
+
+const getOutgoingFlows = (wf, elementId) => (
+  common.getManyBy(wf, { srcId: elementId })
+)
+
 module.exports = {
   COLLECTION_NAME,
   ELEMENT_TYPE,
   SCHEMA,
   add: (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data),
   remove: (wf, id) => removeElement(wf, COLLECTION_NAME, id),
+  getIncomingFlows,
+  getOutgoingFlows,
   ...common,
 }

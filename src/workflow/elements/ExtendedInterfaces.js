@@ -105,26 +105,27 @@ const CONNECTION_MAP = {
   [Phases.ELEMENT_TYPE]: [],
 }
 
-const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => {
-  const srcEl = getElementById(workflow, srcId)
-  const destEl = getElementById(workflow, destId)
-
-  if (srcId === destId) {
+const validateElementNotConnectingToItself = (srcEl, destEl) => {
+  if (srcEl.id === destEl.id) {
     throw new ForbiddenConnectionError(
       'Cannot connect an element to itself',
       { srcEl, destEl },
     )
   }
+}
 
+const validateElementTypesCanConnect = (srcEl, destEl) => {
   if (!CONNECTION_MAP[srcEl.elementType].includes(destEl.elementType)) {
     throw new ForbiddenConnectionError(
       `a(n) ${srcEl.elementType} cannot connect to a ${destEl.elementType}`,
       { srcEl, destEl },
     )
   }
+}
 
+const validateElementsHaveOnlyOneOutgoingFlow = (wf, srcEl, destEl) => {
   if (srcEl.elementType === EventListeners.ELEMENT_TYPE) {
-    const totalOutgoingFlows = Flows.getManyBy(workflow, { srcId })
+    const totalOutgoingFlows = Flows.getManyBy(wf, { srcId: srcEl.id })
     if (totalOutgoingFlows.length) {
       throw new IncorrectAmountOfOutgoingFlowsError(
         `Only one outgoing flow for ${srcEl.elementType} allowed`,
@@ -133,11 +134,24 @@ const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => 
     }
   }
 
+  if (srcEl.type === AndMergeGateway.TYPE
+    || srcEl.type === OrMergeGateway.TYPE) {
+    const totalOutgoingFlows = Flows.getManyBy(wf, { srcId: srcEl.id })
+    if (totalOutgoingFlows.length) {
+      throw new IncorrectAmountOfOutgoingFlowsError(
+        `Only one outgoing flow for ${srcEl.type} allowed`,
+        { el: srcEl },
+      )
+    }
+  }
+}
+
+const validateElementsHaveOnlyOneIncomingFlow = (wf, srcEl, destEl) => {
   if (
     destEl.elementType === Phases.ELEMENT_TYPE
     || destEl.elementType === EventDispatchers.ELEMENT_TYPE
   ) {
-    const totalIncomingFlows = Flows.getManyBy(workflow, { destId })
+    const totalIncomingFlows = Flows.getManyBy(wf, { destId: destEl.id })
     if (totalIncomingFlows.length) {
       throw new IncorrectAmountOfIncomingFlowsError(
         `Only one incoming flow for ${destEl.elementType} allowed`,
@@ -146,21 +160,10 @@ const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => 
     }
   }
 
-  if (srcEl.type === AndMergeGateway.TYPE
-    || srcEl.type === OrMergeGateway.TYPE) {
-    const totalOutgoingFlows = Flows.getManyBy(workflow, { srcId })
-    if (totalOutgoingFlows.length) {
-      throw new IncorrectAmountOfOutgoingFlowsError(
-        `Only one outgoing flow for ${srcEl.type} allowed`,
-        { el: srcEl },
-      )
-    }
-  }
-
   if (destEl.type === AndSplitGateway.TYPE
     || destEl.type === LoopGateway.TYPE
   ) {
-    const totalIncomingFlows = Flows.getManyBy(workflow, { destId })
+    const totalIncomingFlows = Flows.getManyBy(wf, { destId: destEl.id })
     if (totalIncomingFlows.length) {
       throw new IncorrectAmountOfIncomingFlowsError(
         `Only one incoming flow for ${destEl.type} allowed`,
@@ -168,6 +171,17 @@ const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => 
       )
     }
   }
+}
+
+const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => {
+  const srcEl = getElementById(workflow, srcId)
+  const destEl = getElementById(workflow, destId)
+
+  validateElementNotConnectingToItself(srcEl, destEl)
+  validateElementTypesCanConnect(srcEl, destEl)
+  validateElementsHaveOnlyOneOutgoingFlow(workflow, srcEl, destEl)
+  validateElementsHaveOnlyOneIncomingFlow(workflow, srcEl, destEl)
+
   return flowAddFn(workflow, { srcId, destId })
 }
 

@@ -368,4 +368,50 @@ describe('Flows', () => {
       })
     })
   })
+
+  describe('getIncomingFlows', () => {
+    it('returns all incoming flows of an element', () => {
+      const workflow = pipe([
+        WorkflowGenerator.generate,
+        ApprovalEventListener.add,
+        ApprovalEventListener.add,
+        OrMergeGateway.add,
+        wf => Flows.add(wf, {
+          srcId: ApprovalEventListener.getAll(wf)[0].id,
+          destId: OrMergeGateway.getAll(wf)[0].id,
+        }),
+        wf => Flows.add(wf, {
+          srcId: ApprovalEventListener.getAll(wf)[1].id,
+          destId: OrMergeGateway.getAll(wf)[0].id,
+        }),
+      ])
+
+      const flows = Flows.getIncomingFlows(workflow, OrMergeGateway.getAll(workflow)[0].id)
+
+      expect(flows).toHaveLength(2)
+    })
+  })
+
+  describe('getOutgoingFlows', () => {
+    it('returns all outgoing flows of an element', () => {
+      const workflow = pipe([
+        WorkflowGenerator.generate,
+        Phases.add,
+        Phases.add,
+        AndSplitGateway.add,
+        wf => Flows.add(wf, {
+          srcId: AndSplitGateway.getAll(wf)[0].id,
+          destId: Phases.getAll(wf)[0].id,
+        }),
+        wf => Flows.add(wf, {
+          srcId: AndSplitGateway.getAll(wf)[0].id,
+          destId: Phases.getAll(wf)[1].id,
+        }),
+      ])
+
+      const flows = Flows.getOutgoingFlows(workflow, AndSplitGateway.getAll(workflow)[0].id)
+
+      expect(flows).toHaveLength(2)
+    })
+  })
 })
