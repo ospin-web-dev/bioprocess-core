@@ -9,7 +9,6 @@ const Gateways = require('./gateways/Gateways')
 const AndMergeGateway = require('./gateways/AndMergeGateway')
 const AndSplitGateway = require('./gateways/AndSplitGateway')
 const LoopGateway = require('./gateways/LoopGateway')
-const OrMergeGateway = require('./gateways/OrMergeGateway')
 
 const EventListeners = require('./eventListeners/EventListeners')
 const ApprovalEventListener = require('./eventListeners/ApprovalEventListener')
@@ -24,7 +23,6 @@ const getElementById = require('../functions/getElementById')
 
 const ForbiddenConnectionError = require('../errors/ForbiddenConnectionError')
 const IncorrectAmountOfOutgoingFlowsError = require('../errors/IncorrectAmountOfOutgoingFlowsError')
-const IncorrectAmountOfIncomingFlowsError = require('../errors/IncorrectAmountOfIncomingFlowsError')
 const IncorrectElementTypeError = require('../errors/IncorrectElementTypeError')
 
 /* whenever a loopback flow of a LoopGateway is removed, unset the loopbackFlowId */
@@ -77,7 +75,6 @@ const interfacesWithPostRemovalFlowCleanup = [
   TimerEventListener,
   AndMergeGateway,
   AndSplitGateway,
-  OrMergeGateway,
   LoopGateway,
   EndEventDispatcher,
 ]
@@ -123,7 +120,7 @@ const validateElementTypesCanConnect = (srcEl, destEl) => {
   }
 }
 
-const validateElementsHaveOnlyOneOutgoingFlow = (wf, srcEl, destEl) => {
+const validateElementsHaveOnlyOneOutgoingFlow = (wf, srcEl) => {
   if (srcEl.elementType === EventListeners.ELEMENT_TYPE) {
     const totalOutgoingFlows = Flows.getManyBy(wf, { srcId: srcEl.id })
     if (totalOutgoingFlows.length) {
@@ -134,40 +131,12 @@ const validateElementsHaveOnlyOneOutgoingFlow = (wf, srcEl, destEl) => {
     }
   }
 
-  if (srcEl.type === AndMergeGateway.TYPE
-    || srcEl.type === OrMergeGateway.TYPE) {
+  if (srcEl.type === AndMergeGateway.TYPE) {
     const totalOutgoingFlows = Flows.getManyBy(wf, { srcId: srcEl.id })
     if (totalOutgoingFlows.length) {
       throw new IncorrectAmountOfOutgoingFlowsError(
         `Only one outgoing flow for ${srcEl.type} allowed`,
         { el: srcEl },
-      )
-    }
-  }
-}
-
-const validateElementsHaveOnlyOneIncomingFlow = (wf, srcEl, destEl) => {
-  if (
-    destEl.elementType === Phases.ELEMENT_TYPE
-    || destEl.elementType === EventDispatchers.ELEMENT_TYPE
-  ) {
-    const totalIncomingFlows = Flows.getManyBy(wf, { destId: destEl.id })
-    if (totalIncomingFlows.length) {
-      throw new IncorrectAmountOfIncomingFlowsError(
-        `Only one incoming flow for ${destEl.elementType} allowed`,
-        { el: destEl },
-      )
-    }
-  }
-
-  if (destEl.type === AndSplitGateway.TYPE
-    || destEl.type === LoopGateway.TYPE
-  ) {
-    const totalIncomingFlows = Flows.getManyBy(wf, { destId: destEl.id })
-    if (totalIncomingFlows.length) {
-      throw new IncorrectAmountOfIncomingFlowsError(
-        `Only one incoming flow for ${destEl.type} allowed`,
-        { el: destEl },
       )
     }
   }
@@ -179,8 +148,7 @@ const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => 
 
   validateElementNotConnectingToItself(srcEl, destEl)
   validateElementTypesCanConnect(srcEl, destEl)
-  validateElementsHaveOnlyOneOutgoingFlow(workflow, srcEl, destEl)
-  validateElementsHaveOnlyOneIncomingFlow(workflow, srcEl, destEl)
+  validateElementsHaveOnlyOneOutgoingFlow(workflow, srcEl)
 
   return flowAddFn(workflow, { srcId, destId })
 }
@@ -250,7 +218,6 @@ module.exports = {
   AndMergeGateway,
   AndSplitGateway,
   LoopGateway,
-  OrMergeGateway,
   ApprovalEventListener,
   ConditionEventListener,
   StartEventListener,

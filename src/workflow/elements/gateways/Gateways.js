@@ -6,7 +6,6 @@ const TYPES = {
   AND_MERGE: 'AND_MERGE',
   AND_SPLIT: 'AND_SPLIT',
   LOOP: 'LOOP',
-  OR_MERGE: 'OR_MERGE',
 }
 
 /**

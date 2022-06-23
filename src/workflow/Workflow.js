@@ -17,7 +17,6 @@ const {
   AndMergeGateway,
   AndSplitGateway,
   LoopGateway,
-  OrMergeGateway,
 } = require('./elements')
 
 const getElementById = require('./functions/getElementById')
@@ -40,7 +39,6 @@ const SCHEMA = Joi.object({
       AndMergeGateway.SCHEMA,
       AndSplitGateway.SCHEMA,
       LoopGateway.SCHEMA,
-      OrMergeGateway.SCHEMA,
     )).default([]),
     phases: Joi.array().items(Phases.SCHEMA).default([]),
   }).default(),
@@ -170,9 +168,4 @@ module.exports = {
    *  @namespace Workflow.LoopGateway
    */
   LoopGateway,
-
-  /**
-   *  @namespace Workflow.OrMergeGateway
-   */
-  OrMergeGateway,
 }

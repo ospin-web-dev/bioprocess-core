@@ -6,7 +6,6 @@ const {
   EndEventDispatcher,
   LoopGateway,
   AndMergeGateway,
-  OrMergeGateway,
   AndSplitGateway,
   pipe,
 } = require('../../../../src/workflow/Workflow')
@@ -271,7 +270,6 @@ describe('Flows', () => {
 
     describe.each([
       { elemInterface: AndMergeGateway, name: 'AndMergeGateway' },
-      { elemInterface: OrMergeGateway, name: 'OrMergeGateway' },
       { elemInterface: ApprovalEventListener, name: 'ApprovalEventListener' },
     ])('when adding a second outgoing flow to a(n) $name', ({ elemInterface }) => {
       it('throws an error', () => {
@@ -285,26 +283,6 @@ describe('Flows', () => {
         wf = Flows.add(wf, { srcId: gateway.id, destId: phases[0].id })
         expect(() => Flows.add(wf, { srcId: gateway.id, destId: phases[1].id }))
           .toThrow(/Only one outgoing flow/)
-      })
-    })
-
-    describe.each([
-      { elemInterface: LoopGateway, name: 'LoopGateway' },
-      { elemInterface: AndSplitGateway, name: 'AndSplitGateway' },
-      { elemInterface: Phases, name: 'Phase' },
-      { elemInterface: EndEventDispatcher, name: 'EndEventDispatcher' },
-    ])('when adding a second incoming flow to a(n) $name', ({ elemInterface }) => {
-      it('throws an error', () => {
-        let wf = WorkflowGenerator.generate()
-        wf = ApprovalEventListener.add(wf)
-        wf = ApprovalEventListener.add(wf)
-        wf = elemInterface.add(wf)
-        const listeners = ApprovalEventListener.getAll(wf)
-        const gateway = elemInterface.getAll(wf)[0]
-
-        wf = Flows.add(wf, { srcId: listeners[0].id, destId: gateway.id })
-        expect(() => Flows.add(wf, { srcId: listeners[1].id, destId: gateway.id }))
-          .toThrow(/Only one incoming flow/)
       })
     })
   })
@@ -375,18 +353,18 @@ describe('Flows', () => {
         WorkflowGenerator.generate,
         ApprovalEventListener.add,
         ApprovalEventListener.add,
-        OrMergeGateway.add,
+        AndMergeGateway.add,
         wf => Flows.add(wf, {
           srcId: ApprovalEventListener.getAll(wf)[0].id,
-          destId: OrMergeGateway.getAll(wf)[0].id,
+          destId: AndMergeGateway.getAll(wf)[0].id,
         }),
         wf => Flows.add(wf, {
           srcId: ApprovalEventListener.getAll(wf)[1].id,
-          destId: OrMergeGateway.getAll(wf)[0].id,
+          destId: AndMergeGateway.getAll(wf)[0].id,
         }),
       ])
 
-      const flows = Flows.getIncomingFlows(workflow, OrMergeGateway.getAll(workflow)[0].id)
+      const flows = Flows.getIncomingFlows(workflow, AndMergeGateway.getAll(workflow)[0].id)
 
       expect(flows).toHaveLength(2)
     })

@@ -11,7 +11,6 @@ const {
   AndMergeGateway,
   AndSplitGateway,
   LoopGateway,
-  OrMergeGateway,
   pipe,
   validateSchema,
 } = Workflow
@@ -34,7 +33,6 @@ describe('Workflow', () => {
           AndMergeGateway.add,
           AndSplitGateway.add,
           LoopGateway.add,
-          OrMergeGateway.add,
           wf => Flows
             .add(wf, {
               srcId: StartEventListener.getAll(wf)[0].id,
