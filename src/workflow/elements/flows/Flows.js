@@ -86,7 +86,7 @@ const SCHEMA = createElementSchema(ELEMENT_TYPE)
   * @desc returns all incoming flows for an element
   */
 
-const getIncomingFlows = (wf, elementId) => (
+const getIncoming = (wf, elementId) => (
   common.getManyBy(wf, { destId: elementId })
 )
 
@@ -98,7 +98,7 @@ const getIncomingFlows = (wf, elementId) => (
   * @desc returns all outgoing flows for an element
   */
 
-const getOutgoingFlows = (wf, elementId) => (
+const getOutgoing = (wf, elementId) => (
   common.getManyBy(wf, { srcId: elementId })
 )
 
@@ -108,7 +108,7 @@ module.exports = {
   SCHEMA,
   add: (wf, data) => addElement(wf, COLLECTION_NAME, SCHEMA, data),
   remove: (wf, id) => removeElement(wf, COLLECTION_NAME, id),
-  getIncomingFlows,
-  getOutgoingFlows,
+  getIncoming,
+  getOutgoing,
   ...common,
 }

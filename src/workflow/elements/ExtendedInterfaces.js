@@ -173,7 +173,7 @@ const addLoopbackReferenceHook = flowAddFn => (workflow, { srcId, destId }) => {
   return LoopGateway.update(wfWithFlow, srcId, { loopbackFlowId: flow.id })
 }
 
-Flows.addLoopbackFlow = addLoopbackReferenceHook(Flows.add)
+Flows.addLoopback = addLoopbackReferenceHook(Flows.add)
 
 /* whenever we delete a phase, delete all associated event listeners */
 

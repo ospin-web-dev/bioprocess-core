@@ -287,7 +287,7 @@ describe('Flows', () => {
     })
   })
 
-  describe('addLoopbackFlow', () => {
+  describe('addLoopback', () => {
     describe('when the passed srcId does NOT belong to a Gateway', () => {
       it('throws an error', () => {
         const wf = pipe([
@@ -296,7 +296,7 @@ describe('Flows', () => {
           Phases.add,
         ])
 
-        expect(() => Flows.addLoopbackFlow(wf, {
+        expect(() => Flows.addLoopback(wf, {
           srcId: Phases.getAll(wf)[0].id,
           destId: Phases.getAll(wf)[1].id,
         })).toThrow(/is not a gateway/)
@@ -311,7 +311,7 @@ describe('Flows', () => {
           AndMergeGateway.add,
         ])
 
-        expect(() => Flows.addLoopbackFlow(wf, {
+        expect(() => Flows.addLoopback(wf, {
           srcId: Gateways.getAll(wf)[0].id,
           destId: Phases.getAll(wf)[0].id,
         })).toThrow(/does not provide a loopback flow/)
@@ -336,7 +336,7 @@ describe('Flows', () => {
         wf = Phases.add(wf)
         const gateways = Gateways.getAll(wf)
         const lastGateway = gateways[gateways.length - 1]
-        wf = Flows.addLoopbackFlow(wf, { srcId: lastGateway.id, destId: Phases.getLast(wf).id })
+        wf = Flows.addLoopback(wf, { srcId: lastGateway.id, destId: Phases.getLast(wf).id })
 
         wf = Flows.remove(wf, Flows.getLast(wf).id)
 
@@ -347,7 +347,7 @@ describe('Flows', () => {
     })
   })
 
-  describe('getIncomingFlows', () => {
+  describe('getIncoming', () => {
     it('returns all incoming flows of an element', () => {
       const workflow = pipe([
         WorkflowGenerator.generate,
@@ -364,13 +364,13 @@ describe('Flows', () => {
         }),
       ])
 
-      const flows = Flows.getIncomingFlows(workflow, AndMergeGateway.getAll(workflow)[0].id)
+      const flows = Flows.getIncoming(workflow, AndMergeGateway.getAll(workflow)[0].id)
 
       expect(flows).toHaveLength(2)
     })
   })
 
-  describe('getOutgoingFlows', () => {
+  describe('getOutgoing', () => {
     it('returns all outgoing flows of an element', () => {
       const workflow = pipe([
         WorkflowGenerator.generate,
@@ -387,7 +387,7 @@ describe('Flows', () => {
         }),
       ])
 
-      const flows = Flows.getOutgoingFlows(workflow, AndSplitGateway.getAll(workflow)[0].id)
+      const flows = Flows.getOutgoing(workflow, AndSplitGateway.getAll(workflow)[0].id)
 
       expect(flows).toHaveLength(2)
     })
