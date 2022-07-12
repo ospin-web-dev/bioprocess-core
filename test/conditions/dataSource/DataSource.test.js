@@ -29,7 +29,7 @@ describe('DataSource', () => {
       it('does not throw an error', () => {
         const data = {
           type: DataSource.TYPES.SENSOR_DATA,
-          data: { fctId: '1', slotName: 'value' },
+          data: { reporterFctId: '57fc5db1-b84e-4c23-ab0b-65a23ce58632' },
         }
 
         expect(() => DataSource.create(data)).not.toThrow()
@@ -40,7 +40,7 @@ describe('DataSource', () => {
       it('does throw an error', () => {
         const data = {
           type: 'FIRE',
-          data: { fctId: '1', slotName: 'value' },
+          data: { reporterFctId: '57fc5db1-b84e-4c23-ab0b-65a23ce58632'},
         }
 
         expect(() => DataSource.create(data)).toThrow(/type/)

@@ -13,7 +13,7 @@ describe('the Condition interface', () => {
     const right = {
       dataSource: {
         type: DataSource.TYPES.SENSOR_DATA,
-        data: { fctId: '1', slotName: 'value' },
+        data: { reporterFctId: 'd2d92a1d-2a4c-40c6-bd25-93d19c043922' },
       },
     }
     const options = { consecutiveTimeMS: 1000, allowedDeviation: 0.5 }
@@ -33,7 +33,7 @@ describe('the Condition interface', () => {
       const right = {
         dataSource: {
           type: DataSource.TYPES.SENSOR_DATA,
-          data: { fctId: '1', slotName: 'value' },
+          data: { reporterFctId: 'f840c6ca-68e5-4bb9-9bca-a83b9cb56058' },
         },
       }
       const options = { consecutiveTimeMS: Math.random(), allowedDeviation: Math.random() }
@@ -46,7 +46,7 @@ describe('the Condition interface', () => {
         const left = {
           dataSource: {
             type: DataSource.TYPES.SENSOR_DATA,
-            data: { fctId: '1', slotName: 'value' },
+            data: { reporterFctId: 'fa7f5d81-ec89-4ee5-9e98-aa1178193268' },
           },
         }
         const conditions = []
@@ -59,7 +59,7 @@ describe('the Condition interface', () => {
         const right = {
           dataSource: {
             type: DataSource.TYPES.SENSOR_DATA,
-            data: { fctId: '1', slotName: 'value' },
+            data: { reporterFctId: '57fc5db1-b84e-4c23-ab0b-65a23ce58632' },
           },
         }
         const conditions = []
