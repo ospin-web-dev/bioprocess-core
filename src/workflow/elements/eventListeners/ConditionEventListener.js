@@ -1,20 +1,48 @@
 const Joi = require('joi')
-const EventListener = require('./EventListener')
+const { TYPES } = require('./EventListeners')
+const createDefaultEventListenerInterface = require('./createDefaultEventListenerInterface')
 const Condition = require('../../../conditions/Condition')
 
-class ConditionEventListener extends EventListener {
+/**
+  * @function getAll
+  * @memberof Workflow.ConditionEventListener
+  * @arg {Object} workflow
+  * @desc returns all event listeners of type CONDITION
+  */
 
-  static get TYPE() {
-    return 'CONDITION'
-  }
+/**
+  * @function add
+  * @memberof Workflow.ConditionEventListener
+  * @arg {Object} workflow
+  * @arg {Object} initialData
+  * @arg {string|null} initialData.phaseId=null - the phase Id the event listener is associated with
+  * @arg {Object} initialData.condition={} - condition
+  * @desc adds a new CONDITION event listener to the workflow
+  */
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(ConditionEventListener.TYPE).default(ConditionEventListener.TYPE),
-      condition: Condition.SCHEMA.allow(null).default(null),
-    }))
-  }
+/**
+  * @function update
+  * @memberof Workflow.ConditionEventListener
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @arg {Object} updateData
+  * @arg {string|null} updateData.phaseId=null - the phase Id the event listener is associated with
+  * @arg {Object} updateData.condition={} - condition
+  * @desc updates an CONDITION event listener in the workflow
+  */
 
-}
+/**
+  * @function remove
+  * @memberof Workflow.ConditionEventListener
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @desc removes an CONDITION event listener from the workflow
+  */
 
-module.exports = ConditionEventListener
+const typeSpecificSchema = (
+  Joi.object({
+    condition: Condition.SCHEMA,
+  })
+)
+
+module.exports = createDefaultEventListenerInterface(TYPES.CONDITION, typeSpecificSchema)

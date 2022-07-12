@@ -1,18 +1,31 @@
-const Joi = require('joi')
-const Gateway = require('./Gateway')
+const { TYPES } = require('./Gateways')
+const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-class AndSplitGateway extends Gateway {
+/**
+  * @function getAll
+  * @memberof Workflow.AndSplitGateway
+  * @arg {Object} workflow
+  * @desc returns all gateways of type AND_SPLIT
+  */
 
-  static get TYPE() {
-    return 'AND_SPLIT'
-  }
+/**
+  * @function add
+  * @memberof Workflow.AndSplitGateway
+  * @arg {Object} workflow
+  * @arg {Object} initialData
+  * @desc adds a new AND_SPLIT gateway to the workflow
+  */
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(AndSplitGateway.TYPE).default(AndSplitGateway.TYPE),
-    }))
-  }
+/**
+  * @function remove
+  * @memberof Workflow.AndSplitGateway
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @desc removes an AND_SPLIT gateway from the workflow
+  */
 
-}
+const defaultInterface = createDefaultGatewayInterface(TYPES.AND_SPLIT)
 
-module.exports = AndSplitGateway
+delete defaultInterface.update
+
+module.exports = defaultInterface

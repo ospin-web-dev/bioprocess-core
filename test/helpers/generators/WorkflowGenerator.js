@@ -1,12 +1,11 @@
 const uuid = require('uuid')
-const Workflow = require('../../../src/workflow/Workflow')
+const Workflow = require('../../../src/workflow')
 
 class WorkflowGenerator {
 
   static generate(data = {}) {
-    return Workflow._create({
+    return Workflow.create({
       id: uuid.v4(),
-      version: Workflow.DEFAULT_VERSION,
       ...data,
     })
   }

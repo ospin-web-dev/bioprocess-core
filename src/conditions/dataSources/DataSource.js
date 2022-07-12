@@ -11,8 +11,7 @@ class DataSource {
   static get DATA_SCHEMAS() {
     return {
       [DataSource.TYPES.SENSOR_DATA]: Joi.object({
-        fctId: Joi.string().required(),
-        slotName: Joi.string().required(),
+        reporterFctId: Joi.string().required()
       }),
     }
   }

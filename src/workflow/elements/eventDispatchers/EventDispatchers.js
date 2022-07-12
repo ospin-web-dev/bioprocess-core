@@ -1,49 +1,52 @@
-const ElementsHandler = require('../ElementsHandler')
-const EndEventDispatcher = require('./EndEventDispatcher')
+const createCommonCollectionInterface = require('../createCommonCollectionInterface')
 
-const NoEndEventDispatcherError = require('../../validator/errors/NoEndEventDispatcherError')
+const COLLECTION_NAME = 'eventDispatchers'
+const ELEMENT_TYPE = 'EVENT_DISPATCHER'
+const TYPES = { END: 'END' }
 
-class EventDispatchers extends ElementsHandler {
+/**
+  * @function getAll
+  * @memberof Workflow.EventDispatchers
+  * @arg {Object} workflow
+  * @desc returns all event dispatchers
+  */
 
-  static get COLLECTION_NAME() {
-    return 'eventDispatchers'
-  }
+/**
+  * @function getLast
+  * @memberof Workflow.EventDispatchers
+  * @arg {Object} workflow
+  * @desc returns the last event dispatcher
+  */
 
-  static get ID_PREFIX() {
-    return 'eventDispatcher'
-  }
+/**
+  * @function getBy
+  * @memberof Workflow.EventDispatchers
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns the first event dispatcher matching the query
+  */
 
-  static get TYPE_TO_INTERFACE_MAP() {
-    return {
-      [EndEventDispatcher.TYPE]: EndEventDispatcher,
-    }
-  }
+/**
+  * @function getManyBy
+  * @memberof Workflow.EventDispatchers
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns all event dispatchers matching the query
+  */
 
-  static getInterface(eventDispatcher) {
-    return EventDispatchers.TYPE_TO_INTERFACE_MAP[eventDispatcher.type]
-  }
+/**
+  * @function getById
+  * @memberof Workflow.EventDispatchers
+  * @arg {Object} workflow
+  * @arg {String} id
+  * @desc returns the event dispatcher matching the passed id
+  */
 
-  static isLastEndEventDispatcher(workflow, eventDispatcherId) {
-    const dispatcher = this.getById(workflow, eventDispatcherId)
-    if (dispatcher.type === EndEventDispatcher.TYPE) {
-      const allEndEventDispatchers = EventDispatchers
-        .getManyBy(workflow, { type: EndEventDispatcher.TYPE })
-      return allEndEventDispatchers.length === 1
-    }
-    return false
-  }
+const common = createCommonCollectionInterface(COLLECTION_NAME)
 
-  static removeEventDispatcher(workflow, eventDispatcherId) {
-    if (EventDispatchers.isLastEndEventDispatcher(workflow, eventDispatcherId)) {
-      throw new NoEndEventDispatcherError()
-    }
-    return this.remove(workflow, eventDispatcherId)
-  }
-
-  static addEndEventDispatcher(workflow, data) {
-    return this.add(workflow, EndEventDispatcher, data)
-  }
-
+module.exports = {
+  COLLECTION_NAME,
+  ELEMENT_TYPE,
+  TYPES,
+  ...common,
 }
-
-module.exports = EventDispatchers

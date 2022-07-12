@@ -1,95 +1,63 @@
-const Phase = require('../../../../src/workflow/elements/phases/Phase')
-const ApprovalEventListener = require('../../../../src/workflow/elements/eventListeners/ApprovalEventListener')
 const Command = require('../../../../src/workflow/elements/phases/commands/Command')
-const Phases = require('../../../../src/workflow/elements/phases/Phases')
+const {
+  Phases,
+  ApprovalEventListener,
+} = require('../../../../src/workflow')
 
 const WorkflowGenerator = require('../../../helpers/generators/WorkflowGenerator')
+const testCollectionDefaultGetters = require('../helpers/testCollectionDefaultGetters')
+const testAddMethod = require('../helpers/testAddMethod')
 
 describe('Phases', () => {
-  describe('addPhase', () => {
-    describe('when the data is valid', () => {
-      it('adds a new phase to the workflow', () => {
-        const workflow = WorkflowGenerator.generate()
 
-        const { elements: { phases } } = Phases.addPhase(workflow)
+  /* eslint-disable */
+  testCollectionDefaultGetters(Phases)
+  testAddMethod(Phases)
+  /* eslint-enable */
 
-        expect(phases).toHaveLength(1)
-        expect(phases[0].id).toBe('phase_0')
-      })
-    })
+  const createSinglePhaseWorkflow = () => {
+    let wf = WorkflowGenerator.generate()
+    wf = Phases.add(wf)
+    const phase = Phases.getAll(wf)[0]
+    return { phase, wf }
+  }
 
-    describe('when the data is invalid', () => {
-      it('throws an error', () => {
-        const workflow = WorkflowGenerator.generate()
-
-        expect(() => Phases.addPhase(workflow, { acceptMe: 'senpai' }))
-          .toThrow(/"acceptMe" is not allowed/)
-      })
-    })
-  })
-
-  describe('removePhase', () => {
+  describe('remove', () => {
     it('removes a phase from the workflow', () => {
-      const id1 = 'phase_0'
-      const id2 = 'phase_1'
-      const workflow = WorkflowGenerator.generate({
-        elements: {
-          phases: [
-            Phase.create({ id: id1 }),
-            Phase.create({ id: id2 }),
-          ],
-        },
-      })
+      let { phase, wf } = createSinglePhaseWorkflow()
+      wf = Phases.add(wf)
 
-      const { elements: { phases } } = Phases.removePhase(workflow, id1)
+      const { elements: { phases } } = Phases.remove(wf, phase.id)
 
       expect(phases).toHaveLength(1)
     })
 
     describe('when trying to remove the last phase', () => {
       it('throws an error', () => {
-        const id = 'phase_0'
-        const workflow = WorkflowGenerator.generate({
-          elements: {
-            phases: [
-              Phase.create({ id }),
-            ],
-          },
-        })
+        let { phase, wf } = createSinglePhaseWorkflow()
 
-        expect(() => Phases.removePhase(workflow, id))
+        expect(() => Phases.remove(wf, phase.id))
           .toThrow(/Workflow has to contain at least one phase/)
       })
     })
 
     it('removes any attached event listeners', () => {
-      const id0 = 'phase_0'
-      const id1 = 'phase_0'
-      const id2 = 'eventListener_0'
-      const id3 = 'eventListener_1'
-      const workflow = WorkflowGenerator.generate({
-        elements: {
-          phases: [
-            Phase.create({ id: id0 }),
-            Phase.create({ id: id1 }),
-          ],
-          eventListeners: [
-            ApprovalEventListener.create({ id: id2, phaseId: id1 }),
-            ApprovalEventListener.create({ id: id3, phaseId: id1 }),
-          ],
-        },
-      })
+      let { phase, wf } = createSinglePhaseWorkflow()
+      wf = Phases.add(wf)
 
-      const { elements: { eventListeners } } = Phases.removePhase(workflow, id1)
+      wf = ApprovalEventListener.add(wf, { phaseId: phase.id })
+      wf = ApprovalEventListener.add(wf, { phaseId: phase.id })
+
+      const { elements: { eventListeners } } = Phases.remove(wf, phase.id)
 
       expect(eventListeners).toHaveLength(0)
     })
   })
 
-  describe('updatePhase', () => {
+  describe('update', () => {
     describe('when the data is valid', () => {
       it('updates a phase on the workflow', () => {
-        const id = 'phase_0'
+        let { phase, wf } = createSinglePhaseWorkflow()
         const update = {
           commands: [
             {
@@ -97,22 +65,14 @@ describe('Phases', () => {
               type: Command.TYPES.SET_TARGETS,
               data: {
                 targets: [
-                  { fctId: '1', slotName: 'value', target: 1 },
+                  { inputNodeId: '1', target: 1 },
                 ],
               },
             },
           ],
         }
-        const workflow = WorkflowGenerator.generate({
-          elements: {
-            phases: [
-              Phase.create({ id }),
-            ],
-          },
-        })
 
-        const { elements: { phases } } = Phases
-          .updatePhase(workflow, id, update)
+        const { elements: { phases } } = Phases.update(wf, phase.id, update)
 
         expect(phases[0].commands).toHaveLength(1)
       })
@@ -120,44 +80,28 @@ describe('Phases', () => {
 
     describe('when the data is invalid', () => {
       it('throws an error', () => {
-        const id = 'phase_0'
-        const workflow = WorkflowGenerator.generate({
-          elements: {
-            phases: [
-              Phase.create({ id }),
-            ],
-          },
-        })
+        let { phase, wf } = createSinglePhaseWorkflow()
 
-        expect(() => Phases.updatePhase(workflow, id, { acceptMe: 'senpai' }))
+        expect(() => Phases.update(wf, phase.id, { acceptMe: 'senpai' }))
           .toThrow(/"acceptMe" is not allowed/)
       })
     })
   })
 
   describe('setTargetValue', () => {
-    const phaseId = 'phase_0'
-    const fctId = 'fct_0'
-    const slotName = 'speed - with Keanu Reeves'
+    const inputNodeId = '0340d07e-46f3-4592-a61c-589a6800d14f'
     const target = Math.random()
 
     describe('when there is no SET_TARGETS command in the phase yet', () => {
       it('adds a new SET_TARGETS command and sets the correct target', () => {
-        const workflow = WorkflowGenerator.generate({
-          elements: {
-            phases: [
-              Phase.create({ id: phaseId }),
-            ],
-          },
-        })
+        let { phase, wf } = createSinglePhaseWorkflow()
 
-        const updatedWf = Phases.setTargetValue(workflow, phaseId, fctId, slotName, target)
+        const updatedWf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
 
         expect(updatedWf.elements.phases[0].commands[0].type).toBe(Command.TYPES.SET_TARGETS)
         expect(updatedWf.elements.phases[0].commands[0].id).toBe('command_0')
         expect(updatedWf.elements.phases[0].commands[0].data.targets[0]).toStrictEqual({
-          fctId,
-          slotName,
+          inputNodeId,
           target,
         })
       })
@@ -165,80 +109,43 @@ describe('Phases', () => {
 
     describe('when there is already a SET_TARGETS command in the phase', () => {
       it('does NOT create new SET_TARGETS command', () => {
-        const workflow = WorkflowGenerator.generate({
-          elements: {
-            phases: [
-              Phase.create({
-                id: phaseId,
-                commands: [
-                  { id: 'command_0', type: Command.TYPES.SET_TARGETS, data: { targets: [] } },
-                ],
-              }),
-            ],
-          },
-        })
+        let { phase, wf } = createSinglePhaseWorkflow()
+        const newTarget = Math.random()
+        wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
 
-        const updatedWf = Phases.setTargetValue(workflow, phaseId, fctId, slotName, target)
+        const updatedWf = Phases.setTargetValue(wf, phase.id, inputNodeId, newTarget)
 
         expect(updatedWf.elements.phases[0].commands).toHaveLength(1)
       })
 
       describe('when there is NO target value for the given fctId and slotName yet', () => {
         it('creates a new target value in the command', () => {
-          const workflow = WorkflowGenerator.generate({
-            elements: {
-              phases: [
-                Phase.create({
-                  id: phaseId,
-                  commands: [
-                    { id: 'command_0', type: Command.TYPES.SET_TARGETS, data: { targets: [ ] } },
-                  ],
-                }),
-              ],
-            },
-          })
+          let { phase, wf } = createSinglePhaseWorkflow()
+          const otherInputNodeId = 'b6789c72-9d6e-43a9-8c2c-1d10b4024ffc'
+          wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
 
-          const updatedWf = Phases.setTargetValue(workflow, phaseId, fctId, slotName, target)
+          const updatedWf = Phases.setTargetValue(wf, phase.id, otherInputNodeId, target)
 
-          expect(updatedWf.elements.phases[0].commands[0].data.targets[0]).toStrictEqual({
-            fctId,
-            slotName,
+          expect(updatedWf.elements.phases[0].commands[0].data.targets[1]).toStrictEqual({
+            inputNodeId: otherInputNodeId,
             target,
           })
         })
       })
 
-      describe('when there is already a target value for the given fctId and slotName yet', () => {
-        it('updates a target value in the command', () => {
+      describe('when there is already a target value for the given fctId and slotName', () => {
+        it('updates the correct value in the command', () => {
+          let { phase, wf } = createSinglePhaseWorkflow()
+          const otherInputNodeId = '8d2a1dfb-b577-446e-9779-94919768a477'
           const newTarget = Math.random()
-          const workflow = WorkflowGenerator.generate({
-            elements: {
-              phases: [
-                Phase.create({
-                  id: phaseId,
-                  commands: [
-                    {
-                      id: 'command_0',
-                      type: Command.TYPES.SET_TARGETS,
-                      data: {
-                        targets: [
-                          { fctId, slotName, target },
-                          { fctId: 'fct_2', slotName: 'speed with Sandra Bullock', target: Math.random() },
-                        ],
-                      },
-                    },
-                  ],
-                }),
-              ],
-            },
-          })
+          wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
+          wf = Phases.setTargetValue(wf, phase.id, otherInputNodeId, target)
 
-          const updatedWf = Phases.setTargetValue(workflow, phaseId, fctId, slotName, newTarget)
+          const updatedWf = Phases.setTargetValue(wf, phase.id, inputNodeId, newTarget)
 
           expect(updatedWf.elements.phases[0].commands[0].data.targets).toHaveLength(2)
           expect(updatedWf.elements.phases[0].commands[0].data.targets[0]).toStrictEqual({
-            fctId,
-            slotName,
+            inputNodeId,
             target: newTarget,
           })
         })
@@ -246,59 +153,37 @@ describe('Phases', () => {
     })
   })
 
-  describe('removeCommand', () => {
-    it('removes a command by Id', () => {
-      const phaseId = 'phase_0'
-      const commandId = 'command_0'
-      const workflow = WorkflowGenerator.generate({
-        elements: {
-          phases: [
-            Phase.create({
-              id: phaseId,
-              commands: [
-                {
-                  id: 'command_0',
-                  type: Command.TYPES.SET_TARGETS,
-                  data: {
-                    targets: [],
-                  },
-                },
-              ],
-            }),
-          ],
-        },
+  describe('getTargetValue', () => {
+
+    const createSetup = () => {
+      let { phase, wf } = createSinglePhaseWorkflow()
+      const inputNodeId = 'ca89802b-dfb7-4d7f-b3a4-644bd751f5c7'
+      const target = Math.random()
+      wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
+      return { wf, phase, inputNodeId, target }
+    }
+
+    describe('when there is a SET_TARGETS command', () => {
+      describe('when there is a value set for the fctId and slotName', () => {
+        it('returns the target value', () => {
+          const { phase, wf, inputNodeId, target } = createSetup()
+
+          const res = Phases.getTargetValue(wf, phase.id, inputNodeId)
+
+          expect(res).toBe(target)
+        })
       })
 
-      const updatedWf = Phases.removeCommand(workflow, phaseId, commandId)
+      describe('when there is NO value set for the fctId and slotName', () => {
+        it('returns undefined', () => {
+          const { phase, wf } = createSetup()
+          const otherInputNodeId = 'fb5d8bb8-56be-45c8-8b4d-c2a9b87494da'
 
-      expect(updatedWf.elements.phases[0].commands).toHaveLength(0)
-    })
-  })
+          const res = Phases.getTargetValue(wf, phase.id, otherInputNodeId)
 
-  describe('generateUniqueCommandId', () => {
-    it('generates a unqiue commandId', () => {
-      const phaseId = 'phase_0'
-      const workflow = WorkflowGenerator.generate({
-        elements: {
-          phases: [
-            Phase.create({
-              id: phaseId,
-              commands: [
-                {
-                  id: 'command_0',
-                  type: Command.TYPES.SET_TARGETS,
-                  data: {
-                    targets: [],
-                  },
-                },
-              ],
-            }),
-          ],
-        },
+          expect(res).toBeUndefined()
+        })
       })
-
-      const uniqueId = Phases.generateUniqueCommandId(workflow, phaseId)
-      expect(uniqueId).toBe('command_1')
     })
   })
 })

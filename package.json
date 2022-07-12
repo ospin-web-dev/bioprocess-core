@@ -26,7 +26,8 @@
     "test": "jest",
     "test-with-coverage": "jest --coverage",
     "lint-diff": "LIST=$(git diff-index --name-only --diff-filter=d HEAD | grep .*\\.[jt]sx\\\\? | grep -v json); if [ \"$LIST\" ]; then eslint $LIST; fi",
-    "lint-diff-and-fix": "LIST=$(git diff-index --name-only --diff-filter=d HEAD | grep .*\\.[jt]sx\\\\? | grep -v json); if [ \"$LIST\" ]; then eslint --fix $LIST; fi"
+    "lint-diff-and-fix": "LIST=$(git diff-index --name-only --diff-filter=d HEAD | grep .*\\.[jt]sx\\\\? | grep -v json); if [ \"$LIST\" ]; then eslint --fix $LIST; fi",
+    "generate-docs": "npx jsdoc -r src/ -d docs -t node_modules/jsdoc-baseline"
   },
   "files": [
     "index.js",
@@ -46,6 +47,8 @@
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-jest-formatting": "^3.0.0",
     "jest": "^27.0.1",
+    "jsdoc-baseline": "^0.1.5",
+    "jsdocs": "^1.0.0",
     "semantic-release": "^17.4.3"
   },
   "jest": {

@@ -1,57 +1,56 @@
-const ElementsHandler = require('../ElementsHandler')
+const createCommonCollectionInterface = require('../createCommonCollectionInterface')
 
-const AndMergeGateway = require('./AndMergeGateway')
-const AndSplitGateway = require('./AndSplitGateway')
-const LoopGateway = require('./LoopGateway')
-const OrMergeGateway = require('./OrMergeGateway')
-
-class Gateways extends ElementsHandler {
-
-  static get COLLECTION_NAME() {
-    return 'gateways'
-  }
-
-  static get ID_PREFIX() {
-    return 'gateway'
-  }
-
-  static get TYPE_TO_INTERFACE_MAP() {
-    return {
-      [AndMergeGateway.TYPE]: AndMergeGateway,
-      [AndSplitGateway.TYPE]: AndSplitGateway,
-      [LoopGateway.TYPE]: LoopGateway,
-      [OrMergeGateway.TYPE]: OrMergeGateway,
-    }
-  }
-
-  static getInterface(gateway) {
-    return Gateways.TYPE_TO_INTERFACE_MAP[gateway.type]
-  }
-
-  static removeGateway(workflow, gatewayId) {
-    return this.remove(workflow, gatewayId)
-  }
-
-  static addAndMergeGateway(workflow, data) {
-    return this.add(workflow, AndMergeGateway, data)
-  }
-
-  static addAndSplitGateway(workflow, data) {
-    return this.add(workflow, AndSplitGateway, data)
-  }
-
-  static addLoopGateway(workflow, data) {
-    return this.add(workflow, LoopGateway, data)
-  }
-
-  static addOrMergeGateway(workflow, data) {
-    return this.add(workflow, OrMergeGateway, data)
-  }
-
-  static updateGateway(workflow, id, data) {
-    return this.update(workflow, id, data)
-  }
-
+const COLLECTION_NAME = 'gateways'
+const ELEMENT_TYPE = 'GATEWAY'
+const TYPES = {
+  AND_MERGE: 'AND_MERGE',
+  AND_SPLIT: 'AND_SPLIT',
+  LOOP: 'LOOP',
 }
 
-module.exports = Gateways
+/**
+  * @function getAll
+  * @memberof Workflow.Gateways
+  * @arg {Object} workflow
+  * @desc returns all gateways
+  */
+
+/**
+  * @function getLast
+  * @memberof Workflow.Gateways
+  * @arg {Object} workflow
+  * @desc returns the last gateway
+  */
+
+/**
+  * @function getBy
+  * @memberof Workflow.Gateways
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns the first gateway matching the query
+  */
+
+/**
+  * @function getManyBy
+  * @memberof Workflow.Gateways
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns all gateways matching the query
+  */
+
+/**
+  * @function getById
+  * @memberof Workflow.Gateways
+  * @arg {Object} workflow
+  * @arg {String} id
+  * @desc returns the gateway matching the passed id
+  */
+
+const common = createCommonCollectionInterface(COLLECTION_NAME)
+
+module.exports = {
+  COLLECTION_NAME,
+  ELEMENT_TYPE,
+  TYPES,
+  ...common,
+}

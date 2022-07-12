@@ -1,67 +1,65 @@
 const Flows = require('./elements/flows/Flows')
-const EventListeners = require('./elements/eventListeners/EventListeners')
+const { EventListeners } = require('./Workflow')
 
-class WorkflowGraphTools {
-
-  static buildGraph(workflow) {
+const buildGraph = workflow => {
   /* the graph is build like that:
    * 1. flows are edges, the other elements are vertices
    * 2. additionally, we create edges between phases and their embedded event listeners;
    * we use an adjancency list because the graph is loosely connected
    */
 
-    const adj = {}
+  const adj = {}
 
-    const addToAdj = (src, dest) => {
-      if (!(src in adj)) {
-        adj[src] = []
-      }
-      adj[src].push(dest)
+  const addToAdj = (src, dest) => {
+    if (!(src in adj)) {
+      adj[src] = []
     }
-
-    const flows = Flows.getAll(workflow)
-    flows.forEach(({ srcId, destId }) => {
-      addToAdj(srcId, destId)
-    })
-
-    const eventListeners = EventListeners.getAll(workflow)
-    eventListeners.forEach(listener => {
-      const { id, phaseId } = listener
-      if (phaseId === null) return
-      addToAdj(phaseId, id)
-    })
-
-    return adj
+    adj[src].push(dest)
   }
 
-  static elementIsReachable(workflow, elementId) {
-    /* using BFS here; trying to start at every global event listener (phaseId: null) */
-    const adjList = WorkflowGraphTools.buildGraph(workflow)
-    const startNodeIds = EventListeners
-      .getManyBy(workflow, { phaseId: null })
-      .map(listener => listener.id)
+  const flows = Flows.getAll(workflow)
+  flows.forEach(({ srcId, destId }) => {
+    addToAdj(srcId, destId)
+  })
 
-    /* eslint-disable-next-line */
-    for (const startNode of startNodeIds) {
-      const queue = [ startNode ]
-      const visited = new Set()
+  const eventListeners = EventListeners.getAll(workflow)
+  eventListeners.forEach(listener => {
+    const { id, phaseId } = listener
+    if (phaseId === null) return
+    addToAdj(phaseId, id)
+  })
 
-      while (queue.length) {
-        const currElementId = queue.shift()
-        if (currElementId === elementId) return true
-        visited.add(currElementId)
-        const neighbours = adjList[currElementId]
-
-        if (neighbours) {
-          neighbours.forEach(nbrId => {
-            if (!visited.has(nbrId)) queue.push(nbrId)
-          })
-        }
-      }
-    }
-    return false
-  }
-
+  return adj
 }
 
-module.exports = WorkflowGraphTools
+const elementIsReachable = (workflow, elementId) => {
+  /* using BFS here; trying to start at every global event listener (phaseId: null) */
+  const adjList = buildGraph(workflow)
+  const startNodeIds = EventListeners
+    .getManyBy(workflow, { phaseId: null })
+    .map(listener => listener.id)
+
+  /* eslint-disable-next-line */
+  for (const startNode of startNodeIds) {
+    const queue = [ startNode ]
+    const visited = new Set()
+
+    while (queue.length) {
+      const currElementId = queue.shift()
+      if (currElementId === elementId) return true
+      visited.add(currElementId)
+      const neighbours = adjList[currElementId]
+
+      if (neighbours) {
+        neighbours.forEach(nbrId => {
+          if (!visited.has(nbrId)) queue.push(nbrId)
+        })
+      }
+    }
+  }
+  return false
+}
+
+module.exports = {
+  elementIsReachable,
+}

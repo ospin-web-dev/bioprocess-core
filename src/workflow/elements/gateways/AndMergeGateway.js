@@ -1,18 +1,31 @@
-const Joi = require('joi')
-const Gateway = require('./Gateway')
+const { TYPES } = require('./Gateways')
+const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-class AndMergeGateway extends Gateway {
+/**
+  * @function getAll
+  * @memberof Workflow.AndMergeGateway
+  * @arg {Object} workflow
+  * @desc returns all gateways of type AND_MERGE
+  */
 
-  static get TYPE() {
-    return 'AND_MERGE'
-  }
+/**
+  * @function add
+  * @memberof Workflow.AndMergeGateway
+  * @arg {Object} workflow
+  * @arg {Object} initialData
+  * @desc adds a new AND_MERGE gateway to the workflow
+  */
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(AndMergeGateway.TYPE).default(AndMergeGateway.TYPE),
-    }))
-  }
+/**
+  * @function remove
+  * @memberof Workflow.AndMergeGateway
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @desc removes an AND_MERGE gateway from the workflow
+  */
 
-}
+const defaultInterface = createDefaultGatewayInterface(TYPES.AND_MERGE)
 
-module.exports = AndMergeGateway
+delete defaultInterface.update
+
+module.exports = defaultInterface

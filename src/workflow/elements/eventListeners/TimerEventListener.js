@@ -1,20 +1,46 @@
 const Joi = require('joi')
-const EventListener = require('./EventListener')
+const { TYPES } = require('./EventListeners')
+const createDefaultEventListenerInterface = require('./createDefaultEventListenerInterface')
 
-class TimerEventListener extends EventListener {
+/**
+  * @function getAll
+  * @memberof Workflow.TimerEventListener
+  * @arg {Object} workflow
+  * @desc returns all event listeners of type TIMER
+  */
 
-  static get TYPE() {
-    return 'TIMER'
-  }
+/**
+  * @function add
+  * @memberof Workflow.TimerEventListener
+  * @arg {Object} workflow
+  * @arg {Object} initialData
+  * @arg {string|null} initialData.phaseId=null - the phase Id the event listener is associated with
+  * @arg {number} initialData.durationInMS=0 - desired triggering time in milliseconds
+  * @desc adds a new TIMER event listener to the workflow
+  */
 
-  static get SCHEMA() {
-    return super.SCHEMA.concat(Joi.object({
-      type: Joi.string().allow(TimerEventListener.TYPE).default(TimerEventListener.TYPE),
-      durationInMS: Joi.number().integer().strict().min(0)
-        .default(0),
-    }))
-  }
+/**
+  * @function update
+  * @memberof Workflow.TimerEventListener
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @arg {Object} updateData
+  * @arg {string|null} updateData.phaseId=null - the phase Id the event listener is associated with
+  * @arg {number} updateData.durationInMS=0 - desired triggering time in milliseconds
+  * @desc updates an TIMER event listener in the workflow
+  */
 
-}
+/**
+  * @function remove
+  * @memberof Workflow.TimerEventListener
+  * @arg {Object} workflow
+  * @arg {id} id
+  * @desc removes an TIMER event listener from the workflow
+  */
 
-module.exports = TimerEventListener
+const typeSpecificSchema = Joi.object({
+  durationInMS: Joi.number().integer().strict().min(0)
+    .default(0),
+})
+
+module.exports = createDefaultEventListenerInterface(TYPES.TIMER, typeSpecificSchema)

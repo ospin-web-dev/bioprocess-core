@@ -1,68 +1,57 @@
-const ElementsHandler = require('../ElementsHandler')
-const ApprovalEventListener = require('./ApprovalEventListener')
-const ConditionEventListener = require('./ConditionEventListener')
-const StartEventListener = require('./StartEventListener')
-const TimerEventListener = require('./TimerEventListener')
+const createCommonCollectionInterface = require('../createCommonCollectionInterface')
 
-const IncorrectAmountOfStartEventListenersError = require('../../validator/errors/IncorrectAmountOfStartEventListenersError')
-
-class EventListeners extends ElementsHandler {
-
-  static get COLLECTION_NAME() {
-    return 'eventListeners'
-  }
-
-  static get ID_PREFIX() {
-    return 'eventListener'
-  }
-
-  static get TYPE_TO_INTERFACE_MAP() {
-    return {
-      [ApprovalEventListener.TYPE]: ApprovalEventListener,
-      [ConditionEventListener.TYPE]: ConditionEventListener,
-      [StartEventListener.TYPE]: StartEventListener,
-      [TimerEventListener.TYPE]: TimerEventListener,
-    }
-  }
-
-  static getInterface(eventListener) {
-    return EventListeners.TYPE_TO_INTERFACE_MAP[eventListener.type]
-  }
-
-  static isStartEventListener(workflow, eventListenerId) {
-    const listener = this.getById(workflow, eventListenerId)
-    return listener.type === StartEventListener.TYPE
-  }
-
-  static removeEventListener(workflow, eventListenerId) {
-    if (EventListeners.isStartEventListener(workflow, eventListenerId)) {
-      throw new IncorrectAmountOfStartEventListenersError()
-    }
-    return this.remove(workflow, eventListenerId)
-  }
-
-  static addApprovalEventListener(workflow, data) {
-    return this.add(workflow, ApprovalEventListener, data)
-  }
-
-  static addConditionEventListener(workflow, data) {
-    return this.add(workflow, ConditionEventListener, data)
-  }
-
-  static addStartEventListener(workflow, data) {
-    const existingListeners = this.getManyBy(workflow, { type: StartEventListener.TYPE })
-    if (existingListeners.length > 0) throw new IncorrectAmountOfStartEventListenersError()
-    return this.add(workflow, StartEventListener, data)
-  }
-
-  static addTimerEventListener(workflow, data) {
-    return this.add(workflow, TimerEventListener, data)
-  }
-
-  static updateEventListener(workflow, id, data) {
-    return this.update(workflow, id, data)
-  }
-
+const COLLECTION_NAME = 'eventListeners'
+const ELEMENT_TYPE = 'EVENT_LISTENER'
+const TYPES = {
+  START: 'START',
+  CONDITION: 'CONDITION',
+  APPROVAL: 'APPROVAL',
+  TIMER: 'TIMER',
 }
 
-module.exports = EventListeners
+/**
+  * @function getAll
+  * @memberof Workflow.EventListeners
+  * @arg {Object} workflow
+  * @desc returns all event listeners
+  */
+
+/**
+  * @function getLast
+  * @memberof Workflow.EventListeners
+  * @arg {Object} workflow
+  * @desc returns the last event listener
+  */
+
+/**
+  * @function getBy
+  * @memberof Workflow.EventListeners
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns the first event listener matching the query
+  */
+
+/**
+  * @function getManyBy
+  * @memberof Workflow.EventListeners
+  * @arg {Object} workflow
+  * @arg {Object} query
+  * @desc returns all event listeners matching the query
+  */
+
+/**
+  * @function getById
+  * @memberof Workflow.EventListeners
+  * @arg {Object} workflow
+  * @arg {String} id
+  * @desc returns the event listener matching the passed id
+  */
+
+const common = createCommonCollectionInterface(COLLECTION_NAME)
+
+module.exports = {
+  COLLECTION_NAME,
+  ELEMENT_TYPE,
+  TYPES,
+  ...common,
+}
