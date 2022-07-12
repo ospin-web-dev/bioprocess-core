@@ -7,8 +7,7 @@ const TYPES = {
 const DATA_SCHEMAS = {
   [TYPES.SET_TARGETS]: Joi.object({
     targets: Joi.array().items(Joi.object({
-      fctId: Joi.string().required(),
-      slotName: Joi.string().required(),
+      inputNodeId: Joi.string().required(),
       target: Joi.alternatives()
         .try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
     })),

@@ -20,10 +20,10 @@ describe('Command', () => {
           type: Command.TYPES.SET_TARGETS,
           data: {
             targets: [
-              { fctId: '1', slotName: 'value', target: 'right' },
-              { fctId: '2', slotName: 'value', target: 1 },
-              { fctId: '3', slotName: 'value', target: 1.2 },
-              { fctId: '4', slotName: 'value', target: true },
+              { inputNodeId: 'b83983ff-76bf-460f-8014-91ff9af1d334', target: 'right' },
+              { inputNodeId: '6093cc14-ec6f-492e-a25e-6470b6723914', target: 1 },
+              { inputNodeId: '316a51d8-23f2-437d-9356-9d3d374c4831', target: 1.2 },
+              { inputNodeId: '3dd46422-67f8-4ad5-8b27-98f877a5616a', target: true },
             ],
           },
         }
@@ -38,7 +38,7 @@ describe('Command', () => {
           type: Command.TYPES.SET_TARGETS,
           data: {
             targets: [
-              { fctId: '1', slotName: 'value', target: 'right' },
+              { inputNodeId: '8f4572b5-8d13-48b9-a096-88cfaec63e6d', target: 'right' },
             ],
           },
         }

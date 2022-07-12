@@ -65,7 +65,7 @@ describe('Phases', () => {
               type: Command.TYPES.SET_TARGETS,
               data: {
                 targets: [
-                  { fctId: '1', slotName: 'value', target: 1 },
+                  { inputNodeId: '1', target: 1 },
                 ],
               },
             },
@@ -89,21 +89,19 @@ describe('Phases', () => {
   })
 
   describe('setTargetValue', () => {
-    const fctId = 'fct_0'
-    const slotName = 'speed - with Keanu Reeves'
+    const inputNodeId = '0340d07e-46f3-4592-a61c-589a6800d14f'
     const target = Math.random()
 
     describe('when there is no SET_TARGETS command in the phase yet', () => {
       it('adds a new SET_TARGETS command and sets the correct target', () => {
         let { phase, wf } = createSinglePhaseWorkflow()
 
-        const updatedWf = Phases.setTargetValue(wf, phase.id, fctId, slotName, target)
+        const updatedWf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
 
         expect(updatedWf.elements.phases[0].commands[0].type).toBe(Command.TYPES.SET_TARGETS)
         expect(updatedWf.elements.phases[0].commands[0].id).toBe('command_0')
         expect(updatedWf.elements.phases[0].commands[0].data.targets[0]).toStrictEqual({
-          fctId,
-          slotName,
+          inputNodeId,
           target,
         })
       })
@@ -113,9 +111,9 @@ describe('Phases', () => {
       it('does NOT create new SET_TARGETS command', () => {
         let { phase, wf } = createSinglePhaseWorkflow()
         const newTarget = Math.random()
-        wf = Phases.setTargetValue(wf, phase.id, fctId, slotName, target)
+        wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
 
-        const updatedWf = Phases.setTargetValue(wf, phase.id, fctId, slotName, newTarget)
+        const updatedWf = Phases.setTargetValue(wf, phase.id, inputNodeId, newTarget)
 
         expect(updatedWf.elements.phases[0].commands).toHaveLength(1)
       })
@@ -123,14 +121,13 @@ describe('Phases', () => {
       describe('when there is NO target value for the given fctId and slotName yet', () => {
         it('creates a new target value in the command', () => {
           let { phase, wf } = createSinglePhaseWorkflow()
-          const otherSlotName = 'speed - with Sandra Bullock'
-          wf = Phases.setTargetValue(wf, phase.id, fctId, slotName, target)
+          const otherInputNodeId = 'b6789c72-9d6e-43a9-8c2c-1d10b4024ffc'
+          wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
 
-          const updatedWf = Phases.setTargetValue(wf, phase.id, fctId, otherSlotName, target)
+          const updatedWf = Phases.setTargetValue(wf, phase.id, otherInputNodeId, target)
 
           expect(updatedWf.elements.phases[0].commands[0].data.targets[1]).toStrictEqual({
-            fctId,
-            slotName: otherSlotName,
+            inputNodeId: otherInputNodeId,
             target,
           })
         })
@@ -139,17 +136,16 @@ describe('Phases', () => {
       describe('when there is already a target value for the given fctId and slotName', () => {
         it('updates the correct value in the command', () => {
           let { phase, wf } = createSinglePhaseWorkflow()
-          const otherSlotName = 'speed - with Sandra Bullock'
+          const otherInputNodeId = '8d2a1dfb-b577-446e-9779-94919768a477'
           const newTarget = Math.random()
-          wf = Phases.setTargetValue(wf, phase.id, fctId, slotName, target)
-          wf = Phases.setTargetValue(wf, phase.id, fctId, otherSlotName, target)
+          wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
+          wf = Phases.setTargetValue(wf, phase.id, otherInputNodeId, target)
 
-          const updatedWf = Phases.setTargetValue(wf, phase.id, fctId, slotName, newTarget)
+          const updatedWf = Phases.setTargetValue(wf, phase.id, inputNodeId, newTarget)
 
           expect(updatedWf.elements.phases[0].commands[0].data.targets).toHaveLength(2)
           expect(updatedWf.elements.phases[0].commands[0].data.targets[0]).toStrictEqual({
-            fctId,
-            slotName,
+            inputNodeId,
             target: newTarget,
           })
         })
@@ -161,19 +157,18 @@ describe('Phases', () => {
 
     const createSetup = () => {
       let { phase, wf } = createSinglePhaseWorkflow()
-      const fctId = 'fctId'
-      const slotName = 'temperature'
+      const inputNodeId = 'ca89802b-dfb7-4d7f-b3a4-644bd751f5c7'
       const target = Math.random()
-      wf = Phases.setTargetValue(wf, phase.id, fctId, slotName, target)
-      return { wf, phase, fctId, slotName, target }
+      wf = Phases.setTargetValue(wf, phase.id, inputNodeId, target)
+      return { wf, phase, inputNodeId, target }
     }
 
     describe('when there is a SET_TARGETS command', () => {
       describe('when there is a value set for the fctId and slotName', () => {
         it('returns the target value', () => {
-          const { phase, wf, fctId, slotName, target } = createSetup()
+          const { phase, wf, inputNodeId, target } = createSetup()
 
-          const res = Phases.getTargetValue(wf, phase.id, fctId, slotName)
+          const res = Phases.getTargetValue(wf, phase.id, inputNodeId)
 
           expect(res).toBe(target)
         })
@@ -181,10 +176,10 @@ describe('Phases', () => {
 
       describe('when there is NO value set for the fctId and slotName', () => {
         it('returns undefined', () => {
-          const { phase, wf, fctId } = createSetup()
-          const otherSlotName = 'ph'
+          const { phase, wf } = createSetup()
+          const otherInputNodeId = 'fb5d8bb8-56be-45c8-8b4d-c2a9b87494da'
 
-          const res = Phases.getTargetValue(wf, phase.id, fctId, otherSlotName)
+          const res = Phases.getTargetValue(wf, phase.id, otherInputNodeId)
 
           expect(res).toBeUndefined()
         })

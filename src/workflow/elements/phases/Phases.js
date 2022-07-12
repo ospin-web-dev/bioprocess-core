@@ -150,20 +150,20 @@ const getSetTargetCommand = (wf, phaseId) => (
   getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
 )
 
-const updateSetTargetValueCommand = (wf, phaseId, fctId, slotName, value) => {
+const updateSetTargetValueCommand = (wf, phaseId, inputNodeId, value) => {
   const command = getSetTargetCommand(wf, phaseId)
 
   const existingTargetValue = command.data.targets
-    .some(target => target.fctId === fctId && target.slotName === slotName)
+    .some(target => target.inputNodeId === inputNodeId)
 
   const updatedTargets = existingTargetValue
     ? command.data.targets.map(target => {
-      if (target.fctId === fctId && target.slotName === slotName) {
+      if (target.inputNodeId === inputNodeId) {
         return { ...target, target: value }
       }
       return target
     })
-    : [ ...command.data.targets, { fctId, slotName, target: value } ]
+    : [ ...command.data.targets, { inputNodeId, target: value } ]
 
   const updatedCommand = {
     ...command,
@@ -181,13 +181,12 @@ const updateSetTargetValueCommand = (wf, phaseId, fctId, slotName, value) => {
   * @memberof Workflow.Phases
   * @arg {Object} workflow
   * @arg {string} phaseId
-  * @arg {string} fctId
-  * @arg {string} slotName
+  * @arg {string} inputNodeId
   * @arg {number|string|boolean} value
   * @desc sets the target value for a slot
   */
 
-const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
+const setTargetValue = (wf, phaseId, inputNodeId, value) => {
   const existingSetTargetCommand = getSetTargetCommand(wf, phaseId)
 
   if (!existingSetTargetCommand) {
@@ -198,12 +197,11 @@ const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
     return updateSetTargetValueCommand(
       addCommand(wf, phaseId, command),
       phaseId,
-      fctId,
-      slotName,
+      inputNodeId,
       value,
     )
   }
-  return updateSetTargetValueCommand(wf, phaseId, fctId, slotName, value)
+  return updateSetTargetValueCommand(wf,phaseId, inputNodeId, value)
 }
 
 /**
@@ -211,18 +209,17 @@ const setTargetValue = (wf, phaseId, fctId, slotName, value) => {
   * @memberof Workflow.Phases
   * @arg {Object} workflow
   * @arg {string} phaseId
-  * @arg {string} fctId
-  * @arg {string} slotName
+  * @arg {string} inputNodeId
   * @desc gets the target value for a slot
   */
 
-const getTargetValue = (wf, phaseId, fctId, slotName) => {
+const getTargetValue = (wf, phaseId, inputNodeId) => {
   const existingSetTargetCommand = getCommandByType(wf, phaseId, Command.TYPES.SET_TARGETS)
 
   if (!existingSetTargetCommand) return
 
   const targetEntry = existingSetTargetCommand.data.targets.find(target => (
-    target.fctId === fctId && target.slotName === slotName
+    target.inputNodeId === inputNodeId
   ))
 
   if (targetEntry) return targetEntry.target
