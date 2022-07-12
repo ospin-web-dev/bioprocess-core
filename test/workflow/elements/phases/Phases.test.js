@@ -118,7 +118,7 @@ describe('Phases', () => {
         expect(updatedWf.elements.phases[0].commands).toHaveLength(1)
       })
 
-      describe('when there is NO target value for the given fctId and slotName yet', () => {
+      describe('when there is NO target value for the given reporterFctId', () => {
         it('creates a new target value in the command', () => {
           let { phase, wf } = createSinglePhaseWorkflow()
           const otherInputNodeId = 'b6789c72-9d6e-43a9-8c2c-1d10b4024ffc'
@@ -133,7 +133,7 @@ describe('Phases', () => {
         })
       })
 
-      describe('when there is already a target value for the given fctId and slotName', () => {
+      describe('when there is already a target value for the given reporterFctId', () => {
         it('updates the correct value in the command', () => {
           let { phase, wf } = createSinglePhaseWorkflow()
           const otherInputNodeId = '8d2a1dfb-b577-446e-9779-94919768a477'
@@ -164,7 +164,7 @@ describe('Phases', () => {
     }
 
     describe('when there is a SET_TARGETS command', () => {
-      describe('when there is a value set for the fctId and slotName', () => {
+      describe('when there is a value set for the reporterFctId', () => {
         it('returns the target value', () => {
           const { phase, wf, inputNodeId, target } = createSetup()
 
@@ -174,7 +174,7 @@ describe('Phases', () => {
         })
       })
 
-      describe('when there is NO value set for the fctId and slotName', () => {
+      describe('when there is NO value set for the reporterFctId', () => {
         it('returns undefined', () => {
           const { phase, wf } = createSetup()
           const otherInputNodeId = 'fb5d8bb8-56be-45c8-8b4d-c2a9b87494da'

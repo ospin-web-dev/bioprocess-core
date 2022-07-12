@@ -84,7 +84,7 @@ describe('the Condition interface', () => {
                 left: {
                   dataSource: {
                     type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '1', slotName: 'value' },
+                    data: { reporterFctId: '24880a10-c4fa-41ce-9f11-a6046ebde1a1' },
                   },
                 },
                 right: 12,
@@ -95,7 +95,7 @@ describe('the Condition interface', () => {
                 left: {
                   dataSource: {
                     type: DataSource.TYPES.SENSOR_DATA,
-                    data: { fctId: '2', slotName: 'value' },
+                    data: { reporterFctId: '385443f8-5f19-4f23-925e-49d4ce09cc42' },
                   },
                 },
                 right: 1,
