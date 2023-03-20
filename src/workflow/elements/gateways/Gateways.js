@@ -3,9 +3,9 @@ const createCommonCollectionInterface = require('../createCommonCollectionInterf
 const COLLECTION_NAME = 'gateways'
 const ELEMENT_TYPE = 'GATEWAY'
 const TYPES = {
-  AND_MERGE: 'AND_MERGE',
-  AND_SPLIT: 'AND_SPLIT',
-  LOOP: 'LOOP',
+  AND: 'AND',
+  OR: 'OR',
+  CONDITIONAL: 'CONDITIONAL',
 }
 
 /**

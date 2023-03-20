@@ -201,7 +201,8 @@ const setTargetValue = (wf, phaseId, inputNodeId, value) => {
       value,
     )
   }
-  return updateSetTargetValueCommand(wf,phaseId, inputNodeId, value)
+
+  return updateSetTargetValueCommand(wf, phaseId, inputNodeId, value)
 }
 
 /**

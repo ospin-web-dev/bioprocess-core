@@ -6,9 +6,9 @@ const Flows = require('./flows/Flows')
 const Phases = require('./phases/Phases')
 
 const Gateways = require('./gateways/Gateways')
-const AndMergeGateway = require('./gateways/AndMergeGateway')
-const AndSplitGateway = require('./gateways/AndSplitGateway')
-const LoopGateway = require('./gateways/LoopGateway')
+const AndGateway = require('./gateways/AndGateway')
+const OrGateway = require('./gateways/OrGateway')
+const ConditionalGateway = require('./gateways/ConditionalGateway')
 
 const EventListeners = require('./eventListeners/EventListeners')
 const ApprovalEventListener = require('./eventListeners/ApprovalEventListener')
@@ -25,22 +25,28 @@ const ForbiddenConnectionError = require('../errors/ForbiddenConnectionError')
 const IncorrectAmountOfOutgoingFlowsError = require('../errors/IncorrectAmountOfOutgoingFlowsError')
 const IncorrectElementTypeError = require('../errors/IncorrectElementTypeError')
 
-/* whenever a loopback flow of a LoopGateway is removed, unset the loopbackFlowId */
-
-const addRemoveLoopbackReferenceHook = flowRemoveFn => (workflow, flowId) => {
+const removeFlowReferenceFromGateway = flowRemoveFn => (workflow, flowId) => {
+  /* whenever an outgoing flow of a ConditionalGateway is removed, unset the refs */
   const flow = Flows.getById(workflow, flowId)
   const workflowWithoutFlow = flowRemoveFn(workflow, flowId)
 
-  const gateway = Gateways.getBy(workflowWithoutFlow, { loopbackFlowId: flow.id })
+  const gatewayWithTrueFlowRef = Gateways.getBy(workflowWithoutFlow, { trueFlowId: flow.id })
+  const gatewayWithFalseFlowRef = Gateways.getBy(workflowWithoutFlow, { falseFlowId: flow.id })
 
-  if (!gateway) {
+  if (!gatewayWithTrueFlowRef && !gatewayWithFalseFlowRef) {
     return workflowWithoutFlow
   }
 
-  return LoopGateway.update(workflowWithoutFlow, gateway.id, { loopbackFlowId: null })
+  if (gatewayWithTrueFlowRef) {
+    return ConditionalGateway
+      .update(workflowWithoutFlow, gatewayWithTrueFlowRef.id, { trueFlowId: null })
+  }
+
+  return ConditionalGateway
+    .update(workflowWithoutFlow, gatewayWithFalseFlowRef.id, { falseFlowId: null })
 }
 
-Flows.remove = addRemoveLoopbackReferenceHook(Flows.remove)
+Flows.remove = removeFlowReferenceFromGateway(Flows.remove)
 
 /* whenever a non-Flow element is removed, delete all associated flows */
 
@@ -73,9 +79,9 @@ const interfacesWithPostRemovalFlowCleanup = [
   ConditionEventListener,
   StartEventListener,
   TimerEventListener,
-  AndMergeGateway,
-  AndSplitGateway,
-  LoopGateway,
+  AndGateway,
+  OrGateway,
+  ConditionalGateway,
   EndEventDispatcher,
 ]
 
@@ -130,16 +136,6 @@ const validateElementsHaveOnlyOneOutgoingFlow = (wf, srcEl) => {
       )
     }
   }
-
-  if (srcEl.type === AndMergeGateway.TYPE) {
-    const totalOutgoingFlows = Flows.getManyBy(wf, { srcId: srcEl.id })
-    if (totalOutgoingFlows.length) {
-      throw new IncorrectAmountOfOutgoingFlowsError(
-        `Only one outgoing flow for ${srcEl.type} allowed`,
-        { el: srcEl },
-      )
-    }
-  }
 }
 
 const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => {
@@ -155,25 +151,28 @@ const addFlowCreationValidation = flowAddFn => (workflow, { srcId, destId }) => 
 
 Flows.add = addFlowCreationValidation(Flows.add)
 
-/* add method to create the loopback flow on a gateway */
+/* add methods to create the if-true and if-false flows for a conditional gateway */
 
-const addLoopbackReferenceHook = flowAddFn => (workflow, { srcId, destId }) => {
+const addFlowToConditionalGatewayReferenceHook = (flowAddFn, val) => (workflow, { srcId, destId }) => {
   const el = getElementById(workflow, srcId)
 
   if (el.elementType !== Gateways.ELEMENT_TYPE) {
     throw new IncorrectElementTypeError(`${el.elementType} is not a gateway`, { el })
   }
 
-  if (el.type !== LoopGateway.TYPE) {
-    throw new IncorrectElementTypeError(`gateway of type ${el.type} does not provide a loopback flow`, { el })
+  if (el.type !== ConditionalGateway.TYPE) {
+    throw new IncorrectElementTypeError(`gateway of type ${el.type} does not provide an if-${val} flow`, { el })
   }
+
   const wfWithFlow = flowAddFn(workflow, { srcId, destId })
   const flow = Flows.getLast(wfWithFlow)
 
-  return LoopGateway.update(wfWithFlow, srcId, { loopbackFlowId: flow.id })
+  const data = val ? { trueFlowId: flow.id } : { falseFlowId: flow.id }
+  return ConditionalGateway.update(wfWithFlow, srcId, data)
 }
 
-Flows.addLoopbackFlow = addLoopbackReferenceHook(Flows.add)
+Flows.addTrueFlow = addFlowToConditionalGatewayReferenceHook(Flows.add, true)
+Flows.addFalseFlow = addFlowToConditionalGatewayReferenceHook(Flows.add, false)
 
 /* whenever we delete a phase, delete all associated event listeners */
 
@@ -215,9 +214,9 @@ module.exports = {
   Gateways,
   EventListeners,
   EventDispatchers,
-  AndMergeGateway,
-  AndSplitGateway,
-  LoopGateway,
+  AndGateway,
+  OrGateway,
+  ConditionalGateway,
   ApprovalEventListener,
   ConditionEventListener,
   StartEventListener,

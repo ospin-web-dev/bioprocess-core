@@ -1,10 +1,10 @@
-const AndMergeGateway = require('../../../../src/workflow/elements/gateways/AndMergeGateway')
+const AndGateway = require('../../../../src/workflow/elements/gateways/AndGateway')
 const Gateways = require('../../../../src/workflow/elements/gateways/Gateways')
 const testCollectionDefaultGetters = require('../helpers/testCollectionDefaultGetters')
 
 describe('Gateways', () => {
 
   /* eslint-disable-next-line */
-  testCollectionDefaultGetters(Gateways, AndMergeGateway.add)
+  testCollectionDefaultGetters(Gateways, AndGateway.add)
 
 })

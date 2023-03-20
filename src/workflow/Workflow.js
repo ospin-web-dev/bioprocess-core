@@ -14,9 +14,9 @@ const {
   StartEventListener,
   TimerEventListener,
   Gateways,
-  AndMergeGateway,
-  AndSplitGateway,
-  LoopGateway,
+  AndGateway,
+  OrGateway,
+  ConditionalGateway,
 } = require('./elements')
 
 const getElementById = require('./functions/getElementById')
@@ -36,9 +36,9 @@ const SCHEMA = Joi.object({
     )).default([]),
     flows: Joi.array().items(Flows.SCHEMA).default([]),
     gateways: Joi.array().items(Joi.alternatives().try(
-      AndMergeGateway.SCHEMA,
-      AndSplitGateway.SCHEMA,
-      LoopGateway.SCHEMA,
+      AndGateway.SCHEMA,
+      OrGateway.SCHEMA,
+      ConditionalGateway.SCHEMA,
     )).default([]),
     phases: Joi.array().items(Phases.SCHEMA).default([]),
   }).default(),
@@ -155,17 +155,17 @@ module.exports = {
   TimerEventListener,
 
   /**
-   *  @namespace Workflow.AndMergeGateway
+   *  @namespace Workflow.AndGateway
    */
-  AndMergeGateway,
+  AndGateway,
 
   /**
-   *  @namespace Workflow.AndSplitGateway
+   *  @namespace Workflow.OrGateway
    */
-  AndSplitGateway,
+  OrGateway,
 
   /**
-   *  @namespace Workflow.LoopGateway
+   *  @namespace Workflow.ConditionalGateway
    */
-  LoopGateway,
+  ConditionalGateway,
 }

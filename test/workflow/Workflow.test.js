@@ -8,9 +8,9 @@ const {
   ConditionEventListener,
   StartEventListener,
   TimerEventListener,
-  AndMergeGateway,
-  AndSplitGateway,
-  LoopGateway,
+  AndGateway,
+  OrGateway,
+  ConditionalGateway,
   pipe,
   validateSchema,
 } = Workflow
@@ -30,9 +30,9 @@ describe('Workflow', () => {
           ConditionEventListener.add,
           StartEventListener.add,
           TimerEventListener.add,
-          AndMergeGateway.add,
-          AndSplitGateway.add,
-          LoopGateway.add,
+          AndGateway.add,
+          OrGateway.add,
+          ConditionalGateway.add,
           wf => Flows
             .add(wf, {
               srcId: StartEventListener.getAll(wf)[0].id,

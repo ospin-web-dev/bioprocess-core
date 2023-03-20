@@ -3,28 +3,28 @@ const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
 /**
   * @function getAll
-  * @memberof Workflow.AndSplitGateway
+  * @memberof Workflow.AndGateway
   * @arg {Object} workflow
-  * @desc returns all gateways of type AND_SPLIT
+  * @desc returns all gateways of type AND_MERGE
   */
 
 /**
   * @function add
-  * @memberof Workflow.AndSplitGateway
+  * @memberof Workflow.AndGateway
   * @arg {Object} workflow
   * @arg {Object} initialData
-  * @desc adds a new AND_SPLIT gateway to the workflow
+  * @desc adds a new AND_MERGE gateway to the workflow
   */
 
 /**
   * @function remove
-  * @memberof Workflow.AndSplitGateway
+  * @memberof Workflow.AndGateway
   * @arg {Object} workflow
   * @arg {id} id
-  * @desc removes an AND_SPLIT gateway from the workflow
+  * @desc removes an AND_MERGE gateway from the workflow
   */
 
-const defaultInterface = createDefaultGatewayInterface(TYPES.AND_SPLIT)
+const defaultInterface = createDefaultGatewayInterface(TYPES.AND)
 
 delete defaultInterface.update
 

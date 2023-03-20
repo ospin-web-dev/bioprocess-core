@@ -9,6 +9,7 @@ describe('DataSource', () => {
 
       expect(typesMap).toStrictEqual({
         SENSOR_DATA: 'SENSOR_DATA',
+        GATEWAY: 'GATEWAY',
       })
     })
   })
@@ -25,11 +26,25 @@ describe('DataSource', () => {
   })
 
   describe('create', () => {
-    describe('when the data is valid', () => {
+    describe('when the data is a valid sensor data source', () => {
       it('does not throw an error', () => {
         const data = {
           type: DataSource.TYPES.SENSOR_DATA,
           data: { reporterFctId: '57fc5db1-b84e-4c23-ab0b-65a23ce58632' },
+        }
+
+        expect(() => DataSource.create(data)).not.toThrow()
+      })
+    })
+
+    describe('when the data is a valid gateway data source', () => {
+      it('does not throw an error', () => {
+        const data = {
+          type: DataSource.TYPES.GATEWAY,
+          data: {
+            gatewayId: 'gatewayId_0',
+            property: 'activations',
+          },
         }
 
         expect(() => DataSource.create(data)).not.toThrow()

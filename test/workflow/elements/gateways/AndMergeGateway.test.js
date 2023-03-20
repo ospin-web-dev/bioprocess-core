@@ -1,12 +1,12 @@
-const AndMergeGateway = require('../../../../src/workflow/elements/gateways/AndMergeGateway')
+const AndGateway = require('../../../../src/workflow/elements/gateways/AndGateway')
 const testAddMethod = require('../helpers/testAddMethod')
 const testRemoveMethod = require('../helpers/testRemoveMethod')
 
-describe('AndMergeGateway', () => {
+describe('AndGateway', () => {
 
   /* eslint-disable */
-  testAddMethod(AndMergeGateway)
-  testRemoveMethod(AndMergeGateway)
+  testAddMethod(AndGateway)
+  testRemoveMethod(AndGateway)
   /* eslint-enable */
 
 })

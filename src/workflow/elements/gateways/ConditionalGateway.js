@@ -1,49 +1,50 @@
 const Joi = require('joi')
 const baseSchema = require('../baseSchema')
 const { TYPES } = require('./Gateways')
+const Condition = require('../../../conditions/Condition')
 
 /**
   * @function getAll
-  * @memberof Workflow.LoopGateway
+  * @memberof Workflow.ConditionalGateway
   * @arg {Object} workflow
   * @desc returns all gateways of type LOOP
   */
 
 /**
   * @function add
-  * @memberof Workflow.LoopGateway
+  * @memberof Workflow.ConditionalGateway
   * @arg {Object} workflow
   * @arg {Object} initialData
   * @arg {string|null} initialData.loopbackFlowId=null - the flow Id if the loopback flow
   * @arg {number} initialData.maxIterations=0 - the amount of iterations of the loop
-  * @desc adds a new LOOP gateway to the workflow
+  * @desc adds a new conditional gateway to the workflow
   */
 
 /**
   * @function update
-  * @memberof Workflow.LoopGateway
+  * @memberof Workflow.ConditionalGateway
   * @arg {Object} workflow
   * @arg {id} id
   * @arg {Object} updateData
   * @arg {string|null} updateData.loopbackFlowId=null - the flow Id if the loopback flow
   * @arg {number} updateData.maxIterations=0 - the amount of iterations of the loop
-  * @desc updates an LOOP gateway in the workflow
+  * @desc updates an conditional gateway in the workflow
   */
 
 /**
   * @function remove
-  * @memberof Workflow.LoopGateway
+  * @memberof Workflow.ConditionalGateway
   * @arg {Object} workflow
   * @arg {id} id
-  * @desc removes an LOOP gateway from the workflow
+  * @desc removes an conditional gateway from the workflow
   */
 
 const SCHEMA = Joi.object({
-  loopbackFlowId: baseSchema.extract('id').optional().allow(null).default(null),
-  maxIterations: Joi.number().integer().strict().min(1)
-    .default(1),
+  trueFlowId: baseSchema.extract('id').optional().allow(null).default(null),
+  falseFlowId: baseSchema.extract('id').optional().allow(null).default(null),
+  condition: Condition.SCHEMA,
 })
 
 const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
 
-module.exports = createDefaultGatewayInterface(TYPES.LOOP, SCHEMA)
+module.exports = createDefaultGatewayInterface(TYPES.CONDITIONAL, SCHEMA)
