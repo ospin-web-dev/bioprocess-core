@@ -101,7 +101,6 @@ We need events when
 - an event listener receives an event
 - a flow receives a signal
 - a phase is started
-- a phase is finished
 - a gateway creates a flow
 - a workflow is paused/resumed/terminated
 
@@ -119,7 +118,7 @@ The transition from a phase happens via the attached event listeners, so the pha
 
 ### Event Listeners
 
-can conncect to:
+can connect to:
  - event dispatchers
  - gateways
  - phases

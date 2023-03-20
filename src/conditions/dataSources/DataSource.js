@@ -20,7 +20,7 @@ class DataSource {
       }),
       [DataSource.TYPES.GATEWAY]: Joi.object({
         gatewayId: Joi.string().required(),
-        property: Joi.string().allow(...this.GATEWAY_PROPERTIES),
+        property: Joi.string().valid(...this.GATEWAY_PROPERTIES),
       }),
     }
   }
