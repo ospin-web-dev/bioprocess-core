@@ -23,18 +23,49 @@ const TYPES = {
 }
 
 const BASE_SCHEMA = Joi.object({
-  type: Joi.string().valid(...Object.values(Types)),
-  createdAt: Joi.number().integer().strict().min(0).required(),
+  type: Joi.sring().valid(...Object.values(TYPES)).required(),
+  createdAt: Joi.number().integer().strict().min(0)
+    .required(),
 })
 
 const DATA_SCHEMAS = {
-
+  [TYPES.EVENT_RECEIVED]: Joi.object({
+    eventListenerId: Joi.string().required(),
+    forced: Joi.boolean().strict().default(false),
+  }),
+  [TYPES.FLOW_SIGNALED]: Joi.object({
+    flowId: Joi.string().required(),
+  }),
+  [TYPES.PHASE_STARTED]: Joi.object({
+    phasId: Joi.string().required(),
+  }),
+  [TYPES.GATEWAY_ACTIVATED]: Joi.object({
+    gatewayId: Joi.string().required(),
+  }),
 }
 
-const SCHEMA = {
-
-}
+const SCHEMA = BASE_SCHEMA.concat(Joi.object({
+  data: Joi.any().when('type',
+    {
+      is: TYPES.EVENT_RECEIVED,
+      then: DATA_SCHEMAS[TYPES.EVENT_RECEIVED].required(),
+    },
+    {
+      is: TYPES.PHASE_STARTED,
+      then: DATA_SCHEMAS[TYPES.PHASE_STARTED].required(),
+    },
+    {
+      is: TYPES.GATEWAY_ACTIVATED,
+      then: DATA_SCHEMAS[TYPES.GATEWAY_ACTIVATED].required(),
+    },
+    {
+      is: TYPES.FLOW_SIGNALED,
+      then: DATA_SCHEMAS[TYPES.FLOW_SIGNALED].required(),
+      otherwise: Joi.forbidden(),
+    }),
+}))
 
 module.exports = {
   TYPES,
+  SCHEMA,
 }
