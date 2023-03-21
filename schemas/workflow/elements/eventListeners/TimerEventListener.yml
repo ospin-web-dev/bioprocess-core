@@ -1,0 +1,24 @@
+components:
+  schemas:
+    TimerEventListener:
+      description: An event listener that waits for given duration to pass
+      type: object
+      properties:
+        id:
+          type: string
+          example: eventListener_1
+        elementType:
+          type: string
+          enum: [EVENT_LISTENER]
+        type:
+          type: string
+          enum: [TIMER]
+        durationInMS:
+          type: number
+          example: 1000000
+          default: 0
+      required:
+        - id
+        - elementType
+        - type
+        - durationInMS

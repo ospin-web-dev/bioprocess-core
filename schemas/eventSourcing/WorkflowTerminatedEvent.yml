@@ -1,0 +1,14 @@
+components:
+  schemas:
+    WorkflowTerminatedEvent:
+      description: Dispatched when an workflow is terminated abnormally (not reaching the END event dispatcher)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [WORKFLOW_TERMINATED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+      required:
+        - type
+        - createdAt

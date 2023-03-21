@@ -1,0 +1,19 @@
+components:
+  schemas:
+    AndGateway:
+      description: A gateway that signals all outgoing flows when all of the incoming flows receive a signals
+      type: object
+      properties:
+        id:
+          type: string
+          example: gateway_1
+        elementType:
+          type: string
+          enum: [GATEWAY]
+        type:
+          type: string
+          enum: [AND]
+      required:
+        - id
+        - elementType
+        - type

@@ -27,7 +27,8 @@
     "test-with-coverage": "jest --coverage",
     "lint-diff": "LIST=$(git diff-index --name-only --diff-filter=d HEAD | grep .*\\.[jt]sx\\\\? | grep -v json); if [ \"$LIST\" ]; then eslint $LIST; fi",
     "lint-diff-and-fix": "LIST=$(git diff-index --name-only --diff-filter=d HEAD | grep .*\\.[jt]sx\\\\? | grep -v json); if [ \"$LIST\" ]; then eslint --fix $LIST; fi",
-    "generate-docs": "npx jsdoc -r src/ -d docs -t node_modules/jsdoc-baseline"
+    "generate-docs": "npx jsdoc -r src/ -d docs -t node_modules/jsdoc-baseline",
+    "generate-schema-docs": "node scripts/generateSchemas"
   },
   "files": [
     "index.js",
@@ -36,6 +37,7 @@
   "dependencies": {
     "deep-clone": "^3.0.3",
     "joi": "^17.4.0",
+    "swagger-jsdoc": "^6.2.8",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

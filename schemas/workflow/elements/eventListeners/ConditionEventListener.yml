@@ -1,0 +1,22 @@
+components:
+  schemas:
+    ConditionEventListener:
+      description: An event listener that waits for a condition to become true
+      type: object
+      properties:
+        id:
+          type: string
+          example: eventListener_1
+        elementType:
+          type: string
+          enum: [EVENT_LISTENER]
+        type:
+          type: string
+          enum: [CONDITION]
+        condition:
+          $ref: '#/components/schemas/Condition'
+      required:
+        - id
+        - elementType
+        - type
+        - condition

@@ -1,0 +1,17 @@
+components:
+  schemas:
+    DataSourceGateway:
+      description: 'data source for a gateway'
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [GATEWAY]
+        data:
+          type: object
+          properties:
+            gatewayId:
+              type: string
+            property:
+              type: string
+              enum: [activations]

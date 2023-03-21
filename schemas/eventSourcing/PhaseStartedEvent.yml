@@ -1,0 +1,22 @@
+components:
+  schemas:
+    PhaseStartedEvent:
+      description: Dispatched when an phase is started
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [PHASE_STARTED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+        data:
+          type: object
+          properties:
+            phaseId:
+              type: string
+          required:
+            - phaseId
+      required:
+        - type
+        - createdAt
+        - data

@@ -1,0 +1,34 @@
+components:
+  schemas:
+    Command:
+      description: Defines a command to be dispatched from the workflow to the execution context (e.g. device actuators)
+      type: object
+      properties:
+        id:
+          type: string
+          example: command_1
+        type:
+          type: string
+          enum: [SET_TARGETS]
+        data:
+          oneOf:
+            - type: object
+              description: for SET_TARGETS
+              properties:
+                targets:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      inputNodeId:
+                        description: ID of the functionality that pushes the value to the slot
+                        type: string
+                      target:
+                        oneOf:
+                          - type: number
+                          - type: boolean
+                          - type: string
+      required:
+        - id
+        - type
+        - data

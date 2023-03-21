@@ -1,0 +1,26 @@
+components:
+  schemas:
+    EventReceivedEvent:
+      description: Dispatched when an event listener receives an event
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [EVENT_RECEIVED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+        data:
+          type: object
+          properties:
+            eventListenerId:
+              type: string
+            forced:
+              description: indicates if that event listener was forced to trigger
+              type: boolean
+              default: false
+          required:
+            - eventListenerId
+      required:
+        - type
+        - createdAt
+        - data

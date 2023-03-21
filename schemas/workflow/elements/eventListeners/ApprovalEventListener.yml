@@ -1,0 +1,19 @@
+components:
+  schemas:
+    ApprovalEventListener:
+      description: An event listener that wait for approvals from users
+      type: object
+      properties:
+        id:
+          type: string
+          example: eventListener_1
+        elementType:
+          type: string
+          enum: [EVENT_LISTENER]
+        type:
+          type: string
+          enum: [APPROVAL]
+      required:
+        - id
+        - elementType
+        - type

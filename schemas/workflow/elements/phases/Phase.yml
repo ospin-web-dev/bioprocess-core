@@ -1,0 +1,20 @@
+components:
+  schemas:
+    Phase:
+      description: An event listener that wait for approvals from users
+      type: object
+      properties:
+        id:
+          type: string
+          example: phase_1
+        elementType:
+          type: string
+          enum: [PHASE]
+        commands:
+          type: array
+          default: []
+          items:
+            $ref: '#/components/schemas/Command'
+      required:
+        - id
+        - elementType

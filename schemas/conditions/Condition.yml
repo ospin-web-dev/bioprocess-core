@@ -1,0 +1,36 @@
+components:
+  schemas:
+    Condition:
+      description: 'An AST-like data structure to describe conditions'
+      type: object
+      default: {}
+      properties:
+        left:
+          oneOf:
+            - $ref: '#/components/schemas/DataSourceSensorData'
+            - $ref: '#/components/schemas/DataSourceGateway'
+            - $ref: '#/components/schemas/Condition'
+            - type: number
+            - type: string
+            - type: boolean
+        right:
+          oneOf:
+            - $ref: '#/components/schemas/DataSourceSensorData'
+            - $ref: '#/components/schemas/DataSourceGateway'
+            - $ref: '#/components/schemas/Condition'
+            - type: number
+            - type: string
+            - type: boolean
+        operator:
+          type: string
+          enum: ['<', '>', '>=', '<=', '==', 'OR', 'AND']
+        options:
+          description: provide additional information for certain conditions
+          type: object
+          properties:
+            allowedDeviation:
+              type: number
+              description: explains the allowed deviations between comparison values
+            sustainTimeInMS:
+              type: number
+              description: explains for how long a comparison of values has to evaluate to true in order for the condition to becomne true
