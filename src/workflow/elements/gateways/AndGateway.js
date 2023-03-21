@@ -5,7 +5,7 @@ const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
   * @function getAll
   * @memberof Workflow.AndGateway
   * @arg {Object} workflow
-  * @desc returns all gateways of type AND_MERGE
+  * @desc returns all gateways of type AND
   */
 
 /**
@@ -13,7 +13,7 @@ const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
   * @memberof Workflow.AndGateway
   * @arg {Object} workflow
   * @arg {Object} initialData
-  * @desc adds a new AND_MERGE gateway to the workflow
+  * @desc adds a new AND gateway to the workflow
   */
 
 /**
@@ -21,7 +21,7 @@ const createDefaultGatewayInterface = require('./createDefaultGatewayInterface')
   * @memberof Workflow.AndGateway
   * @arg {Object} workflow
   * @arg {id} id
-  * @desc removes an AND_MERGE gateway from the workflow
+  * @desc removes an AND gateway from the workflow
   */
 
 const defaultInterface = createDefaultGatewayInterface(TYPES.AND)
