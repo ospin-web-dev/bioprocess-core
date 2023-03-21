@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.10">
   <meta charset="utf-8">
-  <title>Namespace: EventListeners</title>
+  <title>Namespace: EventSourcing</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -24,9 +24,9 @@
       <div id="jsdoc-content-container">
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <div class="symbol-detail-labels"><span class="label label-kind">namespace</span>&nbsp;<span class="label label-static">static</span></div>
-            <h1><small><a href="Workflow.html">Workflow</a>.<wbr></small><span class="symbol-name">EventListeners</span></h1>
-            <p class="source-link">Source: <a href="workflow_Workflow.js.html#source-line-112">workflow/<wbr>Workflow.<wbr>js:112</a></p>
+            <div class="symbol-detail-labels"><span class="label label-kind">namespace</span></div>
+            <h1><small></small><span class="symbol-name">EventSourcing</span></h1>
+            <p class="source-link">Source: <a href="eventSourcing_Event.js.html#source-line-5">eventSourcing/<wbr>Event.<wbr>js:5</a></p>
             <div class="symbol-description">
             </div>
             <dl class="dl-compact">
@@ -34,31 +34,31 @@
           </header>
           <section id="summary">
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Methods</h2>
+              <h2 class="summary-callout-heading">Abstract types</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Workflow.EventListeners.html#.getAll">getAll(workflow)</a></dt>
+                    <dt><a href="EventSourcing.html#.DispatchedWorkflowEvent">DispatchedWorkflowEvent</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Workflow.EventListeners.html#.getBy">getBy(workflow, query)</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="Workflow.EventListeners.html#.getById">getById(workflow, id)</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="Workflow.EventListeners.html#.getLast">getLast(workflow)</a></dt>
+                    <dt><a href="EventSourcing.html#.EventReceivedEventData">EventReceivedEventData</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Workflow.EventListeners.html#.getManyBy">getManyBy(workflow, query)</a></dt>
+                    <dt><a href="EventSourcing.html#.FlowSignaledEventData">FlowSignaledEventData</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="EventSourcing.html#.GatewayActivatedEventData">GatewayActivatedEventData</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="EventSourcing.html#.PhaseStartedEventData">PhaseStartedEventData</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -67,13 +67,14 @@
             </div>
           </section>
           <section>
-            <h2>Methods</h2>
+            <h2>Abstract types</h2>
             <section>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
-              <h3 id=".getAll"><span class="symbol-name">getAll</span><span class="signature"><span class="signature-params">(workflow)</span></span></h3>
-              <p>returns all event listeners</p>
+              <h3 id=".DispatchedWorkflowEvent"><span class="symbol-name">DispatchedWorkflowEvent</span><small class="property-type">
+                  &nbsp;object</small></h3>
+              <p>An event dispatched from the workflow engine to the cloud</p>
               <section>
-                <h4>Parameter</h4>
+                <h4>Properties</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -86,15 +87,44 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>workflow</p>
+                        <p>type</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p>string</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
+                        <p>string that indicates the event type, one of: EVENT_RECEIVED|FLOW_SIGNALED|GATEWAY_ACTIVATED|PHASE_STARTED|WORKFLOW_PAUSED|WORKFLOW_RESUMED|WORKFLOW_TERMINATED|WORKFLOW_FINISHED</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>createdAt</p>
+                      </td>
+                      <td>
+                        <p>number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>time since epoch (unix time) in milliseconds</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>data</p>
+                      </td>
+                      <td>
+                        <p>object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>required for EVENT_RECEIVED, FLOW_SIGNALED, GATEWAY_ACTIVATED and PHASE_STARTED, see data schemas</p>
                       </td>
                     </tr>
                   </tbody>
@@ -103,10 +133,10 @@
               <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
-              <h3 id=".getBy"><span class="symbol-name">getBy</span><span class="signature"><span class="signature-params">(workflow, query)</span></span></h3>
-              <p>returns the first event listener matching the query</p>
+              <h3 id=".EventReceivedEventData"><span class="symbol-name">EventReceivedEventData</span><small class="property-type">
+                  &nbsp;object</small></h3>
               <section>
-                <h4>Parameters</h4>
+                <h4>Properties</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -119,28 +149,31 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>workflow</p>
+                        <p>eventListenerId</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p>string</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
+                        <p>ID of the event listener</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>query</p>
+                        <p>forced</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p>boolean</p>
                       </td>
                       <td>
-                        <p>&nbsp;</p>
+                        <p>Yes</p>
                       </td>
                       <td>
+                        <p>indicates if an event listener was forced to trigger</p>
+                        <p>Defaults to <code>false</code>.</p>
                       </td>
                     </tr>
                   </tbody>
@@ -149,10 +182,10 @@
               <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
-              <h3 id=".getById"><span class="symbol-name">getById</span><span class="signature"><span class="signature-params">(workflow, id)</span></span></h3>
-              <p>returns the event listener matching the passed id</p>
+              <h3 id=".FlowSignaledEventData"><span class="symbol-name">FlowSignaledEventData</span><small class="property-type">
+                  &nbsp;object</small></h3>
               <section>
-                <h4>Parameters</h4>
+                <h4>Property</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -165,28 +198,16 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>workflow</p>
+                        <p>flowId</p>
                       </td>
                       <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>id</p>
-                      </td>
-                      <td>
-                        <p>String</p>
+                        <p>string</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
+                        <p>ID of the flow</p>
                       </td>
                     </tr>
                   </tbody>
@@ -195,10 +216,10 @@
               <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
-              <h3 id=".getLast"><span class="symbol-name">getLast</span><span class="signature"><span class="signature-params">(workflow)</span></span></h3>
-              <p>returns the last event listener</p>
+              <h3 id=".GatewayActivatedEventData"><span class="symbol-name">GatewayActivatedEventData</span><small class="property-type">
+                  &nbsp;object</small></h3>
               <section>
-                <h4>Parameter</h4>
+                <h4>Property</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -211,15 +232,16 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>workflow</p>
+                        <p>gatewayId</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p>string</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
+                        <p>ID of the gateway</p>
                       </td>
                     </tr>
                   </tbody>
@@ -228,10 +250,10 @@
               <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
-              <h3 id=".getManyBy"><span class="symbol-name">getManyBy</span><span class="signature"><span class="signature-params">(workflow, query)</span></span></h3>
-              <p>returns all event listeners matching the query</p>
+              <h3 id=".PhaseStartedEventData"><span class="symbol-name">PhaseStartedEventData</span><small class="property-type">
+                  &nbsp;object</small></h3>
               <section>
-                <h4>Parameters</h4>
+                <h4>Property</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -244,28 +266,16 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>workflow</p>
+                        <p>phaseId</p>
                       </td>
                       <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>query</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
+                        <p>string</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
+                        <p>ID of the phase</p>
                       </td>
                     </tr>
                   </tbody>

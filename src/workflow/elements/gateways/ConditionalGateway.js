@@ -15,8 +15,9 @@ const Condition = require('../../../conditions/Condition')
   * @memberof Workflow.ConditionalGateway
   * @arg {Object} workflow
   * @arg {Object} initialData
-  * @arg {string|null} initialData.loopbackFlowId=null - the flow Id if the loopback flow
-  * @arg {number} initialData.maxIterations=0 - the amount of iterations of the loop
+  * @arg {string|null} initialData.trueFlowId - id of the flow that is triggered when the condition is true
+  * @arg {string|null} initialData.falseFlowId - id of the flow what is triggered when the condition is false
+  * @arg {object} initialData.condition={} - the condition to be evaluated
   * @desc adds a new conditional gateway to the workflow
   */
 
@@ -26,8 +27,9 @@ const Condition = require('../../../conditions/Condition')
   * @arg {Object} workflow
   * @arg {id} id
   * @arg {Object} updateData
-  * @arg {string|null} updateData.loopbackFlowId=null - the flow Id if the loopback flow
-  * @arg {number} updateData.maxIterations=0 - the amount of iterations of the loop
+  * @arg {string|null} updateData.trueFlowId - id of the flow that is triggered when the condition is true
+  * @arg {string|null} updateData.falseFlowId - id of the flow what is triggered when the condition is false
+  * @arg {object} updateData.condition - the condition to be evaluated
   * @desc updates an conditional gateway in the workflow
   */
 

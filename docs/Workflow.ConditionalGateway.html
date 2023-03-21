@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">namespace</span>&nbsp;<span class="label label-static">static</span></div>
             <h1><small><a href="Workflow.html">Workflow</a>.<wbr></small><span class="symbol-name">ConditionalGateway</span></h1>
-            <p class="source-link">Source: <a href="Workflow.js.html#source-line-167">Workflow.<wbr>js:167</a></p>
+            <p class="source-link">Source: <a href="workflow_Workflow.js.html#source-line-167">workflow/<wbr>Workflow.<wbr>js:167</a></p>
             <div class="symbol-description">
             </div>
             <dl class="dl-compact">
@@ -55,6 +55,22 @@
                     <dd>
                     </dd>
                   </dl>
+                </div>
+                <div class="summary-column">
+                </div>
+              </div>
+            </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Abstract type</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Workflow.ConditionalGateway.html#.ConditionalGateway">ConditionalGateway</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
                 </div>
                 <div class="summary-column">
                 </div>
@@ -116,7 +132,7 @@
                           <tbody>
                             <tr>
                               <td>
-                                <p>loopbackFlowId</p>
+                                <p>trueFlowId</p>
                               </td>
                               <td>
                                 <p>(string or null)</p>
@@ -125,23 +141,36 @@
                                 <p>&nbsp;</p>
                               </td>
                               <td>
-                                <p>the flow Id if the loopback flow</p>
-                                <p>Defaults to <code>null</code>.</p>
+                                <p>id of the flow that is triggered when the condition is true</p>
                               </td>
                             </tr>
                             <tr>
                               <td>
-                                <p>maxIterations</p>
+                                <p>falseFlowId</p>
                               </td>
                               <td>
-                                <p>number</p>
+                                <p>(string or null)</p>
                               </td>
                               <td>
                                 <p>&nbsp;</p>
                               </td>
                               <td>
-                                <p>the amount of iterations of the loop</p>
-                                <p>Defaults to <code>0</code>.</p>
+                                <p>id of the flow what is triggered when the condition is false</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <p>condition</p>
+                              </td>
+                              <td>
+                                <p>object</p>
+                              </td>
+                              <td>
+                                <p>&nbsp;</p>
+                              </td>
+                              <td>
+                                <p>the condition to be evaluated</p>
+                                <p>Defaults to <code>{}</code>.</p>
                               </td>
                             </tr>
                           </tbody>
@@ -297,7 +326,7 @@
                           <tbody>
                             <tr>
                               <td>
-                                <p>loopbackFlowId</p>
+                                <p>trueFlowId</p>
                               </td>
                               <td>
                                 <p>(string or null)</p>
@@ -306,27 +335,134 @@
                                 <p>&nbsp;</p>
                               </td>
                               <td>
-                                <p>the flow Id if the loopback flow</p>
-                                <p>Defaults to <code>null</code>.</p>
+                                <p>id of the flow that is triggered when the condition is true</p>
                               </td>
                             </tr>
                             <tr>
                               <td>
-                                <p>maxIterations</p>
+                                <p>falseFlowId</p>
                               </td>
                               <td>
-                                <p>number</p>
+                                <p>(string or null)</p>
                               </td>
                               <td>
                                 <p>&nbsp;</p>
                               </td>
                               <td>
-                                <p>the amount of iterations of the loop</p>
-                                <p>Defaults to <code>0</code>.</p>
+                                <p>id of the flow what is triggered when the condition is false</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <p>condition</p>
+                              </td>
+                              <td>
+                                <p>object</p>
+                              </td>
+                              <td>
+                                <p>&nbsp;</p>
+                              </td>
+                              <td>
+                                <p>the condition to be evaluated</p>
                               </td>
                             </tr>
                           </tbody>
                         </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Abstract type</h2>
+            <section>
+              <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
+              <h3 id=".ConditionalGateway"><span class="symbol-name">ConditionalGateway</span><small class="property-type">
+                  &nbsp;object</small></h3>
+              <p>A gateway that signals to its &quot;true&quot; outflow when the assigned condition is true,
+                otherwise it signals the &quot;false&quot; outflow</p>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>ID of the gateway</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>elementType</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>the element type, here <code>GATEWAY</code></p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>type</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>the gateway type, here <code>CONDITIONAL</code></p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>trueFlowID</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>id of the flow that is triggered when the condition is true</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>falseFlowId</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>id of the flow what is triggered when the condition is false</p>
                       </td>
                     </tr>
                   </tbody>

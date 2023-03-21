@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">namespace</span>&nbsp;<span class="label label-static">static</span></div>
             <h1><small><a href="Workflow.html">Workflow</a>.<wbr></small><span class="symbol-name">AndGateway</span></h1>
-            <p class="source-link">Source: <a href="Workflow.js.html#source-line-157">Workflow.<wbr>js:157</a></p>
+            <p class="source-link">Source: <a href="workflow_Workflow.js.html#source-line-157">workflow/<wbr>Workflow.<wbr>js:157</a></p>
             <div class="symbol-description">
             </div>
             <dl class="dl-compact">
@@ -59,13 +59,29 @@
                 </div>
               </div>
             </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Abstract type</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Workflow.AndGateway.html#.AndGateway">AndGateway</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                </div>
+                <div class="summary-column">
+                </div>
+              </div>
+            </div>
           </section>
           <section>
             <h2>Methods</h2>
             <section>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
               <h3 id=".add"><span class="symbol-name">add</span><span class="signature"><span class="signature-params">(workflow, initialData)</span></span></h3>
-              <p>adds a new AND_MERGE gateway to the workflow</p>
+              <p>adds a new AND gateway to the workflow</p>
               <section>
                 <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
@@ -111,7 +127,7 @@
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
               <h3 id=".getAll"><span class="symbol-name">getAll</span><span class="signature"><span class="signature-params">(workflow)</span></span></h3>
-              <p>returns all gateways of type AND_MERGE</p>
+              <p>returns all gateways of type AND</p>
               <section>
                 <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
@@ -144,7 +160,7 @@
               </dl>
               <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
               <h3 id=".remove"><span class="symbol-name">remove</span><span class="signature"><span class="signature-params">(workflow, id)</span></span></h3>
-              <p>removes an AND_MERGE gateway from the workflow</p>
+              <p>removes an AND gateway from the workflow</p>
               <section>
                 <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
@@ -181,6 +197,72 @@
                         <p>&nbsp;</p>
                       </td>
                       <td>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Abstract type</h2>
+            <section>
+              <div class="symbol-detail-labels"><span class="label label-static">static</span></div>
+              <h3 id=".AndGateway"><span class="symbol-name">AndGateway</span><small class="property-type">
+                  &nbsp;object</small></h3>
+              <p>A gateway that signals to all outgoing flows when all incoming flows have a signal</p>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>ID of the gateway</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>elementType</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>the element type, here <code>GATEWAY</code></p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>type</p>
+                      </td>
+                      <td>
+                        <p>string</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>the gateway type, here <code>AND</code></p>
                       </td>
                     </tr>
                   </tbody>

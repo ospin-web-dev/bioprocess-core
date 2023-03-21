@@ -2,6 +2,10 @@
  * published from the workflow engine to the cloud */
 const Joi = require('joi')
 
+/**
+ *  @namespace EventSourcing
+ */
+
 const TYPES = {
   /* everyday events dispatched from normal execution */
 
