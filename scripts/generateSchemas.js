@@ -1,5 +1,4 @@
 const swaggerJSDoc = require('swagger-jsdoc')
-const fs = require('fs')
 
 const generateSpecFile = () => {
   const options = {
@@ -15,8 +14,7 @@ const generateSpecFile = () => {
     ],
   }
 
-  const schemaSpec = swaggerJSDoc(options)
-  fs.writeFileSync('schemas/workflow-schemas.json', JSON.stringify(schemaSpec, null, 2))
+  return swaggerJSDoc(options)
 }
 
-generateSpecFile()
+module.exports = generateSpecFile

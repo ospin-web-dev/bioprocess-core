@@ -101,6 +101,3 @@ dist
 .dynamodb/
 
 .ignore
-
-# docs
-schemas/workflow-schemas.json
