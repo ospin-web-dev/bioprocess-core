@@ -4,9 +4,9 @@ const {
   Gateways,
   ApprovalEventListener,
   EndEventDispatcher,
-  LoopGateway,
-  AndMergeGateway,
-  AndSplitGateway,
+  ConditionalGateway,
+  AndGateway,
+  OrGateway,
   pipe,
 } = require('../../../../src/workflow/Workflow')
 
@@ -78,11 +78,11 @@ describe('Flows', () => {
       describe('to a gateway', () => {
         it('throws an error', () => {
           let wf = createSetupWithEndEventDispather()
-          wf = LoopGateway.add(wf)
+          wf = ConditionalGateway.add(wf)
 
           expect(() => Flows.add(wf, {
             srcId: EndEventDispatcher.getAll(wf)[0].id,
-            destId: LoopGateway.getAll(wf)[0].id,
+            destId: ConditionalGateway.getAll(wf)[0].id,
           })).toThrow(/cannot connect/)
         })
       })
@@ -134,11 +134,11 @@ describe('Flows', () => {
       describe('to a gateway', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
-          wf = LoopGateway.add(wf)
+          wf = ConditionalGateway.add(wf)
 
           expect(() => Flows.add(wf, {
             srcId: ApprovalEventListener.getAll(wf)[0].id,
-            destId: LoopGateway.getAll(wf)[0].id,
+            destId: ConditionalGateway.getAll(wf)[0].id,
           })).not.toThrow()
         })
       })
@@ -160,7 +160,7 @@ describe('Flows', () => {
 
       const createSetupWithApprovalEventListener = () => {
         const wf = WorkflowGenerator.generate()
-        return LoopGateway.add(wf)
+        return ConditionalGateway.add(wf)
       }
 
       describe('to an event dispatcher', () => {
@@ -169,7 +169,7 @@ describe('Flows', () => {
           wf = EndEventDispatcher.add(wf)
 
           expect(() => Flows.add(wf, {
-            srcId: LoopGateway.getAll(wf)[0].id,
+            srcId: ConditionalGateway.getAll(wf)[0].id,
             destId: EndEventDispatcher.getAll(wf)[0].id,
           })).not.toThrow()
         })
@@ -181,7 +181,7 @@ describe('Flows', () => {
           wf = ApprovalEventListener.add(wf)
 
           expect(() => Flows.add(wf, {
-            srcId: LoopGateway.getAll(wf)[0].id,
+            srcId: ConditionalGateway.getAll(wf)[0].id,
             destId: ApprovalEventListener.getAll(wf)[0].id,
           })).toThrow(/cannot connect/)
         })
@@ -190,11 +190,11 @@ describe('Flows', () => {
       describe('to a gateway', () => {
         it('does NOT throw an error', () => {
           let wf = createSetupWithApprovalEventListener()
-          wf = LoopGateway.add(wf)
+          wf = ConditionalGateway.add(wf)
 
           expect(() => Flows.add(wf, {
-            srcId: LoopGateway.getAll(wf)[0].id,
-            destId: LoopGateway.getAll(wf)[1].id,
+            srcId: ConditionalGateway.getAll(wf)[0].id,
+            destId: ConditionalGateway.getAll(wf)[1].id,
           })).not.toThrow()
         })
       })
@@ -205,7 +205,7 @@ describe('Flows', () => {
           wf = Phases.add(wf)
 
           expect(() => Flows.add(wf, {
-            srcId: LoopGateway.getAll(wf)[0].id,
+            srcId: ConditionalGateway.getAll(wf)[0].id,
             destId: Phases.getAll(wf)[0].id,
           })).not.toThrow()
         })
@@ -246,11 +246,11 @@ describe('Flows', () => {
       describe('to a gateway', () => {
         it('throws an error', () => {
           let wf = createSetupWithApprovalEventListener()
-          wf = LoopGateway.add(wf)
+          wf = ConditionalGateway.add(wf)
 
           expect(() => Flows.add(wf, {
             srcId: Phases.getAll(wf)[0].id,
-            destId: LoopGateway.getAll(wf)[0].id,
+            destId: ConditionalGateway.getAll(wf)[0].id,
           })).toThrow(/cannot connect/)
         })
       })
@@ -269,7 +269,6 @@ describe('Flows', () => {
     })
 
     describe.each([
-      { elemInterface: AndMergeGateway, name: 'AndMergeGateway' },
       { elemInterface: ApprovalEventListener, name: 'ApprovalEventListener' },
     ])('when adding a second outgoing flow to a(n) $name', ({ elemInterface }) => {
       it('throws an error', () => {
@@ -287,7 +286,7 @@ describe('Flows', () => {
     })
   })
 
-  describe('addLoopbackFlow', () => {
+  describe('addTrueFlow', () => {
     describe('when the passed srcId does NOT belong to a Gateway', () => {
       it('throws an error', () => {
         const wf = pipe([
@@ -296,25 +295,57 @@ describe('Flows', () => {
           Phases.add,
         ])
 
-        expect(() => Flows.addLoopbackFlow(wf, {
+        expect(() => Flows.addTrueFlow(wf, {
           srcId: Phases.getAll(wf)[0].id,
           destId: Phases.getAll(wf)[1].id,
         })).toThrow(/is not a gateway/)
       })
     })
 
-    describe('when the passed srcId does NOT belong to a LoopGateway', () => {
+    describe('when the passed srcId does NOT belong to a ConditionalGateway', () => {
       it('throws an error', () => {
         const wf = pipe([
           WorkflowGenerator.generate,
           Phases.add,
-          AndMergeGateway.add,
+          AndGateway.add,
         ])
 
-        expect(() => Flows.addLoopbackFlow(wf, {
+        expect(() => Flows.addTrueFlow(wf, {
           srcId: Gateways.getAll(wf)[0].id,
           destId: Phases.getAll(wf)[0].id,
-        })).toThrow(/does not provide a loopback flow/)
+        })).toThrow(/does not provide an if-true flow/)
+      })
+    })
+  })
+
+  describe('addFalseFlow', () => {
+    describe('when the passed srcId does NOT belong to a Gateway', () => {
+      it('throws an error', () => {
+        const wf = pipe([
+          WorkflowGenerator.generate,
+          Phases.add,
+          Phases.add,
+        ])
+
+        expect(() => Flows.addFalseFlow(wf, {
+          srcId: Phases.getAll(wf)[0].id,
+          destId: Phases.getAll(wf)[1].id,
+        })).toThrow(/is not a gateway/)
+      })
+    })
+
+    describe('when the passed srcId does NOT belong to a ConditionalGateway', () => {
+      it('throws an error', () => {
+        const wf = pipe([
+          WorkflowGenerator.generate,
+          Phases.add,
+          AndGateway.add,
+        ])
+
+        expect(() => Flows.addFalseFlow(wf, {
+          srcId: Gateways.getAll(wf)[0].id,
+          destId: Phases.getAll(wf)[0].id,
+        })).toThrow(/does not provide an if-false flow/)
       })
     })
   })
@@ -329,20 +360,35 @@ describe('Flows', () => {
       expect(flows).toHaveLength(0)
     })
 
-    describe('when the flow was connected to a LoopGateway', () => {
-      it('removes the loopbackFlowId from the LoopGateway if the flow', () => {
+    describe('when the flow was the if-true flow to a ConditionalGateway', () => {
+      it('removes the trueFlowId from the ConditionalGateway if the flow', () => {
         let wf = WorkflowGenerator.generate()
-        wf = LoopGateway.add(wf)
+        wf = ConditionalGateway.add(wf)
         wf = Phases.add(wf)
         const gateways = Gateways.getAll(wf)
         const lastGateway = gateways[gateways.length - 1]
-        wf = Flows.addLoopbackFlow(wf, { srcId: lastGateway.id, destId: Phases.getLast(wf).id })
+        wf = Flows.addTrueFlow(wf, { srcId: lastGateway.id, destId: Phases.getLast(wf).id })
 
         wf = Flows.remove(wf, Flows.getLast(wf).id)
 
         const gateway = Gateways.getAll(wf)[0]
+        expect(gateway.trueFlowId).toBeNull()
+      })
+    })
 
-        expect(gateway.loopbackFlowId).toBeNull()
+    describe('when the flow was the if-false flow to a ConditionalGateway', () => {
+      it('removes the trueFlowId from the ConditionalGateway if the flow', () => {
+        let wf = WorkflowGenerator.generate()
+        wf = ConditionalGateway.add(wf)
+        wf = Phases.add(wf)
+        const gateways = Gateways.getAll(wf)
+        const lastGateway = gateways[gateways.length - 1]
+        wf = Flows.addFalseFlow(wf, { srcId: lastGateway.id, destId: Phases.getLast(wf).id })
+
+        wf = Flows.remove(wf, Flows.getLast(wf).id)
+
+        const gateway = Gateways.getAll(wf)[0]
+        expect(gateway.falseFlowId).toBeNull()
       })
     })
   })
@@ -353,18 +399,18 @@ describe('Flows', () => {
         WorkflowGenerator.generate,
         ApprovalEventListener.add,
         ApprovalEventListener.add,
-        AndMergeGateway.add,
+        AndGateway.add,
         wf => Flows.add(wf, {
           srcId: ApprovalEventListener.getAll(wf)[0].id,
-          destId: AndMergeGateway.getAll(wf)[0].id,
+          destId: AndGateway.getAll(wf)[0].id,
         }),
         wf => Flows.add(wf, {
           srcId: ApprovalEventListener.getAll(wf)[1].id,
-          destId: AndMergeGateway.getAll(wf)[0].id,
+          destId: AndGateway.getAll(wf)[0].id,
         }),
       ])
 
-      const flows = Flows.getIncomingFlows(workflow, AndMergeGateway.getAll(workflow)[0].id)
+      const flows = Flows.getIncomingFlows(workflow, AndGateway.getAll(workflow)[0].id)
 
       expect(flows).toHaveLength(2)
     })
@@ -376,18 +422,18 @@ describe('Flows', () => {
         WorkflowGenerator.generate,
         Phases.add,
         Phases.add,
-        AndSplitGateway.add,
+        OrGateway.add,
         wf => Flows.add(wf, {
-          srcId: AndSplitGateway.getAll(wf)[0].id,
+          srcId: OrGateway.getAll(wf)[0].id,
           destId: Phases.getAll(wf)[0].id,
         }),
         wf => Flows.add(wf, {
-          srcId: AndSplitGateway.getAll(wf)[0].id,
+          srcId: OrGateway.getAll(wf)[0].id,
           destId: Phases.getAll(wf)[1].id,
         }),
       ])
 
-      const flows = Flows.getOutgoingFlows(workflow, AndSplitGateway.getAll(workflow)[0].id)
+      const flows = Flows.getOutgoingFlows(workflow, OrGateway.getAll(workflow)[0].id)
 
       expect(flows).toHaveLength(2)
     })

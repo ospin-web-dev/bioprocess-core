@@ -1,0 +1,27 @@
+components:
+  schemas:
+    ConditionalGateway:
+      description: A gateway that signals the "true" flow when the assigned condition is true and the "false" flow otherwise
+      type: object
+      properties:
+        id:
+          type: string
+          example: gateway_1
+        elementType:
+          type: string
+          enum: [GATEWAY]
+        type:
+          type: string
+          enum: [CONDITIONAL]
+        trueFlowId:
+          type: string
+          example: flow_1
+        falseFlowId:
+          type: string
+          example: flow_2
+        condition:
+          $ref: '#/components/schemas/Condition'
+      required:
+        - id
+        - elementType
+        - type

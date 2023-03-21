@@ -1,0 +1,6 @@
+components:
+  schemas:
+    UnixTimestamp:
+      type: number
+      description: unix time in ms
+      example: 1589388140723

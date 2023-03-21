@@ -1,0 +1,19 @@
+components:
+  schemas:
+    EndEventDispatcher:
+      description: An event dispatcher that notifies about the end of a workflow
+      type: object
+      properties:
+        id:
+          type: string
+          example: eventDispatcher_1
+        elementType:
+          type: string
+          enum: [EVENT_DISPATCHER]
+        type:
+          type: string
+          enum: [END]
+      required:
+        - id
+        - elementType
+        - type

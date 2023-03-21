@@ -1,0 +1,22 @@
+components:
+  schemas:
+    FlowSignaledEvent:
+      description: Dispatched when an flow receives a signal
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FLOW_SIGNALED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+        data:
+          type: object
+          properties:
+            flowId:
+              type: string
+          required:
+            - flowId
+      required:
+        - type
+        - createdAt
+        - data

@@ -1,0 +1,19 @@
+components:
+  schemas:
+    OrGateway:
+      description: A gateway that signals all outgoing flows when one of the incoming flows receives a signals
+      type: object
+      properties:
+        id:
+          type: string
+          example: gateway_1
+        elementType:
+          type: string
+          enum: [GATEWAY]
+        type:
+          type: string
+          enum: [OR]
+      required:
+        - id
+        - elementType
+        - type

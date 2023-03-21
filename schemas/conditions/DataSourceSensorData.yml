@@ -1,0 +1,15 @@
+components:
+  schemas:
+    DataSourceSensorData:
+      description: 'data source for sensor data'
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [SENSOR_DATA]
+        data:
+          type: object
+          properties:
+            reporterFctId:
+              description: ID of the reporter functionality associated with the sensor's slot
+              type: string

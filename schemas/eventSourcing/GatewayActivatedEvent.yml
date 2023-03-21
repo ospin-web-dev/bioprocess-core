@@ -1,0 +1,22 @@
+components:
+  schemas:
+    GatewayActivatedEvent:
+      description: Dispatched when a gateway is activated
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [GATEWAY_ACTIVATED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+        data:
+          type: object
+          properties:
+            gatewayId:
+              type: string
+          required:
+            - gatewayId
+      required:
+        - type
+        - createdAt
+        - data

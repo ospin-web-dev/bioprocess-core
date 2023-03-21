@@ -1,0 +1,23 @@
+components:
+  schemas:
+    Flow:
+      description: A flow connects to elements
+      type: object
+      properties:
+        id:
+          type: string
+          example: flow_1
+        elementType:
+          type: string
+          enum: [FLOW]
+        srcId:
+          type: string
+          example: eventlistener_1
+        destId:
+          type: string
+          example: phase_1
+      required:
+        - id
+        - elementType
+        - srcId
+        - destId

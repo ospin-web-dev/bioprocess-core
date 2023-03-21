@@ -1,0 +1,14 @@
+components:
+  schemas:
+    WorkflowResumedEvent:
+      description: Dispatched when an workflow is resumed
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [WORKFLOW_RESUMED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+      required:
+        - type
+        - createdAt

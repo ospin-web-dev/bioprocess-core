@@ -1,0 +1,19 @@
+components:
+  schemas:
+    StartEventListener:
+      description: An event listener that indicates the entry point of the workflow
+      type: object
+      properties:
+        id:
+          type: string
+          example: eventListener_1
+        elementType:
+          type: string
+          enum: [EVENT_LISTENER]
+        type:
+          type: string
+          enum: [START]
+      required:
+        - id
+        - elementType
+        - type
