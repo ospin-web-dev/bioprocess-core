@@ -154,7 +154,7 @@ We need events when
 
 Here is an example process:
 
-![Image of an example process with OR gateway, ConditionalGateway for loops and a range of phases and event listeners](/images/event_listeners_1.svg)
+![Image of an example process with OR gateway, ConditionalGateway for loops and a range of phases and event listeners](/images/example_process.svg)
 
 What we see here are (the icons are somewhat arbitrary as we have no finished UI concept yet):
 
