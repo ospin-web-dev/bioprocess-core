@@ -1,6 +1,0 @@
-rules:
-  no-empty-servers: off
-
-theme:
-  openapi:
-    schemaDefinitionsTagName: Schemas
