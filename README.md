@@ -10,7 +10,7 @@ This package contains logic for OSPIN workflow definition, including:
 
 # Introduction
 
-The OSPIN workflow engine is an event-based execution engine that executes OSPIN workflow definitions. This document tries to define language and execution semantics for the underlying data model. The data schemas can be found [here](https://ospin-web-dev.github.io/process-core/) (they are automatically generated from the repository):
+The OSPIN workflow engine is an event-based execution engine that executes OSPIN workflow definitions. This document tries to define language and execution semantics for the underlying data model. The data schemas can be found [here](https://ospin-web-dev.github.io/process-core/) (they will be automatically generated from the repository, currently the docs are source-controlled and need to be generated using the command defined in the package.json):
 
 The worklow definition is a directed, cyclic graph with 4 different types of nodes, namely **event listeners**, **event dispatchers**, **gateways**, and **phases**, and only a single type of edges that we call **flows**.
 
