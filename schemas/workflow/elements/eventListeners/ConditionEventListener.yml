@@ -13,6 +13,8 @@ components:
         type:
           type: string
           enum: [CONDITION]
+        interrupting:
+          type: boolean
         condition:
           $ref: '#/components/schemas/Condition'
       required:

@@ -13,6 +13,8 @@ components:
         type:
           type: string
           enum: [START]
+        interrupting:
+          type: boolean
       required:
         - id
         - elementType
