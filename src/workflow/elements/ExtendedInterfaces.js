@@ -18,6 +18,7 @@ const TimerEventListener = require('./eventListeners/TimerEventListener')
 
 const EventDispatchers = require('./eventDispatchers/EventDispatchers')
 const EndEventDispatcher = require('./eventDispatchers/EndEventDispatcher')
+const AlertEventDispatcher = require('./eventDispatchers/AlertEventDispatcher')
 
 const getElementById = require('../functions/getElementById')
 
@@ -83,6 +84,7 @@ const interfacesWithPostRemovalFlowCleanup = [
   OrGateway,
   ConditionalGateway,
   EndEventDispatcher,
+  AlertEventDispatcher,
 ]
 
 /* eslint-disable */
@@ -222,4 +224,5 @@ module.exports = {
   StartEventListener,
   TimerEventListener,
   EndEventDispatcher,
+  AlertEventDispatcher,
 }

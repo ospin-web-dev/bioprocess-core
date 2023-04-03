@@ -1,20 +1,18 @@
 components:
   schemas:
-    ApprovalEventListener:
-      description: An event listener that wait for approvals from users
+    AlertEventDispatcher:
+      description: An event dispatcher that notifies about a customer defined alert
       type: object
       properties:
         id:
           type: string
-          example: eventListener_1
+          example: eventDispatcher_1
         elementType:
           type: string
-          enum: [EVENT_LISTENER]
+          enum: [EVENT_DISPATCHER]
         type:
           type: string
-          enum: [APPROVAL]
-        interrupting:
-          type: boolean
+          enum: [ALERT]
       required:
         - id
         - elementType

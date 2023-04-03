@@ -24,7 +24,8 @@ Event listeners only listen to an event when they are active. An event listener 
 
 The event listeners have types that indicate which kind of event they listen to. Once they receive the event they wait for, they send a signal to their outgoing flow and become inactive again.
 
-For phase-bound event listeners, a phase is set to finished when one of the event listeners receives its event. When a phase is finished, all of its event listeners need to be set to inactive. This way we model "exclusive" event listeners for transitions, meaning only one transition can happen for phase, and all other once are cancelled.
+For phase-bound event listeners, a phase is set to considered "finished" when one of the event listeners receives its event and it is `interrupting`. When a phase is finished, all of its event listeners need to be set to inactive. This way we model "exclusive" event listeners for transitions, meaning only one transition can happen for phase, and all other once are cancelled. Non-interrupting event listeners do not cause a de-activation of other event listeners for that phase.
+`interrupting` has currently no meaning for global event listeners and can be ignored.
 
 The "START" event listener is special in the sense that it can be present only once per workflow and is required in every workflow definition. It defines the entry point of the workflow.
 

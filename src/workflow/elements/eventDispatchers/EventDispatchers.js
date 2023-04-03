@@ -2,7 +2,10 @@ const createCommonCollectionInterface = require('../createCommonCollectionInterf
 
 const COLLECTION_NAME = 'eventDispatchers'
 const ELEMENT_TYPE = 'EVENT_DISPATCHER'
-const TYPES = { END: 'END' }
+const TYPES = {
+  END: 'END',
+  ALERT: 'ALERT',
+}
 
 /**
   * @function getAll

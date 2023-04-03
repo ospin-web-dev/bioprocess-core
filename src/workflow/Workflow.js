@@ -8,6 +8,7 @@ const {
   Phases,
   EventDispatchers,
   EndEventDispatcher,
+  AlertEventDispatcher,
   EventListeners,
   ApprovalEventListener,
   ConditionEventListener,
@@ -27,7 +28,10 @@ const SCHEMA = Joi.object({
   id: Joi.string().required(),
   version: Joi.string().default('1.0'),
   elements: Joi.object({
-    eventDispatchers: Joi.array().items(EndEventDispatcher.SCHEMA).default([]),
+    eventDispatchers: Joi.array().items(Joi.alternatives().try(
+      EndEventDispatcher.SCHEMA,
+      AlertEventDispatcher.SCHEMA,
+    )).default([]),
     eventListeners: Joi.array().items(Joi.alternatives().try(
       ApprovalEventListener.SCHEMA,
       ConditionEventListener.SCHEMA,
@@ -133,6 +137,11 @@ module.exports = {
    *  @namespace Workflow.EndEventDispatcher
    */
   EndEventDispatcher,
+
+  /**
+   *  @namespace Workflow.AlertEventDispatcher
+   */
+  AlertEventDispatcher,
 
   /**
    *  @namespace Workflow.ApprovalEventListener
