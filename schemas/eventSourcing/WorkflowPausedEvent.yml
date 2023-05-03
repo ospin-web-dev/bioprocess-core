@@ -4,11 +4,14 @@ components:
       description: Dispatched when an workflow is paused
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [WORKFLOW_PAUSED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
       required:
+        - id
         - type
         - createdAt

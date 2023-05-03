@@ -100,12 +100,53 @@ const createTemplate = () => {
 
 }
 
+const isSingleThreaded = wf => {
+  // There are 4 ways how a new execution thread can be introduced:
+  // 1. OrGateway with multiple outflows
+  // 2. AndGateway with multiple outflows
+  // 3. A non-interrupting phase event listener
+  // 4. A global event listener (that is not the START) without
+  // in incoming flow (which makes it active per default);
+  // even if this is false, the real execution of a the workflow
+  // might still be single-threaded
+
+  const gatewayCondition = Gateways.getAll(wf)
+    .filter(gw => gw.type === Gateways.TYPES.OR || gw.type === Gateways.TYPES.AND)
+    .map(gw => Flows.getOutgoingFlows(wf, gw.id).length)
+    .some(totalOutFlows => totalOutFlows > 1)
+  if (gatewayCondition) return false
+
+  const nonInterruptingEventListenersCondition = EventListeners
+    .getManyBy(wf, { interrupting: false })
+    .some(el => el.phase !== null)
+  if (nonInterruptingEventListenersCondition) return false
+
+  const globalEventListenerCondition = EventListeners.getManyBy(wf, { phaseId: null })
+    .filter(el => el.type !== EventListeners.TYPES.START)
+    .map(el => Flows.getIncomingFlows(wf, el.id).length)
+    .some(totalInflows => totalInflows === 0)
+  if (globalEventListenerCondition) return false
+
+  return true
+}
+
+const isLinear = wf => {
+  // a linear process is single threaded and every phase has only one event listener
+  const singleThreaded = isSingleThreaded(wf)
+  if (!singleThreaded) return false
+
+  return Phases.getAll(wf)
+    .every(phase => EventListeners.getManyBy(wf, { phaseId: phase.id }).length <= 1)
+}
+
 module.exports = {
   pipe,
   validateSchema: data => validateSchema(data, SCHEMA),
   getElementById,
   createTemplate,
   create,
+  isSingleThreaded,
+  isLinear,
 
   /**
    *  @namespace Workflow.Flows

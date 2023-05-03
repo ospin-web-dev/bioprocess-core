@@ -4,6 +4,8 @@ components:
       description: Dispatched when an flow receives a signal
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [FLOW_SIGNALED]
@@ -17,6 +19,7 @@ components:
           required:
             - flowId
       required:
+        - id
         - type
         - createdAt
         - data

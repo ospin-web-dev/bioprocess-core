@@ -48,7 +48,7 @@ One could consider omitting phases completely, in favour of an element type of "
 
 A phase is activated, when it receives a signal via an incoming flow. When activated, it executes its command and activates all event listeners that are bound to it (see Event Listeners).
 
-Every workflow definition needs to have at least one phase.
+Every workflow definition needs to have at least one phase. The first phase of a workflow should define the default values for all devices (this cannot be validated via this package because it requires knowledge about the functionality graph which is out of scope). Further phases should define only commands for inputs where the values change
 
 A phase that is considered not finished yet, cannot be triggered again.
 
@@ -105,6 +105,8 @@ Flows serve as connection between the different elements and transport signals b
 The destination element *might* consume the signal and be activated. Most of the time, signals will be consumed immediately. There are exceptions however, e.g. the AND-gateway will only consume the signal when all of its incoming flows have a signal in order to produce signals on its outgoing flows. This means signals have to be retained until they are consumed.
 
 A flow can only ever carry a single signal.
+
+A flow that signals an event listeners that is already listening or a phase that has not finished yet, has no effect.
 
 **Can connect to:**
   - Phases

@@ -4,6 +4,8 @@ components:
       description: Dispatched when a gateway is activated
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [GATEWAY_ACTIVATED]
@@ -17,6 +19,7 @@ components:
           required:
             - gatewayId
       required:
+        - id
         - type
         - createdAt
         - data

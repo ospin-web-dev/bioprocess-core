@@ -183,7 +183,7 @@ const updateSetTargetValueCommand = (wf, phaseId, inputNodeId, value) => {
   * @arg {string} phaseId
   * @arg {string} inputNodeId
   * @arg {number|string|boolean} value
-  * @desc sets the target value for a slot
+  * @desc sets the target value for a slot via its inputNodeId
   */
 
 const setTargetValue = (wf, phaseId, inputNodeId, value) => {
@@ -206,12 +206,39 @@ const setTargetValue = (wf, phaseId, inputNodeId, value) => {
 }
 
 /**
+  * @function deleteTargetValue
+  * @memberof Workflow.Phases
+  * @arg {Object} workflow
+  * @arg {string} phaseId
+  * @arg {string} inputNodeId
+  * @desc deletes the target value for a slot via its inputNodeId
+  */
+
+const deleteTargetValue = (wf, phaseId, inputNodeId) => {
+  const command = getSetTargetCommand(wf, phaseId)
+
+  const updatedCommand = {
+    ...command,
+    data: {
+      ...command.data,
+      targets: command.data.targets.filter(target => target.inputNodeId !== inputNodeId),
+    },
+  }
+
+  return updateCommand(wf, phaseId, updatedCommand)
+}
+
+/**
   * @function getTargetValue
   * @memberof Workflow.Phases
   * @arg {Object} workflow
   * @arg {string} phaseId
   * @arg {string} inputNodeId
-  * @desc gets the target value for a slot
+  * @desc gets the target value for a slot; important: phases
+  * might define target values only for a subset of slots, so
+  * this function will only return a value if it defines a target;
+  * when you are you interested in the currently active target value
+  * of a workflow, you have to use the EventSourcing
   */
 
 const getTargetValue = (wf, phaseId, inputNodeId) => {
@@ -232,6 +259,7 @@ module.exports = {
   SCHEMA,
   add,
   containsOnlyOnePhase,
+  deleteTargetValue,
   getAll,
   getBy,
   getById,

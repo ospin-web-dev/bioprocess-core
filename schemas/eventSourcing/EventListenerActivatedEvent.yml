@@ -4,6 +4,8 @@ components:
       description: Dispatched when an event listener starts listening
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [EVENT_LISTENER_ACTIVATED]
@@ -17,6 +19,7 @@ components:
           required:
             - eventListenerId
       required:
+        - id
         - type
         - createdAt
         - data
