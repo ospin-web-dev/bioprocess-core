@@ -9,6 +9,7 @@ const Joi = require('joi')
 const TYPES = {
   /* everyday events dispatched from normal execution */
 
+  EVENT_LISTENER_ACTIVATED: 'EVENT_LISTENER_ACTIVATED',
   EVENT_RECEIVED: 'EVENT_RECEIVED',
   FLOW_SIGNALED: 'FLOW_SIGNALED',
   PHASE_STARTED: 'PHASE_STARTED',
@@ -33,6 +34,9 @@ const BASE_SCHEMA = Joi.object({
 })
 
 const DATA_SCHEMAS = {
+  [TYPES.EVENT_LISTENER_ACTIVATED]: Joi.object({
+    eventListenerId: Joi.string().required(),
+  }),
   [TYPES.EVENT_RECEIVED]: Joi.object({
     eventListenerId: Joi.string().required(),
     forced: Joi.boolean().strict().default(false),
@@ -50,6 +54,10 @@ const DATA_SCHEMAS = {
 
 const SCHEMA = BASE_SCHEMA.concat(Joi.object({
   data: Joi.any().when('type',
+    {
+      is: TYPES.EVENT_LISTENER_ACTIVATED,
+      then: DATA_SCHEMAS[TYPES.EVENT_RECEIVED].required(),
+    },
     {
       is: TYPES.EVENT_RECEIVED,
       then: DATA_SCHEMAS[TYPES.EVENT_RECEIVED].required(),

@@ -145,6 +145,7 @@ Unreachable `END` event dispatchers indicate a flaw in the execution of the work
 In order to track the execution of the workflow, we need a range of events dispatched to the cloud. They are plenty, but it will also help much in the debugging process.
 
 We need events when
+- An event listener starts listening, see [EventListenerActivatedEvent](https://ospin-web-dev.github.io/process-core/)
 - An event listener receives an event, see [EventReceivedEvent](https://ospin-web-dev.github.io/process-core/)
 - a flow receives a signal, see [FlowSignaledEvent](https://ospin-web-dev.github.io/process-core/)
 - a phase is started, see [PhaseStartedEvent](https://ospin-web-dev.github.io/process-core/)

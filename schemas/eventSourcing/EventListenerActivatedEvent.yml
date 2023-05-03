@@ -1,0 +1,22 @@
+components:
+  schemas:
+    EventListenerActivated:
+      description: Dispatched when an event listener starts listening
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [EVENT_LISTENER_ACTIVATED]
+        createdAt:
+          $ref: '#/components/schemas/UnixTimestamp'
+        data:
+          type: object
+          properties:
+            eventListenerId:
+              type: string
+          required:
+            - eventListenerId
+      required:
+        - type
+        - createdAt
+        - data
