@@ -7,19 +7,6 @@ describe('the Condition interface', () => {
     jest.clearAllMocks()
   })
 
-  const createSimpleCondition = () => {
-    const operator = '<'
-    const left = 10
-    const right = {
-      dataSource: {
-        type: DataSource.TYPES.SENSOR_DATA,
-        data: { reporterFctId: 'd2d92a1d-2a4c-40c6-bd25-93d19c043922' },
-      },
-    }
-    const options = { consecutiveTimeMS: 1000, allowedDeviation: 0.5 }
-    return Condition.create({ operator, left, right, options })
-  }
-
   describe('create', () => {
     it('creates a condition with the unset values when no arguments are passed', () => {
       const res = Condition.create(null, { left: null, right: null })

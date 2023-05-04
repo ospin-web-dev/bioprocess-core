@@ -1,12 +1,4 @@
-const { validate } = require('../../../src/workflow')
-const {
-  Phases,
-  Flows,
-  StartEventListener,
-  ApprovalEventListener,
-  EndEventDispatcher,
-  pipe,
-} = require('../../../src/workflow')
+const Workflow = require('../../../src/workflow')
 const WorkflowGenerator = require('../../helpers/generators/WorkflowGenerator')
 
 describe('Validator', () => {

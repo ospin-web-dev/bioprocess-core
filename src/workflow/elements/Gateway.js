@@ -11,7 +11,7 @@ const TYPES = {
 }
 
 const SHARED_SCHEMA = ELEMENT_BASE_SCHEMA.concat(Joi.object({
-  elementType: Joi.string.valid(ELEMENT_TYPE).required(),
+  elementType: Joi.string().valid(ELEMENT_TYPE).required(),
 }))
 
 const AND_GATEWAY_SCHEMA = SHARED_SCHEMA.concat(Joi.object({
@@ -36,17 +36,12 @@ const TYPES_TO_SCHEMA = {
 }
 
 const SCHEMA = Joi.alternatives().try(
-  AND_GATEWAY_SCHEMA,
-  OR_GATEWAY_SCHEMA,
-  CONDITIONAL_GATEWAY_SCHEMA,
+  ...Object.values(TYPES_TO_SCHEMA),
 )
 
 module.exports = {
   SCHEMA,
   ELEMENT_TYPE,
   TYPES,
-  AND_GATEWAY_SCHEMA,
-  OR_GATEWAY_SCHEMA,
-  CONDITIONAL_GATEWAY_SCHEMA,
   TYPES_TO_SCHEMA,
 }

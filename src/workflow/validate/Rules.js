@@ -1,25 +1,20 @@
-const EventListeners = require('../elements/eventListeners/EventListeners')
-const Phases = require('../elements/phases/Phases')
-const EventDispatchers = require('../elements/eventDispatchers/EventDispatchers')
-const StartEventListener = require('../elements/eventListeners/StartEventListener')
-const EndEventDispatcher = require('../elements/eventDispatchers/EndEventDispatcher')
 const WorkflowGraphTools = require('../WorkflowGraphTools')
 const IncorrectAmountOfStartEventListenersError = require('../errors/IncorrectAmountOfStartEventListenersError')
 const NoPhasesError = require('../errors/NoPhasesError')
 const UnreachablePhaseError = require('../errors/UnreachablePhaseError')
 const NoEndEventDispatcherError = require('../errors/NoEndEventDispatcherError')
 const UnreachableEndEventDispatcherError = require('../errors/UnreachableEndEventDispatcherError')
+const Workflow = require('../Workflow')
 
 const containsExactlyOneStartEventListener = wf => {
-  const startEventListeners = EventListeners
-    .getManyBy(wf, { type: StartEventListener.TYPE })
+  const startEventListeners = Workflow.getStartEventListeners(wf)
   if (startEventListeners.length !== 1) {
     throw new IncorrectAmountOfStartEventListenersError()
   }
 }
 
 const containsAtLeastOnePhase = wf => {
-  const phases = Phases.getAll(wf)
+  const phases = Workflow.getPhases(wf)
   if (phases.length === 0) throw new NoPhasesError()
 }
 

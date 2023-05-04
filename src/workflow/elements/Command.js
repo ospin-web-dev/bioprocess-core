@@ -10,8 +10,8 @@ const DATA_SCHEMAS = {
       inputNodeId: Joi.string().required(),
       target: Joi.alternatives()
         .try(Joi.string(), Joi.number().strict(), Joi.boolean().strict()),
-    })),
-  }),
+    })).default([]),
+  }).default(),
 }
 
 const SCHEMA = Joi.object({
@@ -21,7 +21,7 @@ const SCHEMA = Joi.object({
     is: TYPES.SET_TARGETS,
     then: DATA_SCHEMAS.SET_TARGETS,
     otherwise: Joi.forbidden(),
-  }),
+  }).default({}),
 })
 
 module.exports = {
