@@ -170,82 +170,76 @@ What we see here are (the icons are somewhat arbitrary as we have no finished UI
 6. We will go though Phase 5 and Phase 6, until we reach the ConditionalGateway which will check if we need another iteration of the loop and if so, loop back to Phase 5, otherwise it will send a signal to the flow to the right
 7. The END event dispatcher is activated and dispatches the END event, marking the end of the process.
 
-The data schema for such a process would look like this (handwritten, take with a grain of salt):
+The data schema for such a process would look like this (handwritten, take with a grain of salt). The element IDs will also be uuids (for simplification I'm using shorter IDs)!
 
 ```js
 const workflow = {
   id: 'a6921701-4706-40e9-82a0-07aa7e86987b',
   version: '1',
-  elements: {
-
-    eventListeners: [
-      {
-        type: 'START',
-        id: 'eventListener_1',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_2',
-        durationInMS: 100000,
-        phaseId: 'phase_1',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'APPROVAL',
-        id: 'eventListener_3',
-        phaseId: 'phase_2',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'CONDITION',
-        id: 'eventListener_4',
-        phaseId: 'phase_2',
-        condition: {
-          left: {
-            type: 'SENSOR_DATA',
-            data: {
-              reporterFctId: 'b505cf08-cc3f-4814-8d76-3dd23ad1ea35',
-            },
+  elements: [
+    {
+      type: 'START',
+      id: 'eventListener_1',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_2',
+      durationInMS: 100000,
+      phaseId: 'phase_1',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'APPROVAL',
+      id: 'eventListener_3',
+      phaseId: 'phase_2',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'CONDITION',
+      id: 'eventListener_4',
+      phaseId: 'phase_2',
+      condition: {
+        left: {
+          type: 'SENSOR_DATA',
+          data: {
+            reporterFctId: 'b505cf08-cc3f-4814-8d76-3dd23ad1ea35',
           },
-          operator: '>=',
-          right: 37,
-          options: { sustainTimeInMS: 20000, allowedDeviation: 0.2 },
         },
-        elementType: 'EVENT_LISTENER',
+        operator: '>=',
+        right: 37,
+        options: { sustainTimeInMS: 20000, allowedDeviation: 0.2 },
       },
-      {
-        type: 'TIMER',
-        id: 'eventListener_5',
-        durationInMS: 50000,
-        phaseId: 'phase_3',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_6',
-        durationInMS: 30000,
-        phaseId: 'phase_4',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_7',
-        durationInMS: 50000,
-        phaseId: 'phase_5',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_8',
-        durationInMS: 50000,
-        phaseId: 'phase_6',
-        elementType: 'EVENT_LISTENER',
-      },
-    ],
-  },
-
-  phases: [
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_5',
+      durationInMS: 50000,
+      phaseId: 'phase_3',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_6',
+      durationInMS: 30000,
+      phaseId: 'phase_4',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_7',
+      durationInMS: 50000,
+      phaseId: 'phase_5',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_8',
+      durationInMS: 50000,
+      phaseId: 'phase_6',
+      elementType: 'EVENT_LISTENER',
+    },
     {
       id: 'phase_1',
       commands: [
@@ -354,9 +348,6 @@ const workflow = {
       ],
       elementType: 'PHASE',
     },
-  ],
-
-  gateways: [
     {
       id: 'gateway_1',
       type: 'OR',
@@ -366,7 +357,7 @@ const workflow = {
       /* conditional gateway that loops 3 times
       /* (the first iteration happens before we reach the gateway, that is why "right: 2") */
       id: 'gateway_2',
-      type: 'CONDITION',
+      type: 'CONDITIONAL',
       condition: {
         left: {
           type: 'GATEWAY',
@@ -382,9 +373,6 @@ const workflow = {
       falseFlowId: 'flow_11',
       elementType: 'GATEWAY',
     },
-  ],
-
-  flows: [
     {
       id: 'flow_1',
       srcId: 'eventListener_1',
@@ -451,9 +439,7 @@ const workflow = {
       destId: 'eventDispatcher_1',
       elementType: 'FLOW',
     },
-  ],
 
-  eventDispatchers: [
     {
       type: 'END',
       id: 'eventDispatcher_1',

@@ -10,38 +10,17 @@ components:
           type: string
           default: 1.0
         elements:
-          type: object
-          properties:
-            eventListeners:
-              type: array
-              default: []
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/StartEventListener'
-                - $ref: '#/components/schemas/ApprovalEventListener'
-                - $ref: '#/components/schemas/TimerEventListener'
-                - $ref: '#/components/schemas/ConditionEventListener'
-            eventDispatchers:
-              type: array
-              default: []
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/EndEventDispatcher'
-            phases:
-              type: array
-              default: []
-              items:
-                $ref: '#/components/schemas/Phase'
-            flows:
-              type: array
-              default: []
-              items:
-                $ref: '#/components/schemas/Flow'
-            gateways:
-              type: array
-              default: []
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/AndGateway'
-                - $ref: '#/components/schemas/OrGateway'
-                - $ref: '#/components/schemas/ConditionalGateway'
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/StartEventListener'
+            - $ref: '#/components/schemas/ApprovalEventListener'
+            - $ref: '#/components/schemas/TimerEventListener'
+            - $ref: '#/components/schemas/ConditionEventListener'
+            - $ref: '#/components/schemas/EndEventDispatcher'
+            - $ref: '#/components/schemas/AlertEventDispatcher'
+            - $ref: '#/components/schemas/Phase'
+            - $ref: '#/components/schemas/Flow'
+            - $ref: '#/components/schemas/AndGateway'
+            - $ref: '#/components/schemas/OrGateway'
+            - $ref: '#/components/schemas/ConditionalGateway'
