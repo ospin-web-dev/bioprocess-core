@@ -1,5 +1,5 @@
-const Workflow = require('../../src/workflow')
 const uuid = require('uuid')
+const Workflow = require('../../src/workflow')
 const WorkflowGenerator = require('../helpers/generators/WorkflowGenerator')
 
 describe('Workflow', () => {
@@ -531,6 +531,30 @@ describe('Workflow', () => {
         const updatedGateway = Workflow.getElementById(res, conditionalGatewayId)
         expect(updatedGateway.trueFlowId).toBe(flows[2].id)
       })
+
+      it('throws an error when the element is not a gateway', () => {
+        const wf = WorkflowGenerator.generateTestWorkflow1()
+        const listenerId = Workflow.getElementBy(wf, {
+          elementType: Workflow.EventListener.ELEMENT_TYPE,
+          type: Workflow.EventListener.TYPES.CONDITION,
+        }).id
+        const targetElId = Workflow.getEventDispatchers(wf)[1].id
+
+        expect(() => Workflow.addTrueFlow(wf, { srcId: listenerId, destId: targetElId }))
+          .toThrow(/not a gateway/)
+      })
+
+      it('throws an error when the element is a gateway but not a CONDITIONAL one', () => {
+        const wf = WorkflowGenerator.generateTestWorkflow1()
+        const conditionalGatewayId = Workflow.getElementBy(wf, {
+          elementType: Workflow.Gateway.ELEMENT_TYPE,
+          type: Workflow.Gateway.TYPES.OR,
+        }).id
+        const targetElId = Workflow.getEventDispatchers(wf)[1].id
+
+        expect(() => Workflow.addTrueFlow(wf, { srcId: conditionalGatewayId, destId: targetElId }))
+          .toThrow(/gateway of type/)
+      })
     })
 
     describe('addFalseFlow', () => {
@@ -691,6 +715,15 @@ describe('Workflow', () => {
       })
     })
 
+    describe('when trying to delete a flow', () => {
+      it('throws an error', () => {
+        const wf = WorkflowGenerator.generateTestWorkflow1()
+        const flowId = Workflow.getFlows(wf)[0].id
+
+        expect(() => Workflow.removeElement(wf, flowId)).toThrow(/via the 'removeFlow'/)
+      })
+    })
+
     describe('when trying to delete the last phase', () => {
       it('throws an error', () => {
         const wf = WorkflowGenerator.generateTestWorkflow1()
@@ -754,5 +787,6 @@ describe('Workflow', () => {
       })
     })
   })
+
 
 })

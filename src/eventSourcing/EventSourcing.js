@@ -1,10 +1,5 @@
 const Event = require('./Event')
-const {
-  EventListeners,
-  Phases,
-  Gateways,
-  Flows,
-} = require('../workflow')
+const Workflow = require('../workflow')
 
 // Important: the event sourcing interface relies on the events being
 // sorted by createdAt in ascending order!
@@ -16,8 +11,7 @@ const getEventsByType = (events, targetType) => (
 )
 
 const getStartedEvent = (wf, events) => {
-  const el = EventListeners
-    .getBy(wf, { type: EventListeners.TYPES.START })
+  const el = Workflow.getStartEventListeners(wf)[0]
 
   return events.find(({ type, data }) => (
     type === Event.TYPES.EVENT_RECEIVED && data.eventListenerId === el.id
@@ -50,7 +44,7 @@ const getActiveTarget = (wf, events, inputNodeId) => {
 
   for (const event of phaseStartedEvents) {
     const { data: { phaseId } } = event
-    const phase = Phases.getById(wf, phaseId)
+    const phase = Workflow.getElementById(wf, phaseId)
     const { commands } = phase
 
     const inputCommand = commands.find(command => command.inputNodeId === inputNodeId)
@@ -73,8 +67,8 @@ const getPhaseDuration = (wf, events, phaseId, occurenceIdx = 0) => {
   // 1. The process is finished after it
   // 2. One of its interrupting event listeners is triggered after it has started
 
-  const listenerIds = EventListeners
-    .getManyBy(wf, { phaseId, interrupting: true })
+  const listenerIds = Workflow.getPhaseEventListeners(wf, phaseId)
+    .filter(el => el.interrupting === true)
     .map(listener => listener.id)
 
   const phaseEndingEvents = events.filter(({ type, data, createdAt }) => (
@@ -103,7 +97,7 @@ const getExecutedPhaseSequence = (wf, events) => (
   // might have (partially overwritten) nth phase commands;
   // it is usefull to derive things like "which target was active at which time"
   getEventsByType(events, Event.TYPES.PHASE_STARTED)
-    .map(({ data: { phaseId } }) => Phases.getById(wf, phaseId))
+    .map(({ data: { phaseId } }) => Workflow.getElementById(wf, phaseId))
 )
 
 const getActivationEventsForElement = el => {
@@ -135,7 +129,6 @@ const getActivatedElementsUntil = (wf, elementType, element, occurenceIdx = 0) =
     Event.TYPES.PHASE_STARTED,
     Event.TYPES.GATEWAY_ACTIVATED,
   ]
-
 
 
 }

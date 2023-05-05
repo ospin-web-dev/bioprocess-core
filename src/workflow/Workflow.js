@@ -35,6 +35,8 @@ const SCHEMA = Joi.object({
   )).default([]),
 })
 
+const validateSchema = data => Joi.assert(data, SCHEMA)
+
 const create = initialData => Joi.attempt(initialData, SCHEMA)
 
 const pipe = (functions, ...initParams) => (
@@ -73,6 +75,9 @@ const getStartEventListeners = wf => getManyElementsBy(wf, {
 
 const getEventDispatchers = wf => getManyElementsBy(wf, {
   elementType: EventDispatcher.ELEMENT_TYPE })
+
+const getEndEventDispatchers = wf => getManyElementsBy(wf, {
+  elementType: EventDispatcher.ELEMENT_TYPE, type: EventDispatcher.TYPES.END })
 
 const getLastPhase = wf => {
   const phases = getPhases(wf)
@@ -403,6 +408,13 @@ const removeElement = (wf, id) => {
   const elToDelete = getElementById(wf, id)
   if (!elToDelete) return wf
 
+  if (elToDelete.elementType === Flow.ELEMENT_TYPE) {
+    throw new IncorrectElementTypeError(
+      `${elToDelete.elementType} should be removed via the 'removeFlow' function`,
+      { el: elToDelete },
+    )
+  }
+
   const idsToDelete = [elToDelete.id]
 
   getIncomingFlows(wf, id)
@@ -432,10 +444,7 @@ const removeElement = (wf, id) => {
 
   if (elToDelete.elementType === EventDispatcher.ELEMENT_TYPE
     && elToDelete.type === EventDispatcher.TYPES.END) {
-    const endDispatchers = getManyElementsBy(wf, {
-      elementType: EventDispatcher.ELEMENT_TYPE,
-      type: EventDispatcher.TYPES.END,
-    })
+    const endDispatchers = getEndEventDispatchers(wf)
 
     if (endDispatchers.length === 1) {
       throw new NoEndEventDispatcherError()
@@ -557,6 +566,7 @@ module.exports = {
   getGlobalEventListeners,
   getStartEventListeners,
   getEventDispatchers,
+  getEndEventDispatchers,
   getLastPhase,
   getLastFlow,
   getIncomingFlows,
@@ -596,7 +606,7 @@ module.exports = {
   isSingleThreaded,
   isLinear,
   createTemplate,
-  validateSchema: data => Joi.assert(data, SCHEMA),
+  validateSchema,
 
   Phase,
   Flow,
