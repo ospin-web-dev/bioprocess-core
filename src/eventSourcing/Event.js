@@ -15,12 +15,13 @@ const TYPES = {
   PHASE_STARTED: 'PHASE_STARTED',
   GATEWAY_ACTIVATED: 'GATEWAY_ACTIVATED',
 
+  /* events coming from dispatchers */
+  DISPATCHED_EVENT: 'DISPATCHED_EVENT',
+
   /* answers to user requested interventions */
   WORKFLOW_PAUSED: 'WORKFLOW_PAUSED',
   WORKFLOW_RESUMED: 'WORKFLOW_RESUMED',
   WORKFLOW_TERMINATED: 'WORKFLOW_TERMINATED',
-
-  /* events coming from explicitly modelled event dispatchers */
 
   /* 'WORKFLOW FINISHED' comes from the EndEvent dispatcher
   /* when the workflow finishes correctly (as is not 'terminated') */
@@ -51,6 +52,9 @@ const DATA_SCHEMAS = {
   [TYPES.GATEWAY_ACTIVATED]: Joi.object({
     gatewayId: Joi.string().required(),
   }),
+  [TYPES.DISPATCHED_EVENT]: Joi.object({
+    eventDispatcherId: Joi.string().required(),
+  }),
 }
 
 const SCHEMA = BASE_SCHEMA.concat(Joi.object({
@@ -70,6 +74,10 @@ const SCHEMA = BASE_SCHEMA.concat(Joi.object({
     {
       is: TYPES.GATEWAY_ACTIVATED,
       then: DATA_SCHEMAS[TYPES.GATEWAY_ACTIVATED].required(),
+    },
+    {
+      is: TYPES.DISPATCHED_EVENT,
+      then: DATA_SCHEMAS[TYPES.DISPATCHED_EVENT].required(),
     },
     {
       is: TYPES.FLOW_SIGNALED,

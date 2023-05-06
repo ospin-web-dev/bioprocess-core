@@ -6,6 +6,22 @@ const Workflow = require('../workflow')
 // (otherwise every function that relies on the order would need to sort them
 // which can result in a lot of redundant sorting)
 
+const ACTIVATION_EVENTS = {
+  [Workflow.EventListener.ELEMENT_TYPE]: Event.TYPES.EVENT_LISTENER_ACTIVATED,
+  [Workflow.Flow.ELEMENT_TYPE]: Event.TYPES.FLOW_SIGNALED,
+  [Workflow.Gateway.ELEMENT_TYPE]: Event.TYPES.GATEWAY_ACTIVATED,
+  [Workflow.EventDispatcher.ELEMENT_TYPE]: Event.TYPES.DISPATCHED_EVENT,
+  [Workflow.Phase.ELEMENT_TYPE]: Event.TYPES.PHASE_STARTED,
+}
+
+const ELEMENT_TYPE_TO_ID_KEY = {
+  [Workflow.EventListener.ELEMENT_TYPE]: 'eventListenerId',
+  [Workflow.Flow.ELEMENT_TYPE]: 'flowId',
+  [Workflow.Gateway.ELEMENT_TYPE]: 'gatewayId',
+  [Workflow.EventDispatcher.ELEMENT_TYPE]: 'eventDispatcherId',
+  [Workflow.Phase.ELEMENT_TYPE]: 'phaseId',
+}
+
 const getEventsByType = (events, targetType) => (
   events.filter(({ type }) => type === targetType)
 )
@@ -100,37 +116,54 @@ const getExecutedPhaseSequence = (wf, events) => (
     .map(({ data: { phaseId } }) => Workflow.getElementById(wf, phaseId))
 )
 
-const getActivationEventsForElement = el => {
-  const { type, data } = el
+const getActivationEventsForElement = (events, el) => {
+  const { elementType, id } = el
 
-  switch (type) {
-    case true :
-      return []
-    case Event.TYPES.FLOW_SIGNALED:
-      return []
-    case Event.TYPES.PHASE_STARTED:
-      return []
-    case Event.TYPES.GATEWAY_ACTIVATED:
-      return []
-    default:
-      return []
-  }
-
+  return getEventsByType(events, ACTIVATION_EVENTS[elementType])
+    .filter(ev => ev.data[ELEMENT_TYPE_TO_ID_KEY[elementType]] === id)
 }
 
-const getActivatedElementsUntil = (wf, elementType, element, occurenceIdx = 0) => {
+const getElementTypeFromActivationEventType = eventType => (
+  Object.entries(ACTIVATION_EVENTS).find(([_, value]) => value === eventType)[0]
+)
+
+const getElementForActivationEvent = (wf, event) => {
+  const { data } = event
+  const elementType = getElementTypeFromActivationEventType(event)
+
+  return Workflow.getElementById(data[ELEMENT_TYPE_TO_ID_KEY[elementType]])
+}
+
+const getElementsUntil = (events, timestamp) => (
+  events.filter(event => event.createdAt <= timestamp)
+)
+
+const getActivationEvents = events => {
+  const types = Object.values(ACTIVATION_EVENTS)
+  return events.filter(ev => types.includes(ev.type))
+}
+
+const getActivatedElementsUntilElement = (wf, events, element, occurenceIdx = 0) => {
   // returns all workflow elements that were activated until the provided
-  // element was activated for the n-th time
-    const { type, id } = element
+  // element was activated for the n-th time;
+  // might be usefull to highlight elements in the UI
+  // when a process is running or an element in hovered
+  const activationEvents = getActivationEvents(events)
 
-  const pathRelevantEventTypes = [
-    Event.TYPES.EVENT_LISTENER_ACTIVATED,
-    Event.TYPES.FLOW_SIGNALED,
-    Event.TYPES.PHASE_STARTED,
-    Event.TYPES.GATEWAY_ACTIVATED,
-  ]
+  const elementActivationEvents = getActivationEventsForElement(activationEvents, element)
+  if ((occurenceIdx + 1) > elementActivationEvents.length) return []
 
+  const { createdAt } = elementActivationEvents[occurenceIdx]
+  const relevantEvents = getElementsUntil(activationEvents, createdAt)
 
+  const elements = relevantEvents.map(event => getElementForActivationEvent(wf, event))
+
+  // because elements might be activated multiple times,
+  // this contains duplicates; this might favourable, if you want
+  // to know how many times an element was activated here (if not
+  // wanted, just filter out duplicates)
+
+  return elements
 }
 
 module.exports = {
@@ -141,4 +174,7 @@ module.exports = {
   getActiveTarget,
   getPhaseDuration,
   getExecutedPhaseSequence,
+  getActivatedElementsUntilElement,
+  getElementsUntil,
+  getElementForActivationEvent,
 }
