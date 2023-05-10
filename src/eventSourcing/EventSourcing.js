@@ -131,7 +131,7 @@ const getElementForActivationEvent = (wf, event) => {
   const { data } = event
   const elementType = getElementTypeFromActivationEventType(event)
 
-  return Workflow.getElementById(data[ELEMENT_TYPE_TO_ID_KEY[elementType]])
+  return Workflow.getElementById(wf, data[ELEMENT_TYPE_TO_ID_KEY[elementType]])
 }
 
 const getElementsUntil = (events, timestamp) => (
@@ -166,6 +166,11 @@ const getActivatedElementsUntilElement = (wf, events, element, occurenceIdx = 0)
   return elements
 }
 
+const getAllActivatedElements = (wf, events) => {
+  const activationEvents = getActivationEvents(events)
+  return activationEvents.map(event => getElementForActivationEvent(wf, event))
+}
+
 module.exports = {
   getEventsByType,
   getStartedEvent,
@@ -177,4 +182,5 @@ module.exports = {
   getActivatedElementsUntilElement,
   getElementsUntil,
   getElementForActivationEvent,
+  getAllActivatedElements,
 }

@@ -89,6 +89,26 @@ const getLastFlow = wf => {
   return flows[flows.length - 1]
 }
 
+const getLastEventListener = wf => {
+  const els = getEventListeners(wf)
+  return els[els.length - 1]
+}
+
+const getLastGateway = wf => {
+  const gws = getGateways(wf)
+  return gws[gws.length - 1]
+}
+
+const getLastEventDispatcher = wf => {
+  const eds = getEventDispatchers(wf)
+  return eds[eds.length - 1]
+}
+
+const getLastElement = wf => {
+  const elements = getElements(wf)
+  return elements[elements.length - 1]
+}
+
 const getIncomingFlows = (wf, id) => (
   getManyElementsBy(wf, { elementType: Flow.ELEMENT_TYPE, destId: id })
 )
@@ -525,7 +545,7 @@ const isLinear = wf => {
 }
 
 const createTemplate = () => {
-  // @desc creates an empty workflow with the minimum required setup, including a START event
+  // creates an empty workflow with the minimum required setup, including a START event
   // listener, a single phase, an APPROVAL event listener within the phase and an END dispatcher
   const id = uuid.v4()
 
@@ -550,6 +570,20 @@ const createTemplate = () => {
 
 }
 
+const insertPhase = (wf, flowId) => {
+  // when given a flowId, this function replaces the flow with
+  // a phase, that is connected to the flow's source and contains
+  // and APPROVAL event listener with the flow's destination as its target
+  const { srcId, destId } = getElementById(wf, flowId)
+  return pipe([
+    workflow => removeFlow(workflow, flowId),
+    addPhase,
+    workflow => addApprovalEventListener(workflow, { phaseId: getLastPhase(workflow).id }),
+    workflow => addFlow(workflow, { srcId, destId: getLastPhase(workflow).id }),
+    workflow => addFlow(workflow, { srcId: getLastEventListener(workflow).id, destId }),
+  ], wf)
+}
+
 module.exports = {
   create,
   pipe,
@@ -569,6 +603,10 @@ module.exports = {
   getEndEventDispatchers,
   getLastPhase,
   getLastFlow,
+  getLastGateway,
+  getLastEventDispatcher,
+  getLastEventListener,
+  getLastElement,
   getIncomingFlows,
   getOutgoingFlows,
   getSetTargetsCommand,
@@ -607,6 +645,8 @@ module.exports = {
   isLinear,
   createTemplate,
   validateSchema,
+
+  insertPhase,
 
   Phase,
   Flow,

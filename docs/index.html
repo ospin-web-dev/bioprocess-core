@@ -154,6 +154,41 @@
           }
         }
       },
+      "DispatchedEvent": {
+        "description": "Structure of the events dispatched from event dispatchers",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DISPATCHED_EVENT"
+            ]
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "eventDispatcherId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "eventDispatcherId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "createdAt",
+          "data"
+        ]
+      },
       "EventListenerActivated": {
         "description": "Dispatched when an event listener starts listening",
         "type": "object",
