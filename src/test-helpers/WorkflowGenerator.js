@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const Workflow = require('../../../src/workflow')
+const Workflow = require('../workflow')
 
 const generate = (data = {}) => (
   Workflow.create({

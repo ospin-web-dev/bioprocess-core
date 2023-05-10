@@ -30,7 +30,7 @@ const TYPES = {
 
 const BASE_SCHEMA = Joi.object({
   id: Joi.string().required(),
-  type: Joi.sring().valid(...Object.values(TYPES)).required(),
+  type: Joi.string().valid(...Object.values(TYPES)).required(),
   createdAt: Joi.number().integer().strict().min(0)
     .required(),
 })

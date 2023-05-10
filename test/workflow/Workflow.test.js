@@ -1,6 +1,6 @@
 const uuid = require('uuid')
 const Workflow = require('../../src/workflow')
-const WorkflowGenerator = require('../helpers/generators/WorkflowGenerator')
+const WorkflowGenerator = require('../../src/test-helpers/WorkflowGenerator')
 
 describe('Workflow', () => {
 

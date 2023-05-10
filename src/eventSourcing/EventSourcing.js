@@ -26,24 +26,28 @@ const getEventsByType = (events, targetType) => (
   events.filter(({ type }) => type === targetType)
 )
 
-const getStartedEvent = (wf, events) => {
-  const el = Workflow.getStartEventListeners(wf)[0]
-
-  return events.find(({ type, data }) => (
-    type === Event.TYPES.EVENT_RECEIVED && data.eventListenerId === el.id
+const getStartedEvent = events => (
+  // This implementation could be dangerous - we are assuming the first "EVENT_RECEIVED"
+  // event is the start event; This way we don't have to look up anything on workflow definition;
+  // reality might show cases where this is not true even though I
+  // coudn't come up with anything in my fantasy; then I suggest adding a "WORKFLOW_STARTED"
+  // event type that is additionally dispatched by the start event listener
+  events.find(({ type }) => (
+    type === Event.TYPES.EVENT_RECEIVED
   ))
-}
-
-const getEndingEvent = (wf, events) => (
-  // a workflow can either be terminated (forcefully stopped) or finished (when running through)
-  events.find(({ type }) => type === Event.WORKFLOW_TERMINATED || type === Event.WORKFLOW_FINISHED)
 )
 
-const getWorkflowDuration = (wf, events) => {
-  const startingEvent = getStartedEvent(wf, events)
+const getEndingEvent = events => (
+  // a workflow can either be terminated (forcefully stopped) or finished (when running through)
+  events.find(({ type }) => type === Event.TYPES.WORKFLOW_TERMINATED
+    || type === Event.TYPES.WORKFLOW_FINISHED)
+)
+
+const getWorkflowDuration = events => {
+  const startingEvent = getStartedEvent(events)
   if (!startingEvent) return 0
 
-  const endingEvent = getEndingEvent(wf, events)
+  const endingEvent = getEndingEvent(events)
 
   if (!endingEvent) {
     return Date.now() - startingEvent.createdAt
@@ -56,21 +60,19 @@ const getActiveTarget = (wf, events, inputNodeId) => {
   // we need to find the latest phase that started and defines a command for the given
   // input node; because the first phase in a workflow should always define default inputs
   // for all targets, there should always be a result!
-  const phaseStartedEvents = getEventsByType(events, Event.PHASE_STARTED).reverse()
+  const phaseStartedEvents = getEventsByType(events, Event.TYPES.PHASE_STARTED).reverse()
 
   for (const event of phaseStartedEvents) {
     const { data: { phaseId } } = event
-    const phase = Workflow.getElementById(wf, phaseId)
-    const { commands } = phase
+    const targetValue = Workflow.getTargetValue(wf, phaseId, inputNodeId)
 
-    const inputCommand = commands.find(command => command.inputNodeId === inputNodeId)
-    if (inputCommand) return inputCommand.target
+    if (targetValue !== undefined) return targetValue
   }
 }
 
 const getPhaseDuration = (wf, events, phaseId, occurenceIdx = 0) => {
   const phaseStartedEvents = events.filter(({ type, data }) => (
-    type === Event.TYPES.PHASE_STARTED && data.phaseid === phaseId
+    type === Event.TYPES.PHASE_STARTED && data.phaseId === phaseId
   ))
 
   const phaseStartedEvent = phaseStartedEvents.length < (occurenceIdx + 1)
@@ -134,7 +136,7 @@ const getElementForActivationEvent = (wf, event) => {
   return Workflow.getElementById(wf, data[ELEMENT_TYPE_TO_ID_KEY[elementType]])
 }
 
-const getElementsUntil = (events, timestamp) => (
+const getEventsUntil = (events, timestamp) => (
   events.filter(event => event.createdAt <= timestamp)
 )
 
@@ -154,7 +156,7 @@ const getActivatedElementsUntilElement = (wf, events, element, occurenceIdx = 0)
   if ((occurenceIdx + 1) > elementActivationEvents.length) return []
 
   const { createdAt } = elementActivationEvents[occurenceIdx]
-  const relevantEvents = getElementsUntil(activationEvents, createdAt)
+  const relevantEvents = getEventsUntil(activationEvents, createdAt)
 
   const elements = relevantEvents.map(event => getElementForActivationEvent(wf, event))
 
@@ -180,7 +182,7 @@ module.exports = {
   getPhaseDuration,
   getExecutedPhaseSequence,
   getActivatedElementsUntilElement,
-  getElementsUntil,
+  getEventsUntil,
   getElementForActivationEvent,
   getAllActivatedElements,
 }

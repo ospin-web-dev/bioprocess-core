@@ -1,6 +1,6 @@
 components:
   schemas:
-    EventListenerActivated:
+    EventListenerActivatedEvent:
       description: Dispatched when an event listener starts listening
       type: object
       properties:

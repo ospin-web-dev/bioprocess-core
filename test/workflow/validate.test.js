@@ -1,6 +1,6 @@
 const Workflow = require('../../src/workflow/Workflow')
 const { validate } = require('../../src/workflow/validate')
-const WorkflowGenerator = require('../helpers/generators/WorkflowGenerator')
+const WorkflowGenerator = require('../../src/test-helpers/WorkflowGenerator')
 
 describe('validate', () => {
   describe('when the workflow has an invalid data schema', () => {
