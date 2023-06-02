@@ -11,6 +11,8 @@ components:
           enum: [EVENT_RECEIVED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
+        number:
+          type: number
         data:
           type: object
           properties:
@@ -27,3 +29,4 @@ components:
         - type
         - createdAt
         - data
+        - number

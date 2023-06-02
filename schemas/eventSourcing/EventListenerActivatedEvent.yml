@@ -11,6 +11,8 @@ components:
           enum: [EVENT_LISTENER_ACTIVATED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
+        number:
+          type: number
         data:
           type: object
           properties:
@@ -23,3 +25,4 @@ components:
         - type
         - createdAt
         - data
+        - number

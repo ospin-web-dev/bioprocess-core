@@ -9,9 +9,12 @@ components:
         type:
           type: string
           enum: [WORKFLOW_FINISHED]
+        number:
+          type: number
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
       required:
         - id
         - type
         - createdAt
+        - number

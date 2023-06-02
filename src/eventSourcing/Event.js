@@ -31,7 +31,19 @@ const TYPES = {
 const BASE_SCHEMA = Joi.object({
   id: Joi.string().required(),
   type: Joi.string().valid(...Object.values(TYPES)).required(),
+  // The device should report timestamps relative to process start,
+  // while the cloud stores them with absolute time by adding the
+  // time of the process start; This makes it easier to manage clock drift
+  // on devices; Clock drifts only become a problem then if the device fails to
+  // report the process start. In that case we could use the time of the start
+  // command as an approximation for that edge case
   createdAt: Joi.number().integer().strict().min(0)
+    .required(),
+  // the number should be a monotonic counter, starting from 0
+  // it helps to correctly indentify the order of events, even
+  // if they happen at the exact same millisecond on the device;
+  // firmware has to provide them; it can also be used for deduplication!
+  number: Joi.number().integer().strict().min(0)
     .required(),
 })
 

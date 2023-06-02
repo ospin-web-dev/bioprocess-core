@@ -5,6 +5,7 @@ const generateCommonData = type => ({
   id: uuid.v4(),
   type,
   createdAt: Date.now(),
+  number: Math.round(Math.random() * 100),
 })
 
 const generateEventReceivedEvent = (eventListenerId, data = {}) => ({

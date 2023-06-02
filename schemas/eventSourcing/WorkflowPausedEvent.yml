@@ -11,7 +11,10 @@ components:
           enum: [WORKFLOW_PAUSED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
+        number:
+          type: number
       required:
         - id
         - type
         - createdAt
+        - number
