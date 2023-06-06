@@ -4,11 +4,15 @@ components:
       description: Dispatched when an flow receives a signal
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [FLOW_SIGNALED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
+        number:
+          type: number
         data:
           type: object
           properties:
@@ -17,6 +21,8 @@ components:
           required:
             - flowId
       required:
+        - id
         - type
         - createdAt
         - data
+        - number

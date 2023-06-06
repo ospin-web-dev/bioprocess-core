@@ -1,14 +1,14 @@
 components:
   schemas:
-    GatewayActivatedEvent:
-      description: Dispatched when a gateway is activated
+    EventListenerActivatedEvent:
+      description: Dispatched when an event listener starts listening
       type: object
       properties:
         id:
           type: string
         type:
           type: string
-          enum: [GATEWAY_ACTIVATED]
+          enum: [EVENT_LISTENER_ACTIVATED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
         number:
@@ -16,10 +16,10 @@ components:
         data:
           type: object
           properties:
-            gatewayId:
+            eventListenerId:
               type: string
           required:
-            - gatewayId
+            - eventListenerId
       required:
         - id
         - type

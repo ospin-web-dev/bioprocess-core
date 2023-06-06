@@ -1,5 +1,8 @@
-const Flows = require('./elements/flows/Flows')
-const { EventListeners } = require('./Workflow')
+const {
+  getGlobalEventListeners,
+  getEventListeners,
+  getFlows,
+} = require('./Workflow')
 
 const buildGraph = workflow => {
   /* the graph is build like that:
@@ -17,12 +20,12 @@ const buildGraph = workflow => {
     adj[src].push(dest)
   }
 
-  const flows = Flows.getAll(workflow)
+  const flows = getFlows(workflow)
   flows.forEach(({ srcId, destId }) => {
     addToAdj(srcId, destId)
   })
 
-  const eventListeners = EventListeners.getAll(workflow)
+  const eventListeners = getEventListeners(workflow)
   eventListeners.forEach(listener => {
     const { id, phaseId } = listener
     if (phaseId === null) return
@@ -35,8 +38,7 @@ const buildGraph = workflow => {
 const elementIsReachable = (workflow, elementId) => {
   /* using BFS here; trying to start at every global event listener (phaseId: null) */
   const adjList = buildGraph(workflow)
-  const startNodeIds = EventListeners
-    .getManyBy(workflow, { phaseId: null })
+  const startNodeIds = getGlobalEventListeners(workflow)
     .map(listener => listener.id)
 
   /* eslint-disable-next-line */

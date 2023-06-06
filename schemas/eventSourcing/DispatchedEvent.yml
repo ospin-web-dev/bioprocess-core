@@ -1,20 +1,28 @@
 components:
   schemas:
-    WorkflowPausedEvent:
-      description: Dispatched when an workflow is paused
+    DispatchedEvent:
+      description: Structure of the events dispatched from event dispatchers
       type: object
       properties:
         id:
           type: string
         type:
           type: string
-          enum: [WORKFLOW_PAUSED]
+          enum: [DISPATCHED_EVENT]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
         number:
           type: number
+        data:
+          type: object
+          properties:
+            eventDispatcherId:
+              type: string
+          required:
+            - eventDispatcherId
       required:
         - id
         - type
         - createdAt
+        - data
         - number

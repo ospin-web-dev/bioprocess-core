@@ -4,11 +4,15 @@ components:
       description: Dispatched when an phase is started
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [PHASE_STARTED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
+        number:
+          type: number
         data:
           type: object
           properties:
@@ -17,6 +21,8 @@ components:
           required:
             - phaseId
       required:
+        - id
         - type
         - createdAt
         - data
+        - number

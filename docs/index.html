@@ -154,10 +154,83 @@
           }
         }
       },
+      "DispatchedEvent": {
+        "description": "Structure of the events dispatched from event dispatchers",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DISPATCHED_EVENT"
+            ]
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "eventDispatcherId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "eventDispatcherId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "createdAt",
+          "data"
+        ]
+      },
+      "EventListenerActivated": {
+        "description": "Dispatched when an event listener starts listening",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EVENT_LISTENER_ACTIVATED"
+            ]
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/UnixTimestamp"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "eventListenerId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "eventListenerId"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "createdAt",
+          "data"
+        ]
+      },
       "EventReceivedEvent": {
         "description": "Dispatched when an event listener receives an event",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -185,6 +258,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt",
           "data"
@@ -194,6 +268,9 @@
         "description": "Dispatched when an flow receives a signal",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -216,6 +293,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt",
           "data"
@@ -225,6 +303,9 @@
         "description": "Dispatched when a gateway is activated",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -247,6 +328,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt",
           "data"
@@ -256,6 +338,9 @@
         "description": "Dispatched when an phase is started",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -278,6 +363,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt",
           "data"
@@ -287,6 +373,9 @@
         "description": "Dispatched when an workflow is finished via the END event dispatcher",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -298,6 +387,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt"
         ]
@@ -306,6 +396,9 @@
         "description": "Dispatched when an workflow is paused",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -317,6 +410,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt"
         ]
@@ -325,6 +419,9 @@
         "description": "Dispatched when an workflow is resumed",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -336,6 +433,7 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt"
         ]
@@ -344,6 +442,9 @@
         "description": "Dispatched when an workflow is terminated abnormally (not reaching the END event dispatcher)",
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -355,8 +456,36 @@
           }
         },
         "required": [
+          "id",
           "type",
           "createdAt"
+        ]
+      },
+      "AlertEventDispatcher": {
+        "description": "An event dispatcher that notifies about a customer defined alert",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "eventDispatcher_1"
+          },
+          "elementType": {
+            "type": "string",
+            "enum": [
+              "EVENT_DISPATCHER"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ALERT"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "elementType",
+          "type"
         ]
       },
       "EndEventDispatcher": {
@@ -405,6 +534,9 @@
             "enum": [
               "APPROVAL"
             ]
+          },
+          "interrupting": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -432,6 +564,9 @@
             "enum": [
               "CONDITION"
             ]
+          },
+          "interrupting": {
+            "type": "boolean"
           },
           "condition": {
             "$ref": "#/components/schemas/Condition"
@@ -463,6 +598,9 @@
             "enum": [
               "START"
             ]
+          },
+          "interrupting": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -490,6 +628,9 @@
             "enum": [
               "TIMER"
             ]
+          },
+          "interrupting": {
+            "type": "boolean"
           },
           "durationInMS": {
             "type": "number",
@@ -721,70 +862,43 @@
             "default": 1
           },
           "elements": {
-            "type": "object",
-            "properties": {
-              "eventListeners": {
-                "type": "array",
-                "default": [],
-                "items": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/StartEventListener"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ApprovalEventListener"
-                    },
-                    {
-                      "$ref": "#/components/schemas/TimerEventListener"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ConditionEventListener"
-                    }
-                  ]
-                }
-              },
-              "eventDispatchers": {
-                "type": "array",
-                "default": [],
-                "items": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/EndEventDispatcher"
-                    }
-                  ]
-                }
-              },
-              "phases": {
-                "type": "array",
-                "default": [],
-                "items": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/StartEventListener"
+                },
+                {
+                  "$ref": "#/components/schemas/ApprovalEventListener"
+                },
+                {
+                  "$ref": "#/components/schemas/TimerEventListener"
+                },
+                {
+                  "$ref": "#/components/schemas/ConditionEventListener"
+                },
+                {
+                  "$ref": "#/components/schemas/EndEventDispatcher"
+                },
+                {
+                  "$ref": "#/components/schemas/AlertEventDispatcher"
+                },
+                {
                   "$ref": "#/components/schemas/Phase"
-                }
-              },
-              "flows": {
-                "type": "array",
-                "default": [],
-                "items": {
+                },
+                {
                   "$ref": "#/components/schemas/Flow"
+                },
+                {
+                  "$ref": "#/components/schemas/AndGateway"
+                },
+                {
+                  "$ref": "#/components/schemas/OrGateway"
+                },
+                {
+                  "$ref": "#/components/schemas/ConditionalGateway"
                 }
-              },
-              "gateways": {
-                "type": "array",
-                "default": [],
-                "items": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/AndGateway"
-                    },
-                    {
-                      "$ref": "#/components/schemas/OrGateway"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ConditionalGateway"
-                    }
-                  ]
-                }
-              }
+              ]
             }
           }
         }

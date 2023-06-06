@@ -4,11 +4,15 @@ components:
       description: Dispatched when an event listener receives an event
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [EVENT_RECEIVED]
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
+        number:
+          type: number
         data:
           type: object
           properties:
@@ -21,6 +25,8 @@ components:
           required:
             - eventListenerId
       required:
+        - id
         - type
         - createdAt
         - data
+        - number

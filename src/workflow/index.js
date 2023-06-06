@@ -1,5 +1,5 @@
 const Workflow = require('./Workflow')
-const validate = require('./validate')
+const { validate } = require('./validate')
 
 Workflow.validate = validate
 

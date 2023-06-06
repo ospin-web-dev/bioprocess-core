@@ -48,7 +48,7 @@ One could consider omitting phases completely, in favour of an element type of "
 
 A phase is activated, when it receives a signal via an incoming flow. When activated, it executes its command and activates all event listeners that are bound to it (see Event Listeners).
 
-Every workflow definition needs to have at least one phase.
+Every workflow definition needs to have at least one phase. The first phase of a workflow should define the default values for all devices (this cannot be validated via this package because it requires knowledge about the functionality graph which is out of scope). Further phases should define only commands for inputs where the values change
 
 A phase that is considered not finished yet, cannot be triggered again.
 
@@ -106,6 +106,8 @@ The destination element *might* consume the signal and be activated. Most of the
 
 A flow can only ever carry a single signal.
 
+A flow that signals an event listeners that is already listening or a phase that has not finished yet, has no effect.
+
 **Can connect to:**
   - Phases
   - Gateways
@@ -145,6 +147,7 @@ Unreachable `END` event dispatchers indicate a flaw in the execution of the work
 In order to track the execution of the workflow, we need a range of events dispatched to the cloud. They are plenty, but it will also help much in the debugging process.
 
 We need events when
+- An event listener starts listening, see [EventListenerActivatedEvent](https://ospin-web-dev.github.io/process-core/)
 - An event listener receives an event, see [EventReceivedEvent](https://ospin-web-dev.github.io/process-core/)
 - a flow receives a signal, see [FlowSignaledEvent](https://ospin-web-dev.github.io/process-core/)
 - a phase is started, see [PhaseStartedEvent](https://ospin-web-dev.github.io/process-core/)
@@ -167,82 +170,76 @@ What we see here are (the icons are somewhat arbitrary as we have no finished UI
 6. We will go though Phase 5 and Phase 6, until we reach the ConditionalGateway which will check if we need another iteration of the loop and if so, loop back to Phase 5, otherwise it will send a signal to the flow to the right
 7. The END event dispatcher is activated and dispatches the END event, marking the end of the process.
 
-The data schema for such a process would look like this (handwritten, take with a grain of salt):
+The data schema for such a process would look like this (handwritten, take with a grain of salt). The element IDs will also be uuids (for simplification I'm using shorter IDs)!
 
 ```js
 const workflow = {
   id: 'a6921701-4706-40e9-82a0-07aa7e86987b',
   version: '1',
-  elements: {
-
-    eventListeners: [
-      {
-        type: 'START',
-        id: 'eventListener_1',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_2',
-        durationInMS: 100000,
-        phaseId: 'phase_1',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'APPROVAL',
-        id: 'eventListener_3',
-        phaseId: 'phase_2',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'CONDITION',
-        id: 'eventListener_4',
-        phaseId: 'phase_2',
-        condition: {
-          left: {
-            type: 'SENSOR_DATA',
-            data: {
-              reporterFctId: 'b505cf08-cc3f-4814-8d76-3dd23ad1ea35',
-            },
+  elements: [
+    {
+      type: 'START',
+      id: 'eventListener_1',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_2',
+      durationInMS: 100000,
+      phaseId: 'phase_1',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'APPROVAL',
+      id: 'eventListener_3',
+      phaseId: 'phase_2',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'CONDITION',
+      id: 'eventListener_4',
+      phaseId: 'phase_2',
+      condition: {
+        left: {
+          type: 'SENSOR_DATA',
+          data: {
+            reporterFctId: 'b505cf08-cc3f-4814-8d76-3dd23ad1ea35',
           },
-          operator: '>=',
-          right: 37,
-          options: { sustainTimeInMS: 20000, allowedDeviation: 0.2 },
         },
-        elementType: 'EVENT_LISTENER',
+        operator: '>=',
+        right: 37,
+        options: { sustainTimeInMS: 20000, allowedDeviation: 0.2 },
       },
-      {
-        type: 'TIMER',
-        id: 'eventListener_5',
-        durationInMS: 50000,
-        phaseId: 'phase_3',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_6',
-        durationInMS: 30000,
-        phaseId: 'phase_4',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_7',
-        durationInMS: 50000,
-        phaseId: 'phase_5',
-        elementType: 'EVENT_LISTENER',
-      },
-      {
-        type: 'TIMER',
-        id: 'eventListener_8',
-        durationInMS: 50000,
-        phaseId: 'phase_6',
-        elementType: 'EVENT_LISTENER',
-      },
-    ],
-  },
-
-  phases: [
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_5',
+      durationInMS: 50000,
+      phaseId: 'phase_3',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_6',
+      durationInMS: 30000,
+      phaseId: 'phase_4',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_7',
+      durationInMS: 50000,
+      phaseId: 'phase_5',
+      elementType: 'EVENT_LISTENER',
+    },
+    {
+      type: 'TIMER',
+      id: 'eventListener_8',
+      durationInMS: 50000,
+      phaseId: 'phase_6',
+      elementType: 'EVENT_LISTENER',
+    },
     {
       id: 'phase_1',
       commands: [
@@ -351,9 +348,6 @@ const workflow = {
       ],
       elementType: 'PHASE',
     },
-  ],
-
-  gateways: [
     {
       id: 'gateway_1',
       type: 'OR',
@@ -363,7 +357,7 @@ const workflow = {
       /* conditional gateway that loops 3 times
       /* (the first iteration happens before we reach the gateway, that is why "right: 2") */
       id: 'gateway_2',
-      type: 'CONDITION',
+      type: 'CONDITIONAL',
       condition: {
         left: {
           type: 'GATEWAY',
@@ -379,9 +373,6 @@ const workflow = {
       falseFlowId: 'flow_11',
       elementType: 'GATEWAY',
     },
-  ],
-
-  flows: [
     {
       id: 'flow_1',
       srcId: 'eventListener_1',
@@ -448,9 +439,7 @@ const workflow = {
       destId: 'eventDispatcher_1',
       elementType: 'FLOW',
     },
-  ],
 
-  eventDispatchers: [
     {
       type: 'END',
       id: 'eventDispatcher_1',

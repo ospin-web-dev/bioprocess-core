@@ -4,11 +4,17 @@ components:
       description: Dispatched when an workflow is finished via the END event dispatcher
       type: object
       properties:
+        id:
+          type: string
         type:
           type: string
           enum: [WORKFLOW_FINISHED]
+        number:
+          type: number
         createdAt:
           $ref: '#/components/schemas/UnixTimestamp'
       required:
+        - id
         - type
         - createdAt
+        - number
